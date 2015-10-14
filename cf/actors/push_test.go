@@ -3,6 +3,7 @@ package actors_test
 import (
 	"errors"
 	"fmt"
+	"io/ioutil"
 	"os"
 	"path/filepath"
 
@@ -68,10 +69,45 @@ var _ = Describe("Push Actor", func() {
 
 			It("extracts the zip", func() {
 				fileutils.TempDir("gather-files", func(tmpDir string, err error) {
-					files, _, err := actor.GatherFiles(appDir, tmpDir)
-					Expect(zipper.UnzipCallCount()).To(Equal(1))
+					_, _, err = actor.GatherFiles(appDir, tmpDir)
 					Expect(err).NotTo(HaveOccurred())
-					Expect(files).To(Equal(presentFiles))
+					Expect(zipper.UnzipCallCount()).To(Equal(1))
+				})
+			})
+
+			FIt("returns files list with file mode populated", func() {
+				var expectedFileMode string
+
+				zipper.UnzipStub = func(source string, dest string) error {
+					err := os.Mkdir(filepath.Join(dest, "example-app"), os.ModeDir|os.ModePerm)
+					Expect(err).NotTo(HaveOccurred())
+
+					f, err := os.Create(filepath.Join(dest, "example-app/ignore-me"))
+					Expect(err).NotTo(HaveOccurred())
+					defer f.Close()
+
+					err = ioutil.WriteFile(filepath.Join(dest, "example-app/ignore-me"), []byte("This is a test file"), os.ModePerm)
+
+					info, err := os.Lstat(filepath.Join(dest, "example-app/ignore-me"))
+					Expect(err).NotTo(HaveOccurred())
+
+					expectedFileMode = fmt.Sprintf("%#o", info.Mode())
+
+					return nil
+				}
+
+				fileutils.TempDir("gather-files", func(tmpDir string, err error) {
+					actualFiles, _, err := actor.GatherFiles(appDir, tmpDir)
+					Expect(err).NotTo(HaveOccurred())
+
+					expectedFiles := []resources.AppFileResource{
+						resources.AppFileResource{
+							Path: "example-app/ignore-me",
+							Mode: expectedFileMode,
+						},
+					}
+
+					Expect(actualFiles).To(Equal(expectedFiles))
 				})
 			})
 

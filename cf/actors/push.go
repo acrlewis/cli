@@ -55,10 +55,27 @@ func (actor PushActorImpl) GatherFiles(appDir string, uploadDir string) (present
 				apiErr = err
 				return
 			}
+
+			_, err = os.Stat(tmpDir)
+			fmt.Println("tmpDir is not there", err)
+
 			presentFiles, hasFileToUpload, apiErr = actor.copyUploadableFiles(tmpDir, uploadDir)
+			if apiErr != nil {
+				return
+			}
+
+			presentFiles, apiErr = actor.PopulateFileMode(tmpDir, presentFiles)
+			if apiErr != nil {
+				return
+			}
+
 		})
 	} else {
 		presentFiles, hasFileToUpload, apiErr = actor.copyUploadableFiles(appDir, uploadDir)
+		// presentFiles, apiErr = actor.PopulateFileMode(appDir, presentFiles)
+		// if apiErr != nil {
+		// 	return
+		// }
 	}
 	return presentFiles, hasFileToUpload, apiErr
 }
