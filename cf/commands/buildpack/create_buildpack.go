@@ -115,7 +115,7 @@ func (cmd CreateBuildpack) createBuildpack(buildpackName string, c flags.FlagCon
 		return
 	}
 
-	var enableOption *bool = nil
+	var enableOption *bool
 	if enabled {
 		enableOption = &enabled
 	}
