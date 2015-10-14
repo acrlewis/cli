@@ -20,25 +20,25 @@ type FakeSecureShell struct {
 	InteractiveSessionStub        func() error
 	interactiveSessionMutex       sync.RWMutex
 	interactiveSessionArgsForCall []struct{}
-	interactiveSessionReturns     struct {
+	interactiveSessionReturns struct {
 		result1 error
 	}
 	LocalPortForwardStub        func() error
 	localPortForwardMutex       sync.RWMutex
 	localPortForwardArgsForCall []struct{}
-	localPortForwardReturns     struct {
+	localPortForwardReturns struct {
 		result1 error
 	}
 	WaitStub        func() error
 	waitMutex       sync.RWMutex
 	waitArgsForCall []struct{}
-	waitReturns     struct {
+	waitReturns struct {
 		result1 error
 	}
 	CloseStub        func() error
 	closeMutex       sync.RWMutex
 	closeArgsForCall []struct{}
-	closeReturns     struct {
+	closeReturns struct {
 		result1 error
 	}
 }
