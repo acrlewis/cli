@@ -19,7 +19,7 @@ func NewTokenInfo(accessToken string) (info TokenInfo) {
 		return
 	}
 	info = TokenInfo{}
-	err = json.Unmarshal(tokenJson, &info)
+	json.Unmarshal(tokenJson, &info)
 	return
 }
 

@@ -660,7 +660,6 @@ func (cmd *Push) zipWithBetterErrors(uploadDir string, zipFile *os.File) error {
 	case nil:
 		return nil
 	case *errors.EmptyDirError:
-		zipFile = nil
 		return zipError
 	default:
 		return errors.NewWithError(T("Error zipping application"), err)
