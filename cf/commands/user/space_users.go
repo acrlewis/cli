@@ -6,7 +6,7 @@ import (
 	"github.com/cloudfoundry/cli/cf/api/spaces"
 	"github.com/cloudfoundry/cli/cf/command_registry"
 	"github.com/cloudfoundry/cli/cf/configuration/core_config"
-	. "github.com/cloudfoundry/cli/cf/i18n"
+	"github.com/cloudfoundry/cli/cf/i18n"
 	"github.com/cloudfoundry/cli/cf/models"
 	"github.com/cloudfoundry/cli/cf/requirements"
 	"github.com/cloudfoundry/cli/cf/terminal"
@@ -31,14 +31,14 @@ func init() {
 func (cmd *SpaceUsers) MetaData() command_registry.CommandMetadata {
 	return command_registry.CommandMetadata{
 		Name:        "space-users",
-		Description: T("Show space users by role"),
-		Usage:       T("CF_NAME space-users ORG SPACE"),
+		Description: i18n.T("Show space users by role"),
+		Usage:       i18n.T("CF_NAME space-users ORG SPACE"),
 	}
 }
 
 func (cmd *SpaceUsers) Requirements(requirementsFactory requirements.Factory, fc flags.FlagContext) (reqs []requirements.Requirement, err error) {
 	if len(fc.Args()) != 2 {
-		cmd.ui.Failed(T("Incorrect Usage. Requires arguments\n\n") + command_registry.Commands.CommandUsage("space-users"))
+		cmd.ui.Failed(i18n.T("Incorrect Usage. Requires arguments\n\n") + command_registry.Commands.CommandUsage("space-users"))
 	}
 
 	cmd.orgReq = requirementsFactory.NewOrganizationRequirement(fc.Args()[0])
@@ -85,7 +85,7 @@ func (cmd *SpaceUsers) printer(org models.Organization, space models.Space, user
 		)
 	}
 
-	cmd.ui.Say(T("Getting users in org {{.TargetOrg}} / space {{.TargetSpace}} as {{.CurrentUser}}",
+	cmd.ui.Say(i18n.T("Getting users in org {{.TargetOrg}} / space {{.TargetSpace}} as {{.CurrentUser}}",
 		map[string]interface{}{
 			"TargetOrg":   terminal.EntityNameColor(org.Name),
 			"TargetSpace": terminal.EntityNameColor(space.Name),
@@ -97,9 +97,9 @@ func (cmd *SpaceUsers) printer(org models.Organization, space models.Space, user
 		UserLister: cmd.userLister(),
 		Roles:      roles,
 		RoleDisplayNames: map[string]string{
-			models.SPACE_MANAGER:   T("SPACE MANAGER"),
-			models.SPACE_DEVELOPER: T("SPACE DEVELOPER"),
-			models.SPACE_AUDITOR:   T("SPACE AUDITOR"),
+			models.SPACE_MANAGER:   i18n.T("SPACE MANAGER"),
+			models.SPACE_DEVELOPER: i18n.T("SPACE DEVELOPER"),
+			models.SPACE_AUDITOR:   i18n.T("SPACE AUDITOR"),
 		},
 	}
 }

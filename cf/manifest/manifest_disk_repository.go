@@ -7,7 +7,7 @@ import (
 	"path/filepath"
 
 	"github.com/cloudfoundry/cli/cf/errors"
-	. "github.com/cloudfoundry/cli/cf/i18n"
+	"github.com/cloudfoundry/cli/cf/i18n"
 	"github.com/cloudfoundry/cli/generic"
 	"gopkg.in/yaml.v2"
 )
@@ -27,7 +27,7 @@ func (repo ManifestDiskRepository) ReadManifest(inputPath string) (*Manifest, er
 	manifestPath, err := repo.manifestPath(inputPath)
 
 	if err != nil {
-		return m, errors.NewWithError(T("Error finding manifest"), err)
+		return m, errors.NewWithError(i18n.T("Error finding manifest"), err)
 	}
 
 	m.Path = manifestPath
@@ -61,7 +61,7 @@ func (repo ManifestDiskRepository) readAllYAMLFiles(path string) (mergedMap gene
 
 	inheritedPath, ok := mapp.Get("inherit").(string)
 	if !ok {
-		err = errors.New(T("invalid inherit path in manifest"))
+		err = errors.New(i18n.T("invalid inherit path in manifest"))
 		return
 	}
 
@@ -91,7 +91,7 @@ func parseManifest(file io.Reader) (yamlMap generic.Map, err error) {
 	}
 
 	if !generic.IsMappable(mmap) || len(mmap) == 0 {
-		err = errors.New(T("Invalid manifest. Expected a map"))
+		err = errors.New(i18n.T("Invalid manifest. Expected a map"))
 		return
 	}
 

@@ -4,7 +4,7 @@ import (
 	"github.com/cloudfoundry/cli/cf/api"
 	"github.com/cloudfoundry/cli/cf/command_registry"
 	"github.com/cloudfoundry/cli/cf/configuration/core_config"
-	. "github.com/cloudfoundry/cli/cf/i18n"
+	"github.com/cloudfoundry/cli/cf/i18n"
 	"github.com/cloudfoundry/cli/cf/requirements"
 	"github.com/cloudfoundry/cli/cf/terminal"
 	"github.com/simonleung8/flags"
@@ -23,14 +23,14 @@ func init() {
 func (cmd *UpdateServiceAuthTokenFields) MetaData() command_registry.CommandMetadata {
 	return command_registry.CommandMetadata{
 		Name:        "update-service-auth-token",
-		Description: T("Update a service auth token"),
-		Usage:       T("CF_NAME update-service-auth-token LABEL PROVIDER TOKEN"),
+		Description: i18n.T("Update a service auth token"),
+		Usage:       i18n.T("CF_NAME update-service-auth-token LABEL PROVIDER TOKEN"),
 	}
 }
 
 func (cmd *UpdateServiceAuthTokenFields) Requirements(requirementsFactory requirements.Factory, fc flags.FlagContext) (reqs []requirements.Requirement, err error) {
 	if len(fc.Args()) != 3 {
-		cmd.ui.Failed(T("Incorrect Usage. Requires LABEL, PROVIDER and TOKEN as arguments\n\n") + command_registry.Commands.CommandUsage("update-service-auth-token"))
+		cmd.ui.Failed(i18n.T("Incorrect Usage. Requires LABEL, PROVIDER and TOKEN as arguments\n\n") + command_registry.Commands.CommandUsage("update-service-auth-token"))
 	}
 
 	reqs = []requirements.Requirement{
@@ -47,7 +47,7 @@ func (cmd *UpdateServiceAuthTokenFields) SetDependency(deps command_registry.Dep
 }
 
 func (cmd *UpdateServiceAuthTokenFields) Execute(c flags.FlagContext) {
-	cmd.ui.Say(T("Updating service auth token as {{.CurrentUser}}...", map[string]interface{}{"CurrentUser": terminal.EntityNameColor(cmd.config.Username())}))
+	cmd.ui.Say(i18n.T("Updating service auth token as {{.CurrentUser}}...", map[string]interface{}{"CurrentUser": terminal.EntityNameColor(cmd.config.Username())}))
 
 	serviceAuthToken, apiErr := cmd.authTokenRepo.FindByLabelAndProvider(c.Args()[0], c.Args()[1])
 	if apiErr != nil {

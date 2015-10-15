@@ -1,8 +1,6 @@
 package errors
 
-import (
-	. "github.com/cloudfoundry/cli/cf/i18n"
-)
+import "github.com/cloudfoundry/cli/cf/i18n"
 
 type ModelNotFoundError struct {
 	ModelType string
@@ -17,5 +15,5 @@ func NewModelNotFoundError(modelType, name string) error {
 }
 
 func (err *ModelNotFoundError) Error() string {
-	return err.ModelType + " " + err.ModelName + T(" not found")
+	return err.ModelType + " " + err.ModelName + i18n.T(" not found")
 }

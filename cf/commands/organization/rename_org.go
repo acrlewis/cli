@@ -4,7 +4,7 @@ import (
 	"github.com/cloudfoundry/cli/cf/api/organizations"
 	"github.com/cloudfoundry/cli/cf/command_registry"
 	"github.com/cloudfoundry/cli/cf/configuration/core_config"
-	. "github.com/cloudfoundry/cli/cf/i18n"
+	"github.com/cloudfoundry/cli/cf/i18n"
 	"github.com/cloudfoundry/cli/cf/requirements"
 	"github.com/cloudfoundry/cli/cf/terminal"
 	"github.com/simonleung8/flags"
@@ -24,14 +24,14 @@ func init() {
 func (cmd *RenameOrg) MetaData() command_registry.CommandMetadata {
 	return command_registry.CommandMetadata{
 		Name:        "rename-org",
-		Description: T("Rename an org"),
-		Usage:       T("CF_NAME rename-org ORG NEW_ORG"),
+		Description: i18n.T("Rename an org"),
+		Usage:       i18n.T("CF_NAME rename-org ORG NEW_ORG"),
 	}
 }
 
 func (cmd *RenameOrg) Requirements(requirementsFactory requirements.Factory, fc flags.FlagContext) (reqs []requirements.Requirement, err error) {
 	if len(fc.Args()) != 2 {
-		cmd.ui.Failed(T("Incorrect Usage. Requires old org name, new org name as arguments\n\n") + command_registry.Commands.CommandUsage("rename-org"))
+		cmd.ui.Failed(i18n.T("Incorrect Usage. Requires old org name, new org name as arguments\n\n") + command_registry.Commands.CommandUsage("rename-org"))
 	}
 
 	cmd.orgReq = requirementsFactory.NewOrganizationRequirement(fc.Args()[0])
@@ -53,7 +53,7 @@ func (cmd *RenameOrg) Execute(c flags.FlagContext) {
 	org := cmd.orgReq.GetOrganization()
 	newName := c.Args()[1]
 
-	cmd.ui.Say(T("Renaming org {{.OrgName}} to {{.NewName}} as {{.Username}}...",
+	cmd.ui.Say(i18n.T("Renaming org {{.OrgName}} to {{.NewName}} as {{.Username}}...",
 		map[string]interface{}{
 			"OrgName":  terminal.EntityNameColor(org.Name),
 			"NewName":  terminal.EntityNameColor(newName),

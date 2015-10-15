@@ -10,7 +10,7 @@ import (
 	"github.com/cloudfoundry/cli/cf/commands/user"
 	"github.com/cloudfoundry/cli/cf/configuration/core_config"
 	"github.com/cloudfoundry/cli/cf/errors"
-	. "github.com/cloudfoundry/cli/cf/i18n"
+	"github.com/cloudfoundry/cli/cf/i18n"
 	"github.com/cloudfoundry/cli/cf/models"
 	"github.com/cloudfoundry/cli/cf/requirements"
 	"github.com/cloudfoundry/cli/cf/terminal"
@@ -34,20 +34,20 @@ func init() {
 
 func (cmd *CreateSpace) MetaData() command_registry.CommandMetadata {
 	fs := make(map[string]flags.FlagSet)
-	fs["o"] = &cliFlags.StringFlag{Name: "o", Usage: T("Organization")}
-	fs["q"] = &cliFlags.StringFlag{Name: "q", Usage: T("Quota to assign to the newly created space (excluding this option results in assignment of default quota)")}
+	fs["o"] = &cliFlags.StringFlag{Name: "o", Usage: i18n.T("Organization")}
+	fs["q"] = &cliFlags.StringFlag{Name: "q", Usage: i18n.T("Quota to assign to the newly created space (excluding this option results in assignment of default quota)")}
 
 	return command_registry.CommandMetadata{
 		Name:        "create-space",
-		Description: T("Create a space"),
-		Usage:       T("CF_NAME create-space SPACE [-o ORG] [-q SPACE-QUOTA]"),
+		Description: i18n.T("Create a space"),
+		Usage:       i18n.T("CF_NAME create-space SPACE [-o ORG] [-q SPACE-QUOTA]"),
 		Flags:       fs,
 	}
 }
 
 func (cmd *CreateSpace) Requirements(requirementsFactory requirements.Factory, fc flags.FlagContext) (reqs []requirements.Requirement, err error) {
 	if len(fc.Args()) != 1 {
-		cmd.ui.Failed(T("Incorrect Usage. Requires an argument\n\n") + command_registry.Commands.CommandUsage("create-space"))
+		cmd.ui.Failed(i18n.T("Incorrect Usage. Requires an argument\n\n") + command_registry.Commands.CommandUsage("create-space"))
 	}
 
 	reqs = []requirements.Requirement{requirementsFactory.NewLoginRequirement()}
@@ -84,7 +84,7 @@ func (cmd *CreateSpace) Execute(c flags.FlagContext) {
 		orgGuid = cmd.config.OrganizationFields().Guid
 	}
 
-	cmd.ui.Say(T("Creating space {{.SpaceName}} in org {{.OrgName}} as {{.CurrentUser}}...",
+	cmd.ui.Say(i18n.T("Creating space {{.SpaceName}} in org {{.OrgName}} as {{.CurrentUser}}...",
 		map[string]interface{}{
 			"SpaceName":   terminal.EntityNameColor(spaceName),
 			"OrgName":     terminal.EntityNameColor(orgName),
@@ -105,10 +105,10 @@ func (cmd *CreateSpace) Execute(c flags.FlagContext) {
 		switch apiErr.(type) {
 		case nil:
 		case *errors.ModelNotFoundError:
-			cmd.ui.Failed(T("Org {{.OrgName}} does not exist or is not accessible", map[string]interface{}{"OrgName": orgName}))
+			cmd.ui.Failed(i18n.T("Org {{.OrgName}} does not exist or is not accessible", map[string]interface{}{"OrgName": orgName}))
 			return
 		default:
-			cmd.ui.Failed(T("Error finding org {{.OrgName}}\n{{.ErrorDescription}}",
+			cmd.ui.Failed(i18n.T("Error finding org {{.OrgName}}\n{{.ErrorDescription}}",
 				map[string]interface{}{
 					"OrgName":          orgName,
 					"ErrorDescription": apiErr.Error(),
@@ -123,7 +123,7 @@ func (cmd *CreateSpace) Execute(c flags.FlagContext) {
 	if err != nil {
 		if httpErr, ok := err.(errors.HttpError); ok && httpErr.ErrorCode() == errors.SPACE_EXISTS {
 			cmd.ui.Ok()
-			cmd.ui.Warn(T("Space {{.SpaceName}} already exists", map[string]interface{}{"SpaceName": spaceName}))
+			cmd.ui.Warn(i18n.T("Space {{.SpaceName}} already exists", map[string]interface{}{"SpaceName": spaceName}))
 			return
 		}
 		cmd.ui.Failed(err.Error())
@@ -143,7 +143,7 @@ func (cmd *CreateSpace) Execute(c flags.FlagContext) {
 		return
 	}
 
-	cmd.ui.Say(T("\nTIP: Use '{{.CFTargetCommand}}' to target new space",
+	cmd.ui.Say(i18n.T("\nTIP: Use '{{.CFTargetCommand}}' to target new space",
 		map[string]interface{}{
 			"CFTargetCommand": terminal.CommandColor(cf.Name() + " target -o \"" + orgName + "\" -s \"" + space.Name + "\""),
 		}))

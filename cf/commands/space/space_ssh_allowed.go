@@ -6,7 +6,7 @@ import (
 	"github.com/cloudfoundry/cli/cf/api/spaces"
 	"github.com/cloudfoundry/cli/cf/command_registry"
 	"github.com/cloudfoundry/cli/cf/configuration/core_config"
-	. "github.com/cloudfoundry/cli/cf/i18n"
+	"github.com/cloudfoundry/cli/cf/i18n"
 	"github.com/cloudfoundry/cli/cf/requirements"
 	"github.com/cloudfoundry/cli/cf/terminal"
 	"github.com/simonleung8/flags"
@@ -26,14 +26,14 @@ func init() {
 func (cmd *SpaceSSHAllowed) MetaData() command_registry.CommandMetadata {
 	return command_registry.CommandMetadata{
 		Name:        "space-ssh-allowed",
-		Description: T("reports whether SSH is allowed in a space"),
-		Usage:       T("CF_NAME space-ssh-allowed SPACE_NAME"),
+		Description: i18n.T("reports whether SSH is allowed in a space"),
+		Usage:       i18n.T("CF_NAME space-ssh-allowed SPACE_NAME"),
 	}
 }
 
 func (cmd *SpaceSSHAllowed) Requirements(requirementsFactory requirements.Factory, fc flags.FlagContext) ([]requirements.Requirement, error) {
 	if len(fc.Args()) != 1 {
-		cmd.ui.Failed(T("Incorrect Usage. Requires SPACE_NAME as argument\n\n") + command_registry.Commands.CommandUsage("space-ssh-allowed"))
+		cmd.ui.Failed(i18n.T("Incorrect Usage. Requires SPACE_NAME as argument\n\n") + command_registry.Commands.CommandUsage("space-ssh-allowed"))
 	}
 
 	cmd.spaceReq = requirementsFactory.NewSpaceRequirement(fc.Args()[0])
@@ -55,8 +55,8 @@ func (cmd *SpaceSSHAllowed) Execute(fc flags.FlagContext) {
 	space := cmd.spaceReq.GetSpace()
 
 	if space.AllowSSH {
-		cmd.ui.Say(fmt.Sprintf(T("ssh support is enabled in space ")+"'%s'", space.Name))
+		cmd.ui.Say(fmt.Sprintf(i18n.T("ssh support is enabled in space ")+"'%s'", space.Name))
 	} else {
-		cmd.ui.Say(fmt.Sprintf(T("ssh support is disabled in space ")+"'%s'", space.Name))
+		cmd.ui.Say(fmt.Sprintf(i18n.T("ssh support is disabled in space ")+"'%s'", space.Name))
 	}
 }

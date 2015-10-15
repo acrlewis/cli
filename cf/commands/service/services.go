@@ -4,7 +4,7 @@ import (
 	"strings"
 
 	"github.com/cloudfoundry/cli/cf/command_registry"
-	. "github.com/cloudfoundry/cli/cf/i18n"
+	"github.com/cloudfoundry/cli/cf/i18n"
 	"github.com/cloudfoundry/cli/plugin/models"
 	"github.com/simonleung8/flags"
 
@@ -30,14 +30,14 @@ func (cmd ListServices) MetaData() command_registry.CommandMetadata {
 	return command_registry.CommandMetadata{
 		Name:        "services",
 		ShortName:   "s",
-		Description: T("List all service instances in the target space"),
+		Description: i18n.T("List all service instances in the target space"),
 		Usage:       "CF_NAME services",
 	}
 }
 
 func (cmd ListServices) Requirements(requirementsFactory requirements.Factory, fc flags.FlagContext) (reqs []requirements.Requirement, err error) {
 	if len(fc.Args()) != 0 {
-		cmd.ui.Failed(T("Incorrect Usage. No argument required\n\n") + command_registry.Commands.CommandUsage("services"))
+		cmd.ui.Failed(i18n.T("Incorrect Usage. No argument required\n\n") + command_registry.Commands.CommandUsage("services"))
 	}
 	reqs = append(reqs,
 		requirementsFactory.NewLoginRequirement(),
@@ -56,7 +56,7 @@ func (cmd *ListServices) SetDependency(deps command_registry.Dependency, pluginC
 }
 
 func (cmd ListServices) Execute(fc flags.FlagContext) {
-	cmd.ui.Say(T("Getting services in org {{.OrgName}} / space {{.SpaceName}} as {{.CurrentUser}}...",
+	cmd.ui.Say(i18n.T("Getting services in org {{.OrgName}} / space {{.SpaceName}} as {{.CurrentUser}}...",
 		map[string]interface{}{
 			"OrgName":     terminal.EntityNameColor(cmd.config.OrganizationFields().Name),
 			"SpaceName":   terminal.EntityNameColor(cmd.config.SpaceFields().Name),
@@ -74,18 +74,18 @@ func (cmd ListServices) Execute(fc flags.FlagContext) {
 	cmd.ui.Say("")
 
 	if len(serviceInstances) == 0 {
-		cmd.ui.Say(T("No services found"))
+		cmd.ui.Say(i18n.T("No services found"))
 		return
 	}
 
-	table := terminal.NewTable(cmd.ui, []string{T("name"), T("service"), T("plan"), T("bound apps"), T("last operation")})
+	table := terminal.NewTable(cmd.ui, []string{i18n.T("name"), i18n.T("service"), i18n.T("plan"), i18n.T("bound apps"), i18n.T("last operation")})
 
 	for _, instance := range serviceInstances {
 		var serviceColumn string
 		var serviceStatus string
 
 		if instance.IsUserProvided() {
-			serviceColumn = T("user-provided")
+			serviceColumn = i18n.T("user-provided")
 		} else {
 			serviceColumn = instance.ServiceOffering.Label
 		}

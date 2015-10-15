@@ -3,7 +3,6 @@ package serviceauthtoken
 import (
 	"fmt"
 
-	. "github.com/cloudfoundry/cli/cf/i18n"
 	"github.com/simonleung8/flags"
 	"github.com/simonleung8/flags/flag"
 
@@ -11,6 +10,7 @@ import (
 	"github.com/cloudfoundry/cli/cf/command_registry"
 	"github.com/cloudfoundry/cli/cf/configuration/core_config"
 	"github.com/cloudfoundry/cli/cf/errors"
+	"github.com/cloudfoundry/cli/cf/i18n"
 	"github.com/cloudfoundry/cli/cf/requirements"
 	"github.com/cloudfoundry/cli/cf/terminal"
 )
@@ -27,19 +27,19 @@ func init() {
 
 func (cmd *DeleteServiceAuthTokenFields) MetaData() command_registry.CommandMetadata {
 	fs := make(map[string]flags.FlagSet)
-	fs["f"] = &cliFlags.BoolFlag{Name: "f", Usage: T("Force deletion without confirmation")}
+	fs["f"] = &cliFlags.BoolFlag{Name: "f", Usage: i18n.T("Force deletion without confirmation")}
 
 	return command_registry.CommandMetadata{
 		Name:        "delete-service-auth-token",
-		Description: T("Delete a service auth token"),
-		Usage:       T("CF_NAME delete-service-auth-token LABEL PROVIDER [-f]"),
+		Description: i18n.T("Delete a service auth token"),
+		Usage:       i18n.T("CF_NAME delete-service-auth-token LABEL PROVIDER [-f]"),
 		Flags:       fs,
 	}
 }
 
 func (cmd *DeleteServiceAuthTokenFields) Requirements(requirementsFactory requirements.Factory, fc flags.FlagContext) (reqs []requirements.Requirement, err error) {
 	if len(fc.Args()) != 2 {
-		cmd.ui.Failed(T("Incorrect Usage. Requires LABEL, PROVIDER as arguments\n\n") + command_registry.Commands.CommandUsage("delete-service-auth-token"))
+		cmd.ui.Failed(i18n.T("Incorrect Usage. Requires LABEL, PROVIDER as arguments\n\n") + command_registry.Commands.CommandUsage("delete-service-auth-token"))
 	}
 
 	reqs = append(reqs, requirementsFactory.NewLoginRequirement())
@@ -58,12 +58,12 @@ func (cmd *DeleteServiceAuthTokenFields) Execute(c flags.FlagContext) {
 	tokenProvider := c.Args()[1]
 
 	if c.Bool("f") == false {
-		if !cmd.ui.ConfirmDelete(T("service auth token"), fmt.Sprintf("%s %s", tokenLabel, tokenProvider)) {
+		if !cmd.ui.ConfirmDelete(i18n.T("service auth token"), fmt.Sprintf("%s %s", tokenLabel, tokenProvider)) {
 			return
 		}
 	}
 
-	cmd.ui.Say(T("Deleting service auth token as {{.CurrentUser}}",
+	cmd.ui.Say(i18n.T("Deleting service auth token as {{.CurrentUser}}",
 		map[string]interface{}{
 			"CurrentUser": terminal.EntityNameColor(cmd.config.Username()),
 		}))
@@ -73,7 +73,7 @@ func (cmd *DeleteServiceAuthTokenFields) Execute(c flags.FlagContext) {
 	case nil:
 	case *errors.ModelNotFoundError:
 		cmd.ui.Ok()
-		cmd.ui.Warn(T("Service Auth Token {{.Label}} {{.Provider}} does not exist.", map[string]interface{}{"Label": tokenLabel, "Provider": tokenProvider}))
+		cmd.ui.Warn(i18n.T("Service Auth Token {{.Label}} {{.Provider}} does not exist.", map[string]interface{}{"Label": tokenLabel, "Provider": tokenProvider}))
 		return
 	default:
 		cmd.ui.Failed(apiErr.Error())

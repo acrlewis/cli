@@ -5,7 +5,7 @@ import (
 	"github.com/cloudfoundry/cli/cf/api/organizations"
 	"github.com/cloudfoundry/cli/cf/command_registry"
 	"github.com/cloudfoundry/cli/cf/configuration/core_config"
-	. "github.com/cloudfoundry/cli/cf/i18n"
+	"github.com/cloudfoundry/cli/cf/i18n"
 	"github.com/cloudfoundry/cli/cf/requirements"
 	"github.com/cloudfoundry/cli/cf/terminal"
 	"github.com/simonleung8/flags"
@@ -26,14 +26,14 @@ func init() {
 func (cmd *UnsharePrivateDomain) MetaData() command_registry.CommandMetadata {
 	return command_registry.CommandMetadata{
 		Name:        "unshare-private-domain",
-		Description: T("Unshare a private domain with an org"),
-		Usage:       T("CF_NAME unshare-private-domain ORG DOMAIN"),
+		Description: i18n.T("Unshare a private domain with an org"),
+		Usage:       i18n.T("CF_NAME unshare-private-domain ORG DOMAIN"),
 	}
 }
 
 func (cmd *UnsharePrivateDomain) Requirements(requirementsFactory requirements.Factory, fc flags.FlagContext) (reqs []requirements.Requirement, err error) {
 	if len(fc.Args()) != 2 {
-		cmd.ui.Failed(T("Incorrect Usage. Requires ORG and DOMAIN arguments\n\n") + command_registry.Commands.CommandUsage("unshare-private-domain"))
+		cmd.ui.Failed(i18n.T("Incorrect Usage. Requires ORG and DOMAIN arguments\n\n") + command_registry.Commands.CommandUsage("unshare-private-domain"))
 	}
 
 	cmd.orgReq = requirementsFactory.NewOrganizationRequirement(fc.Args()[0])
@@ -62,7 +62,7 @@ func (cmd *UnsharePrivateDomain) Execute(c flags.FlagContext) {
 		return
 	}
 
-	cmd.ui.Say(T("Unsharing domain {{.DomainName}} from org {{.OrgName}} as {{.Username}}...",
+	cmd.ui.Say(i18n.T("Unsharing domain {{.DomainName}} from org {{.OrgName}} as {{.Username}}...",
 		map[string]interface{}{
 			"DomainName": terminal.EntityNameColor(domain.Name),
 			"OrgName":    terminal.EntityNameColor(org.Name),

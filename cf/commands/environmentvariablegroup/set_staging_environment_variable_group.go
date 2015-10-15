@@ -5,7 +5,7 @@ import (
 	"github.com/cloudfoundry/cli/cf/command_registry"
 	"github.com/cloudfoundry/cli/cf/configuration/core_config"
 	cf_errors "github.com/cloudfoundry/cli/cf/errors"
-	. "github.com/cloudfoundry/cli/cf/i18n"
+	"github.com/cloudfoundry/cli/cf/i18n"
 	"github.com/cloudfoundry/cli/cf/requirements"
 	"github.com/cloudfoundry/cli/cf/terminal"
 	"github.com/simonleung8/flags"
@@ -24,15 +24,15 @@ func init() {
 func (cmd *SetStagingEnvironmentVariableGroup) MetaData() command_registry.CommandMetadata {
 	return command_registry.CommandMetadata{
 		Name:        "set-staging-environment-variable-group",
-		Description: T("Pass parameters as JSON to create a staging environment variable group"),
+		Description: i18n.T("Pass parameters as JSON to create a staging environment variable group"),
 		ShortName:   "ssevg",
-		Usage:       T(`CF_NAME set-staging-environment-variable-group '{"name":"value","name":"value"}'`),
+		Usage:       i18n.T(`CF_NAME set-staging-environment-variable-group '{"name":"value","name":"value"}'`),
 	}
 }
 
 func (cmd *SetStagingEnvironmentVariableGroup) Requirements(requirementsFactory requirements.Factory, fc flags.FlagContext) ([]requirements.Requirement, error) {
 	if len(fc.Args()) != 1 {
-		cmd.ui.Failed(T("Incorrect Usage. Requires an argument\n\n") + command_registry.Commands.CommandUsage("set-staging-environment-variable-group"))
+		cmd.ui.Failed(i18n.T("Incorrect Usage. Requires an argument\n\n") + command_registry.Commands.CommandUsage("set-staging-environment-variable-group"))
 	}
 
 	reqs := []requirements.Requirement{
@@ -49,7 +49,7 @@ func (cmd *SetStagingEnvironmentVariableGroup) SetDependency(deps command_regist
 }
 
 func (cmd *SetStagingEnvironmentVariableGroup) Execute(c flags.FlagContext) {
-	cmd.ui.Say(T("Setting the contents of the staging environment variable group as {{.Username}}...", map[string]interface{}{
+	cmd.ui.Say(i18n.T("Setting the contents of the staging environment variable group as {{.Username}}...", map[string]interface{}{
 		"Username": terminal.EntityNameColor(cmd.config.Username())}))
 
 	err := cmd.environmentVariableGroupRepo.SetStaging(c.Args()[0])
@@ -58,7 +58,7 @@ func (cmd *SetStagingEnvironmentVariableGroup) Execute(c flags.FlagContext) {
 
 		httpError, ok := err.(cf_errors.HttpError)
 		if ok && httpError.ErrorCode() == cf_errors.PARSE_ERROR {
-			suggestionText = T(`
+			suggestionText = i18n.T(`
 
 Your JSON string syntax is invalid.  Proper syntax is this:  cf set-staging-environment-variable-group '{"name":"value","name":"value"}'`)
 		}

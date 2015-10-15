@@ -10,7 +10,7 @@ import (
 	"time"
 
 	"github.com/cloudfoundry/cli/cf/api"
-	. "github.com/cloudfoundry/cli/cf/i18n"
+	"github.com/cloudfoundry/cli/cf/i18n"
 
 	"github.com/cloudfoundry/cli/cf/api/authentication"
 	"github.com/cloudfoundry/cli/cf/command_registry"
@@ -43,14 +43,14 @@ func init() {
 func (cmd OneTimeSSHCode) MetaData() command_registry.CommandMetadata {
 	return command_registry.CommandMetadata{
 		Name:        "ssh-code",
-		Description: T("Get a one time password for ssh clients"),
-		Usage:       T("CF_NAME ssh-code"),
+		Description: i18n.T("Get a one time password for ssh clients"),
+		Usage:       i18n.T("CF_NAME ssh-code"),
 	}
 }
 
 func (cmd OneTimeSSHCode) Requirements(requirementsFactory requirements.Factory, fc flags.FlagContext) ([]requirements.Requirement, error) {
 	if len(fc.Args()) != 0 {
-		cmd.ui.Failed(T("Incorrect Usage. No argument required\n\n") + command_registry.Commands.CommandUsage("ssh-code"))
+		cmd.ui.Failed(i18n.T("Incorrect Usage. No argument required\n\n") + command_registry.Commands.CommandUsage("ssh-code"))
 	}
 
 	reqs := append([]requirements.Requirement{}, requirementsFactory.NewApiEndpointRequirement())
@@ -78,12 +78,12 @@ func (cmd OneTimeSSHCode) Execute(c flags.FlagContext) {
 func (cmd OneTimeSSHCode) Get() (string, error) {
 	_, err := cmd.endpointRepo.UpdateEndpoint(cmd.config.ApiEndpoint())
 	if err != nil {
-		return "", errors.New(T("Error getting info from v2/info: ") + err.Error())
+		return "", errors.New(i18n.T("Error getting info from v2/info: ") + err.Error())
 	}
 
 	token, err := cmd.authRepo.RefreshAuthToken()
 	if err != nil {
-		return "", errors.New(T("Error refreshing oauth token: ") + err.Error())
+		return "", errors.New(i18n.T("Error refreshing oauth token: ") + err.Error())
 	}
 
 	skipCertificateVerify := cmd.config.IsSSLDisabled()
@@ -105,7 +105,7 @@ func (cmd OneTimeSSHCode) Get() (string, error) {
 
 	authorizeURL, err := cmd.authorizeURL()
 	if err != nil {
-		return "", errors.New(T("Error getting AuthenticationEndpoint() ") + err.Error())
+		return "", errors.New(i18n.T("Error getting AuthenticationEndpoint() ") + err.Error())
 	}
 
 	authorizeReq, err := http.NewRequest("GET", authorizeURL, nil)
@@ -120,21 +120,21 @@ func (cmd OneTimeSSHCode) Get() (string, error) {
 		dumpResponse(resp)
 	}
 	if err == nil {
-		return "", errors.New(T("Authorization server did not redirect with one time code"))
+		return "", errors.New(i18n.T("Authorization server did not redirect with one time code"))
 	}
 
 	if netErr, ok := err.(*url.Error); !ok || netErr.Err != ErrNoRedirects {
-		return "", errors.New(T("Error requesting one time code from server:" + err.Error()))
+		return "", errors.New(i18n.T("Error requesting one time code from server:" + err.Error()))
 	}
 
 	loc, err := resp.Location()
 	if err != nil {
-		return "", errors.New(T("Error getting the redirected lcoation: " + err.Error()))
+		return "", errors.New(i18n.T("Error getting the redirected lcoation: " + err.Error()))
 	}
 
 	codes := loc.Query()["code"]
 	if len(codes) != 1 {
-		return "", errors.New(T("Unable to acquire one time code from authorization response") + "\n" + T("Server did not response with auth code") + "\n")
+		return "", errors.New(i18n.T("Unable to acquire one time code from authorization response") + "\n" + i18n.T("Server did not response with auth code") + "\n")
 	}
 
 	return codes[0], nil
@@ -161,11 +161,11 @@ func dumpRequest(req *http.Request) {
 	shouldDisplayBody := !strings.Contains(req.Header.Get("Content-Type"), "multipart/form-data")
 	dumpedRequest, err := httputil.DumpRequestOut(req, shouldDisplayBody)
 	if err != nil {
-		trace.Logger.Printf(T("Error dumping request\n{{.Err}}\n", map[string]interface{}{"Err": err}))
+		trace.Logger.Printf(i18n.T("Error dumping request\n{{.Err}}\n", map[string]interface{}{"Err": err}))
 	} else {
-		trace.Logger.Printf("\n%s [%s]\n%s\n", terminal.HeaderColor(T("REQUEST:")), time.Now().Format(time.RFC3339), trace.Sanitize(string(dumpedRequest)))
+		trace.Logger.Printf("\n%s [%s]\n%s\n", terminal.HeaderColor(i18n.T("REQUEST:")), time.Now().Format(time.RFC3339), trace.Sanitize(string(dumpedRequest)))
 		if !shouldDisplayBody {
-			trace.Logger.Println(T("[MULTIPART/FORM-DATA CONTENT HIDDEN]"))
+			trace.Logger.Println(i18n.T("[MULTIPART/FORM-DATA CONTENT HIDDEN]"))
 		}
 	}
 }
@@ -173,8 +173,8 @@ func dumpRequest(req *http.Request) {
 func dumpResponse(res *http.Response) {
 	dumpedResponse, err := httputil.DumpResponse(res, false)
 	if err != nil {
-		trace.Logger.Printf(T("Error dumping response\n{{.Err}}\n", map[string]interface{}{"Err": err}))
+		trace.Logger.Printf(i18n.T("Error dumping response\n{{.Err}}\n", map[string]interface{}{"Err": err}))
 	} else {
-		trace.Logger.Printf("\n%s [%s]\n%s\n", terminal.HeaderColor(T("RESPONSE:")), time.Now().Format(time.RFC3339), trace.Sanitize(string(dumpedResponse)))
+		trace.Logger.Printf("\n%s [%s]\n%s\n", terminal.HeaderColor(i18n.T("RESPONSE:")), time.Now().Format(time.RFC3339), trace.Sanitize(string(dumpedResponse)))
 	}
 }

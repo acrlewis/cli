@@ -10,7 +10,7 @@ import (
 	"github.com/cloudfoundry/cli/cf/command_registry"
 	"github.com/cloudfoundry/cli/cf/configuration/plugin_config"
 	"github.com/cloudfoundry/cli/cf/help"
-	. "github.com/cloudfoundry/cli/cf/i18n"
+	"github.com/cloudfoundry/cli/cf/i18n"
 	"github.com/cloudfoundry/cli/cf/panic_printer"
 	"github.com/cloudfoundry/cli/cf/requirements"
 	"github.com/cloudfoundry/cli/cf/terminal"
@@ -44,7 +44,7 @@ func main() {
 
 	//handle `cf --build`
 	if len(os.Args) == 2 && (os.Args[1] == "--build" || os.Args[1] == "-b") {
-		deps.Ui.Say(T("{{.CFName}} was built with Go version: {{.GoVersion}}",
+		deps.Ui.Say(i18n.T("{{.CFName}} was built with Go version: {{.GoVersion}}",
 			map[string]interface{}{
 				"CFName":    os.Args[0],
 				"GoVersion": runtime.Version(),
@@ -99,7 +99,7 @@ func main() {
 	ran := rpc.RunMethodIfExists(rpcService, os.Args[1:], pluginList)
 
 	if !ran {
-		deps.Ui.Say("'" + os.Args[1] + T("' is not a registered command. See 'cf help'"))
+		deps.Ui.Say("'" + os.Args[1] + i18n.T("' is not a registered command. See 'cf help'"))
 		os.Exit(1)
 	}
 }
@@ -143,7 +143,7 @@ func requestHelp(args []string) bool {
 func newCliRpcServer(outputCapture terminal.OutputCapture, terminalOutputSwitch terminal.TerminalOutputSwitch) *rpc.CliRpcService {
 	cliServer, err := rpc.NewRpcService(outputCapture, terminalOutputSwitch, deps.Config, deps.RepoLocator, rpc.NewNonCodegangstaRunner())
 	if err != nil {
-		deps.Ui.Say(T("Error initializing RPC service: ") + err.Error())
+		deps.Ui.Say(i18n.T("Error initializing RPC service: ") + err.Error())
 		os.Exit(1)
 	}
 

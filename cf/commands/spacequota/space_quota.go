@@ -8,7 +8,7 @@ import (
 	"github.com/cloudfoundry/cli/cf/command_registry"
 	"github.com/cloudfoundry/cli/cf/configuration/core_config"
 	"github.com/cloudfoundry/cli/cf/formatters"
-	. "github.com/cloudfoundry/cli/cf/i18n"
+	"github.com/cloudfoundry/cli/cf/i18n"
 	"github.com/cloudfoundry/cli/cf/requirements"
 	"github.com/cloudfoundry/cli/cf/terminal"
 	"github.com/simonleung8/flags"
@@ -27,14 +27,14 @@ func init() {
 func (cmd *SpaceQuota) MetaData() command_registry.CommandMetadata {
 	return command_registry.CommandMetadata{
 		Name:        "space-quota",
-		Description: T("Show space quota info"),
-		Usage:       T("CF_NAME space-quota SPACE_QUOTA_NAME"),
+		Description: i18n.T("Show space quota info"),
+		Usage:       i18n.T("CF_NAME space-quota SPACE_QUOTA_NAME"),
 	}
 }
 
 func (cmd *SpaceQuota) Requirements(requirementsFactory requirements.Factory, fc flags.FlagContext) (reqs []requirements.Requirement, err error) {
 	if len(fc.Args()) != 1 {
-		cmd.ui.Failed(T("Incorrect Usage. Requires an argument\n\n") + command_registry.Commands.CommandUsage("space-quota"))
+		cmd.ui.Failed(i18n.T("Incorrect Usage. Requires an argument\n\n") + command_registry.Commands.CommandUsage("space-quota"))
 	}
 
 	reqs = []requirements.Requirement{
@@ -54,7 +54,7 @@ func (cmd *SpaceQuota) SetDependency(deps command_registry.Dependency, pluginCal
 func (cmd *SpaceQuota) Execute(c flags.FlagContext) {
 	name := c.Args()[0]
 
-	cmd.ui.Say(T("Getting space quota {{.Quota}} info as {{.Username}}...",
+	cmd.ui.Say(i18n.T("Getting space quota {{.Quota}} info as {{.Username}}...",
 		map[string]interface{}{
 			"Quota":    terminal.EntityNameColor(name),
 			"Username": terminal.EntityNameColor(cmd.config.Username()),
@@ -72,22 +72,22 @@ func (cmd *SpaceQuota) Execute(c flags.FlagContext) {
 	var megabytes string
 
 	table := terminal.NewTable(cmd.ui, []string{"", ""})
-	table.Add(T("total memory limit"), formatters.ByteSize(spaceQuota.MemoryLimit*formatters.MEGABYTE))
+	table.Add(i18n.T("total memory limit"), formatters.ByteSize(spaceQuota.MemoryLimit*formatters.MEGABYTE))
 	if spaceQuota.InstanceMemoryLimit == -1 {
-		megabytes = T("unlimited")
+		megabytes = i18n.T("unlimited")
 	} else {
 		megabytes = formatters.ByteSize(spaceQuota.InstanceMemoryLimit * formatters.MEGABYTE)
 	}
 
 	servicesLimit := strconv.Itoa(spaceQuota.ServicesLimit)
 	if servicesLimit == "-1" {
-		servicesLimit = T("unlimited")
+		servicesLimit = i18n.T("unlimited")
 	}
 
-	table.Add(T("instance memory limit"), megabytes)
-	table.Add(T("routes"), fmt.Sprintf("%d", spaceQuota.RoutesLimit))
-	table.Add(T("services"), servicesLimit)
-	table.Add(T("non basic services"), formatters.Allowed(spaceQuota.NonBasicServicesAllowed))
+	table.Add(i18n.T("instance memory limit"), megabytes)
+	table.Add(i18n.T("routes"), fmt.Sprintf("%d", spaceQuota.RoutesLimit))
+	table.Add(i18n.T("services"), servicesLimit)
+	table.Add(i18n.T("non basic services"), formatters.Allowed(spaceQuota.NonBasicServicesAllowed))
 
 	table.Print()
 

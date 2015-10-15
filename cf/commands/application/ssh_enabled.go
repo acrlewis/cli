@@ -5,7 +5,7 @@ import (
 
 	"github.com/cloudfoundry/cli/cf/command_registry"
 	"github.com/cloudfoundry/cli/cf/configuration/core_config"
-	. "github.com/cloudfoundry/cli/cf/i18n"
+	"github.com/cloudfoundry/cli/cf/i18n"
 	"github.com/cloudfoundry/cli/cf/requirements"
 	"github.com/cloudfoundry/cli/cf/terminal"
 	"github.com/simonleung8/flags"
@@ -24,14 +24,14 @@ func init() {
 func (cmd *SSHEnabled) MetaData() command_registry.CommandMetadata {
 	return command_registry.CommandMetadata{
 		Name:        "ssh-enabled",
-		Description: T("reports whether SSH is enabled on an application container instance"),
-		Usage:       T("CF_NAME ssh-enabled APP_NAME"),
+		Description: i18n.T("reports whether SSH is enabled on an application container instance"),
+		Usage:       i18n.T("CF_NAME ssh-enabled APP_NAME"),
 	}
 }
 
 func (cmd *SSHEnabled) Requirements(requirementsFactory requirements.Factory, fc flags.FlagContext) (reqs []requirements.Requirement, err error) {
 	if len(fc.Args()) != 1 {
-		cmd.ui.Failed(T("Incorrect Usage. Requires APP_NAME as argument\n\n") + command_registry.Commands.CommandUsage("ssh-enabled"))
+		cmd.ui.Failed(i18n.T("Incorrect Usage. Requires APP_NAME as argument\n\n") + command_registry.Commands.CommandUsage("ssh-enabled"))
 	}
 
 	cmd.appReq = requirementsFactory.NewApplicationRequirement(fc.Args()[0])
@@ -55,9 +55,9 @@ func (cmd *SSHEnabled) Execute(fc flags.FlagContext) {
 	app := cmd.appReq.GetApplication()
 
 	if app.EnableSsh {
-		cmd.ui.Say(fmt.Sprintf(T("ssh support is enabled for")+" '%s'", app.Name))
+		cmd.ui.Say(fmt.Sprintf(i18n.T("ssh support is enabled for")+" '%s'", app.Name))
 	} else {
-		cmd.ui.Say(fmt.Sprintf(T("ssh support is disabled for")+" '%s'", app.Name))
+		cmd.ui.Say(fmt.Sprintf(i18n.T("ssh support is disabled for")+" '%s'", app.Name))
 	}
 
 	cmd.ui.Say("")

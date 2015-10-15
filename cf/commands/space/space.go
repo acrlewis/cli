@@ -5,7 +5,7 @@ import (
 	"strings"
 
 	"github.com/cloudfoundry/cli/cf/command_registry"
-	. "github.com/cloudfoundry/cli/cf/i18n"
+	"github.com/cloudfoundry/cli/cf/i18n"
 	"github.com/cloudfoundry/cli/cf/models"
 	"github.com/cloudfoundry/cli/plugin/models"
 	"github.com/simonleung8/flags"
@@ -33,19 +33,19 @@ func init() {
 
 func (cmd *ShowSpace) MetaData() command_registry.CommandMetadata {
 	fs := make(map[string]flags.FlagSet)
-	fs["guid"] = &cliFlags.BoolFlag{Name: "guid", Usage: T("Retrieve and display the given space's guid.  All other output for the space is suppressed.")}
-	fs["security-group-rules"] = &cliFlags.BoolFlag{Name: "security-group-rules", Usage: T("Retreive the rules for all the security groups associated with the space")}
+	fs["guid"] = &cliFlags.BoolFlag{Name: "guid", Usage: i18n.T("Retrieve and display the given space's guid.  All other output for the space is suppressed.")}
+	fs["security-group-rules"] = &cliFlags.BoolFlag{Name: "security-group-rules", Usage: i18n.T("Retreive the rules for all the security groups associated with the space")}
 	return command_registry.CommandMetadata{
 		Name:        "space",
-		Description: T("Show space info"),
-		Usage:       T("CF_NAME space SPACE"),
+		Description: i18n.T("Show space info"),
+		Usage:       i18n.T("CF_NAME space SPACE"),
 		Flags:       fs,
 	}
 }
 
 func (cmd *ShowSpace) Requirements(requirementsFactory requirements.Factory, fc flags.FlagContext) (reqs []requirements.Requirement, err error) {
 	if len(fc.Args()) != 1 {
-		cmd.ui.Failed(T("Incorrect Usage. Requires an argument\n\n") + command_registry.Commands.CommandUsage("space"))
+		cmd.ui.Failed(i18n.T("Incorrect Usage. Requires an argument\n\n") + command_registry.Commands.CommandUsage("space"))
 	}
 
 	cmd.spaceReq = requirementsFactory.NewSpaceRequirement(fc.Args()[0])
@@ -75,7 +75,7 @@ func (cmd *ShowSpace) Execute(c flags.FlagContext) {
 	if c.Bool("guid") {
 		cmd.ui.Say(space.Guid)
 	} else {
-		cmd.ui.Say(T("Getting info for space {{.TargetSpace}} in org {{.OrgName}} as {{.CurrentUser}}...",
+		cmd.ui.Say(i18n.T("Getting info for space {{.TargetSpace}} in org {{.OrgName}} as {{.CurrentUser}}...",
 			map[string]interface{}{
 				"TargetSpace": terminal.EntityNameColor(space.Name),
 				"OrgName":     terminal.EntityNameColor(space.Organization.Name),
@@ -86,40 +86,40 @@ func (cmd *ShowSpace) Execute(c flags.FlagContext) {
 		cmd.ui.Ok()
 		cmd.ui.Say("")
 		table := terminal.NewTable(cmd.ui, []string{terminal.EntityNameColor(space.Name), "", ""})
-		table.Add("", T("Org:"), terminal.EntityNameColor(space.Organization.Name))
+		table.Add("", i18n.T("Org:"), terminal.EntityNameColor(space.Organization.Name))
 
 		apps := []string{}
 		for _, app := range space.Applications {
 			apps = append(apps, terminal.EntityNameColor(app.Name))
 		}
-		table.Add("", T("Apps:"), strings.Join(apps, ", "))
+		table.Add("", i18n.T("Apps:"), strings.Join(apps, ", "))
 
 		domains := []string{}
 		for _, domain := range space.Domains {
 			domains = append(domains, terminal.EntityNameColor(domain.Name))
 		}
-		table.Add("", T("Domains:"), strings.Join(domains, ", "))
+		table.Add("", i18n.T("Domains:"), strings.Join(domains, ", "))
 
 		services := []string{}
 		for _, service := range space.ServiceInstances {
 			services = append(services, terminal.EntityNameColor(service.Name))
 		}
-		table.Add("", T("Services:"), strings.Join(services, ", "))
+		table.Add("", i18n.T("Services:"), strings.Join(services, ", "))
 
 		securityGroups := []string{}
 		for _, group := range space.SecurityGroups {
 			securityGroups = append(securityGroups, terminal.EntityNameColor(group.Name))
 		}
-		table.Add("", T("Security Groups:"), strings.Join(securityGroups, ", "))
+		table.Add("", i18n.T("Security Groups:"), strings.Join(securityGroups, ", "))
 
-		table.Add("", T("Space Quota:"), quotaString)
+		table.Add("", i18n.T("Space Quota:"), quotaString)
 
 		table.Print()
 	}
 	if c.Bool("security-group-rules") {
 		cmd.ui.Say("")
 		for _, group := range space.SecurityGroups {
-			cmd.ui.Say(T("Getting rules for the security group  : {{.SecurityGroupName}}...",
+			cmd.ui.Say(i18n.T("Getting rules for the security group  : {{.SecurityGroupName}}...",
 				map[string]interface{}{"SecurityGroupName": terminal.EntityNameColor(group.Name)}))
 			table := terminal.NewTable(cmd.ui, []string{"", "", "", ""})
 			for _, rules := range group.Rules {
@@ -155,7 +155,7 @@ func (cmd *ShowSpace) quotaString(space models.Space) string {
 	memory := formatters.ByteSize(quota.MemoryLimit * formatters.MEGABYTE)
 
 	spaceQuota := fmt.Sprintf("%s (%s memory limit, %s instance memory limit, %d routes, %d services, paid services %s)", quota.Name, memory, instance_memory, quota.RoutesLimit, quota.ServicesLimit, formatters.Allowed(quota.NonBasicServicesAllowed))
-	//	spaceQuota := fmt.Sprintf(T("{{.QuotaName}} ({{.MemoryLimit}} memory limit, {{.InstanceMemoryLimit}} instance memory limit, {{.RoutesLimit}} routes, {{.ServicesLimit}} services, paid services {{.NonBasicServicesAllowed}})",
+	//	spaceQuota := fmt.Sprintf(i18n.T("{{.QuotaName}} ({{.MemoryLimit}} memory limit, {{.InstanceMemoryLimit}} instance memory limit, {{.RoutesLimit}} routes, {{.ServicesLimit}} services, paid services {{.NonBasicServicesAllowed}})",
 	//		map[string]interface{}{
 	//			"QuotaName":               quota.Name,
 	//			"MemoryLimit":             memory,

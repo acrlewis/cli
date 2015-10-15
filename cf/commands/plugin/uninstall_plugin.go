@@ -9,7 +9,7 @@ import (
 
 	"github.com/cloudfoundry/cli/cf/command_registry"
 	"github.com/cloudfoundry/cli/cf/configuration/plugin_config"
-	. "github.com/cloudfoundry/cli/cf/i18n"
+	"github.com/cloudfoundry/cli/cf/i18n"
 	"github.com/cloudfoundry/cli/cf/requirements"
 	"github.com/cloudfoundry/cli/cf/terminal"
 	rpcService "github.com/cloudfoundry/cli/plugin/rpc"
@@ -29,14 +29,14 @@ func init() {
 func (cmd *PluginUninstall) MetaData() command_registry.CommandMetadata {
 	return command_registry.CommandMetadata{
 		Name:        "uninstall-plugin",
-		Description: T("Uninstall the plugin defined in command argument"),
-		Usage:       T("CF_NAME uninstall-plugin PLUGIN-NAME"),
+		Description: i18n.T("Uninstall the plugin defined in command argument"),
+		Usage:       i18n.T("CF_NAME uninstall-plugin PLUGIN-NAME"),
 	}
 }
 
 func (cmd *PluginUninstall) Requirements(requirementsFactory requirements.Factory, fc flags.FlagContext) (reqs []requirements.Requirement, err error) {
 	if len(fc.Args()) != 1 {
-		cmd.ui.Failed(T("Incorrect Usage. Requires an argument\n\n") + command_registry.Commands.CommandUsage("uninstall-plugin"))
+		cmd.ui.Failed(i18n.T("Incorrect Usage. Requires an argument\n\n") + command_registry.Commands.CommandUsage("uninstall-plugin"))
 	}
 
 	return
@@ -64,12 +64,12 @@ func (cmd *PluginUninstall) Execute(c flags.FlagContext) {
 	pluginName := c.Args()[0]
 	pluginNameMap := map[string]interface{}{"PluginName": pluginName}
 
-	cmd.ui.Say(fmt.Sprintf(T("Uninstalling plugin {{.PluginName}}...", pluginNameMap)))
+	cmd.ui.Say(fmt.Sprintf(i18n.T("Uninstalling plugin {{.PluginName}}...", pluginNameMap)))
 
 	plugins := cmd.config.Plugins()
 
 	if _, ok := plugins[pluginName]; !ok {
-		cmd.ui.Failed(fmt.Sprintf(T("Plugin name {{.PluginName}} does not exist", pluginNameMap)))
+		cmd.ui.Failed(fmt.Sprintf(i18n.T("Plugin name {{.PluginName}} does not exist", pluginNameMap)))
 	}
 
 	pluginMetadata := plugins[pluginName]
@@ -89,7 +89,7 @@ func (cmd *PluginUninstall) Execute(c flags.FlagContext) {
 	cmd.config.RemovePlugin(pluginName)
 
 	cmd.ui.Ok()
-	cmd.ui.Say(fmt.Sprintf(T("Plugin {{.PluginName}} successfully uninstalled.", pluginNameMap)))
+	cmd.ui.Say(fmt.Sprintf(i18n.T("Plugin {{.PluginName}} successfully uninstalled.", pluginNameMap)))
 }
 
 func (cmd *PluginUninstall) notifyPluginUninstalling(meta plugin_config.PluginMetadata) error {

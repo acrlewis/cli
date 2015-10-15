@@ -4,13 +4,13 @@ import (
 	"encoding/json"
 	"strings"
 
-	. "github.com/cloudfoundry/cli/cf/i18n"
 	"github.com/simonleung8/flags"
 	"github.com/simonleung8/flags/flag"
 
 	"github.com/cloudfoundry/cli/cf/api"
 	"github.com/cloudfoundry/cli/cf/command_registry"
 	"github.com/cloudfoundry/cli/cf/configuration/core_config"
+	"github.com/cloudfoundry/cli/cf/i18n"
 	"github.com/cloudfoundry/cli/cf/requirements"
 	"github.com/cloudfoundry/cli/cf/terminal"
 )
@@ -27,14 +27,14 @@ func init() {
 
 func (cmd *CreateUserProvidedService) MetaData() command_registry.CommandMetadata {
 	fs := make(map[string]flags.FlagSet)
-	fs["p"] = &cliFlags.StringFlag{Name: "p", Usage: T("Credentials")}
-	fs["l"] = &cliFlags.StringFlag{Name: "l", Usage: T("Syslog Drain Url")}
+	fs["p"] = &cliFlags.StringFlag{Name: "p", Usage: i18n.T("Credentials")}
+	fs["l"] = &cliFlags.StringFlag{Name: "l", Usage: i18n.T("Syslog Drain Url")}
 
 	return command_registry.CommandMetadata{
 		Name:        "create-user-provided-service",
 		ShortName:   "cups",
-		Description: T("Make a user-provided service instance available to cf apps"),
-		Usage: T(`CF_NAME create-user-provided-service SERVICE_INSTANCE [-p CREDENTIALS] [-l SYSLOG-DRAIN-URL]
+		Description: i18n.T("Make a user-provided service instance available to cf apps"),
+		Usage: i18n.T(`CF_NAME create-user-provided-service SERVICE_INSTANCE [-p CREDENTIALS] [-l SYSLOG-DRAIN-URL]
 
    Pass comma separated credential parameter names to enable interactive mode:
    CF_NAME create-user-provided-service SERVICE_INSTANCE -p "comma, separated, parameter, names"
@@ -61,7 +61,7 @@ EXAMPLE
 
 func (cmd *CreateUserProvidedService) Requirements(requirementsFactory requirements.Factory, fc flags.FlagContext) (reqs []requirements.Requirement, err error) {
 	if len(fc.Args()) != 1 {
-		cmd.ui.Failed(T("Incorrect Usage. Requires an argument\n\n") + command_registry.Commands.CommandUsage("create-user-provided-service"))
+		cmd.ui.Failed(i18n.T("Incorrect Usage. Requires an argument\n\n") + command_registry.Commands.CommandUsage("create-user-provided-service"))
 	}
 
 	reqs = []requirements.Requirement{
@@ -91,7 +91,7 @@ func (cmd *CreateUserProvidedService) Execute(c flags.FlagContext) {
 		paramsMap = cmd.mapValuesFromPrompt(params, paramsMap)
 	}
 
-	cmd.ui.Say(T("Creating user provided service {{.ServiceName}} in org {{.OrgName}} / space {{.SpaceName}} as {{.CurrentUser}}...",
+	cmd.ui.Say(i18n.T("Creating user provided service {{.ServiceName}} in org {{.OrgName}} / space {{.SpaceName}} as {{.CurrentUser}}...",
 		map[string]interface{}{
 			"ServiceName": terminal.EntityNameColor(name),
 			"OrgName":     terminal.EntityNameColor(cmd.config.OrganizationFields().Name),

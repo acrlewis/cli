@@ -5,7 +5,7 @@ import (
 	"sort"
 
 	"github.com/cloudfoundry/cli/cf/command_registry"
-	. "github.com/cloudfoundry/cli/cf/i18n"
+	"github.com/cloudfoundry/cli/cf/i18n"
 	"github.com/simonleung8/flags"
 
 	"github.com/cloudfoundry/cli/cf/api/applications"
@@ -29,14 +29,14 @@ func (cmd *Env) MetaData() command_registry.CommandMetadata {
 	return command_registry.CommandMetadata{
 		Name:        "env",
 		ShortName:   "e",
-		Description: T("Show all env variables for an app"),
-		Usage:       T("CF_NAME env APP_NAME"),
+		Description: i18n.T("Show all env variables for an app"),
+		Usage:       i18n.T("CF_NAME env APP_NAME"),
 	}
 }
 
 func (cmd *Env) Requirements(requirementsFactory requirements.Factory, fc flags.FlagContext) (reqs []requirements.Requirement, err error) {
 	if len(fc.Args()) != 1 {
-		cmd.ui.Failed(T("Incorrect Usage. Requires an argument\n\n") + command_registry.Commands.CommandUsage("env"))
+		cmd.ui.Failed(i18n.T("Incorrect Usage. Requires an argument\n\n") + command_registry.Commands.CommandUsage("env"))
 	}
 
 	reqs = []requirements.Requirement{
@@ -59,7 +59,7 @@ func (cmd *Env) Execute(c flags.FlagContext) {
 		cmd.ui.Failed(notFound.Error())
 	}
 
-	cmd.ui.Say(T("Getting env variables for app {{.AppName}} in org {{.OrgName}} / space {{.SpaceName}} as {{.Username}}...",
+	cmd.ui.Say(i18n.T("Getting env variables for app {{.AppName}} in org {{.OrgName}} / space {{.SpaceName}} as {{.Username}}...",
 		map[string]interface{}{
 			"AppName":   terminal.EntityNameColor(app.Name),
 			"OrgName":   terminal.EntityNameColor(cmd.config.OrganizationFields().Name),
@@ -107,11 +107,11 @@ func (cmd *Env) displaySystemiAndAppProvidedEnvironment(env map[string]interface
 	}
 
 	if len(vcapServices) == 0 && len(vcapApplication) == 0 {
-		cmd.ui.Say(T("No system-provided env variables have been set"))
+		cmd.ui.Say(i18n.T("No system-provided env variables have been set"))
 		return
 	}
 
-	cmd.ui.Say(terminal.EntityNameColor(T("System-Provided:")))
+	cmd.ui.Say(terminal.EntityNameColor(i18n.T("System-Provided:")))
 
 	cmd.ui.Say(vcapServices)
 	cmd.ui.Say("")
@@ -120,7 +120,7 @@ func (cmd *Env) displaySystemiAndAppProvidedEnvironment(env map[string]interface
 
 func (cmd *Env) displayUserProvidedEnvironment(envVars map[string]interface{}) {
 	if len(envVars) == 0 {
-		cmd.ui.Say(T("No user-defined env variables have been set"))
+		cmd.ui.Say(i18n.T("No user-defined env variables have been set"))
 		return
 	}
 
@@ -130,7 +130,7 @@ func (cmd *Env) displayUserProvidedEnvironment(envVars map[string]interface{}) {
 	}
 	sort.Strings(keys)
 
-	cmd.ui.Say(terminal.EntityNameColor(T("User-Provided:")))
+	cmd.ui.Say(terminal.EntityNameColor(i18n.T("User-Provided:")))
 	for _, key := range keys {
 		cmd.ui.Say("%s: %v", key, envVars[key])
 	}
@@ -138,7 +138,7 @@ func (cmd *Env) displayUserProvidedEnvironment(envVars map[string]interface{}) {
 
 func (cmd *Env) displayRunningEnvironment(envVars map[string]interface{}) {
 	if len(envVars) == 0 {
-		cmd.ui.Say(T("No running env variables have been set"))
+		cmd.ui.Say(i18n.T("No running env variables have been set"))
 		return
 	}
 
@@ -148,7 +148,7 @@ func (cmd *Env) displayRunningEnvironment(envVars map[string]interface{}) {
 	}
 	sort.Strings(keys)
 
-	cmd.ui.Say(terminal.EntityNameColor(T("Running Environment Variable Groups:")))
+	cmd.ui.Say(terminal.EntityNameColor(i18n.T("Running Environment Variable Groups:")))
 	for _, key := range keys {
 		cmd.ui.Say("%s: %v", key, envVars[key])
 	}
@@ -156,7 +156,7 @@ func (cmd *Env) displayRunningEnvironment(envVars map[string]interface{}) {
 
 func (cmd *Env) displayStagingEnvironment(envVars map[string]interface{}) {
 	if len(envVars) == 0 {
-		cmd.ui.Say(T("No staging env variables have been set"))
+		cmd.ui.Say(i18n.T("No staging env variables have been set"))
 		return
 	}
 
@@ -166,7 +166,7 @@ func (cmd *Env) displayStagingEnvironment(envVars map[string]interface{}) {
 	}
 	sort.Strings(keys)
 
-	cmd.ui.Say(terminal.EntityNameColor(T("Staging Environment Variable Groups:")))
+	cmd.ui.Say(terminal.EntityNameColor(i18n.T("Staging Environment Variable Groups:")))
 	for _, key := range keys {
 		cmd.ui.Say("%s: %v", key, envVars[key])
 	}

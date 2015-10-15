@@ -4,8 +4,7 @@ import (
 	"fmt"
 	"strings"
 
-	. "github.com/cloudfoundry/cli/cf/i18n"
-
+	"github.com/cloudfoundry/cli/cf/i18n"
 	"github.com/cloudfoundry/cli/cf/models"
 	"github.com/cloudfoundry/cli/cf/terminal"
 )
@@ -54,17 +53,17 @@ func ColoredInstanceState(instance models.AppInstanceFields) (colored string) {
 	state := string(instance.State)
 	switch state {
 	case "started", "running":
-		colored = T("running")
+		colored = i18n.T("running")
 	case "stopped":
-		colored = terminal.StoppedColor(T("stopped"))
+		colored = terminal.StoppedColor(i18n.T("stopped"))
 	case "crashed":
-		colored = terminal.CrashedColor(T("crashed"))
+		colored = terminal.CrashedColor(i18n.T("crashed"))
 	case "flapping":
-		colored = terminal.CrashedColor(T("crashing"))
+		colored = terminal.CrashedColor(i18n.T("crashing"))
 	case "down":
-		colored = terminal.CrashedColor(T("down"))
+		colored = terminal.CrashedColor(i18n.T("down"))
 	case "starting":
-		colored = terminal.AdvisoryColor(T("starting"))
+		colored = terminal.AdvisoryColor(i18n.T("starting"))
 	default:
 		colored = terminal.WarningColor(state)
 	}

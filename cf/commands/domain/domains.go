@@ -4,7 +4,7 @@ import (
 	"github.com/cloudfoundry/cli/cf/api"
 	"github.com/cloudfoundry/cli/cf/command_registry"
 	"github.com/cloudfoundry/cli/cf/configuration/core_config"
-	. "github.com/cloudfoundry/cli/cf/i18n"
+	"github.com/cloudfoundry/cli/cf/i18n"
 	"github.com/cloudfoundry/cli/cf/models"
 	"github.com/cloudfoundry/cli/cf/requirements"
 	"github.com/cloudfoundry/cli/cf/terminal"
@@ -25,14 +25,14 @@ func init() {
 func (cmd *ListDomains) MetaData() command_registry.CommandMetadata {
 	return command_registry.CommandMetadata{
 		Name:        "domains",
-		Description: T("List domains in the target org"),
+		Description: i18n.T("List domains in the target org"),
 		Usage:       "CF_NAME domains",
 	}
 }
 
 func (cmd *ListDomains) Requirements(requirementsFactory requirements.Factory, fc flags.FlagContext) (reqs []requirements.Requirement, err error) {
 	if len(fc.Args()) != 0 {
-		cmd.ui.Failed(T("Incorrect Usage. No argument required\n\n") + command_registry.Commands.CommandUsage("domains"))
+		cmd.ui.Failed(i18n.T("Incorrect Usage. No argument required\n\n") + command_registry.Commands.CommandUsage("domains"))
 	}
 
 	cmd.orgReq = requirementsFactory.NewTargetedOrgRequirement()
@@ -53,7 +53,7 @@ func (cmd *ListDomains) SetDependency(deps command_registry.Dependency, pluginCa
 func (cmd *ListDomains) Execute(c flags.FlagContext) {
 	org := cmd.orgReq.GetOrganizationFields()
 
-	cmd.ui.Say(T("Getting domains in org {{.OrgName}} as {{.Username}}...",
+	cmd.ui.Say(i18n.T("Getting domains in org {{.OrgName}} as {{.Username}}...",
 		map[string]interface{}{
 			"OrgName":  terminal.EntityNameColor(org.Name),
 			"Username": terminal.EntityNameColor(cmd.config.Username())}))
@@ -62,7 +62,7 @@ func (cmd *ListDomains) Execute(c flags.FlagContext) {
 	cmd.printDomainsTable(domains)
 
 	if len(domains) == 0 {
-		cmd.ui.Say(T("No domains found"))
+		cmd.ui.Say(i18n.T("No domains found"))
 	}
 }
 
@@ -72,23 +72,23 @@ func (cmd *ListDomains) fetchAllDomains(orgGuid string) (domains []models.Domain
 		return true
 	})
 	if apiErr != nil {
-		cmd.ui.Failed(T("Failed fetching domains.\n{{.ApiErr}}", map[string]interface{}{"ApiErr": apiErr.Error()}))
+		cmd.ui.Failed(i18n.T("Failed fetching domains.\n{{.ApiErr}}", map[string]interface{}{"ApiErr": apiErr.Error()}))
 	}
 	return
 }
 
 func (cmd *ListDomains) printDomainsTable(domains []models.DomainFields) {
-	table := cmd.ui.Table([]string{T("name"), T("status")})
+	table := cmd.ui.Table([]string{i18n.T("name"), i18n.T("status")})
 
 	for _, domain := range domains {
 		if domain.Shared {
-			table.Add(domain.Name, T("shared"))
+			table.Add(domain.Name, i18n.T("shared"))
 		}
 	}
 
 	for _, domain := range domains {
 		if !domain.Shared {
-			table.Add(domain.Name, T("owned"))
+			table.Add(domain.Name, i18n.T("owned"))
 		}
 	}
 	table.Print()

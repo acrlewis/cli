@@ -6,7 +6,7 @@ import (
 	"strings"
 	"time"
 
-	. "github.com/cloudfoundry/cli/cf/i18n"
+	"github.com/cloudfoundry/cli/cf/i18n"
 	"github.com/cloudfoundry/cli/cf/models"
 	"github.com/cloudfoundry/cli/generic"
 )
@@ -53,9 +53,9 @@ func (resource EventResourceNewV2) ToFields() models.EventFields {
 func (resource EventResourceOldV2) ToFields() models.EventFields {
 	return models.EventFields{
 		Guid:      resource.Metadata.Guid,
-		Name:      T("app crashed"),
+		Name:      i18n.T("app crashed"),
 		Timestamp: resource.Entity.Timestamp,
-		Description: fmt.Sprintf(T("instance: {{.InstanceIndex}}, reason: {{.ExitDescription}}, exit_status: {{.ExitStatus}}",
+		Description: fmt.Sprintf(i18n.T("instance: {{.InstanceIndex}}, reason: {{.ExitDescription}}, exit_status: {{.ExitStatus}}",
 			map[string]interface{}{
 				"InstanceIndex":   resource.Entity.InstanceIndex,
 				"ExitDescription": resource.Entity.ExitDescription,

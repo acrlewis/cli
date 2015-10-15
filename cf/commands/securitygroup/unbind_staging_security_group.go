@@ -8,7 +8,7 @@ import (
 	"github.com/cloudfoundry/cli/cf/command_registry"
 	"github.com/cloudfoundry/cli/cf/configuration/core_config"
 	"github.com/cloudfoundry/cli/cf/errors"
-	. "github.com/cloudfoundry/cli/cf/i18n"
+	"github.com/cloudfoundry/cli/cf/i18n"
 	"github.com/cloudfoundry/cli/cf/requirements"
 	"github.com/cloudfoundry/cli/cf/terminal"
 	"github.com/simonleung8/flags"
@@ -26,18 +26,18 @@ func init() {
 }
 
 func (cmd *unbindFromStagingGroup) MetaData() command_registry.CommandMetadata {
-	primaryUsage := T("CF_NAME unbind-staging-security-group SECURITY_GROUP")
-	tipUsage := T("TIP: Changes will not apply to existing running applications until they are restarted.")
+	primaryUsage := i18n.T("CF_NAME unbind-staging-security-group SECURITY_GROUP")
+	tipUsage := i18n.T("TIP: Changes will not apply to existing running applications until they are restarted.")
 	return command_registry.CommandMetadata{
 		Name:        "unbind-staging-security-group",
-		Description: T("Unbind a security group from the set of security groups for staging applications"),
+		Description: i18n.T("Unbind a security group from the set of security groups for staging applications"),
 		Usage:       strings.Join([]string{primaryUsage, tipUsage}, "\n\n"),
 	}
 }
 
 func (cmd *unbindFromStagingGroup) Requirements(requirementsFactory requirements.Factory, fc flags.FlagContext) ([]requirements.Requirement, error) {
 	if len(fc.Args()) != 1 {
-		cmd.ui.Failed(T("Incorrect Usage. Requires an argument\n\n") + command_registry.Commands.CommandUsage("unbind-staging-security-group"))
+		cmd.ui.Failed(i18n.T("Incorrect Usage. Requires an argument\n\n") + command_registry.Commands.CommandUsage("unbind-staging-security-group"))
 	}
 
 	return []requirements.Requirement{
@@ -56,7 +56,7 @@ func (cmd *unbindFromStagingGroup) SetDependency(deps command_registry.Dependenc
 func (cmd *unbindFromStagingGroup) Execute(context flags.FlagContext) {
 	name := context.Args()[0]
 
-	cmd.ui.Say(T("Unbinding security group {{.security_group}} from defaults for staging as {{.username}}",
+	cmd.ui.Say(i18n.T("Unbinding security group {{.security_group}} from defaults for staging as {{.username}}",
 		map[string]interface{}{
 			"security_group": terminal.EntityNameColor(name),
 			"username":       terminal.EntityNameColor(cmd.configRepo.Username()),
@@ -67,10 +67,10 @@ func (cmd *unbindFromStagingGroup) Execute(context flags.FlagContext) {
 	case nil:
 	case *errors.ModelNotFoundError:
 		cmd.ui.Ok()
-		cmd.ui.Warn(T("Security group {{.security_group}} {{.error_message}}",
+		cmd.ui.Warn(i18n.T("Security group {{.security_group}} {{.error_message}}",
 			map[string]interface{}{
 				"security_group": terminal.EntityNameColor(name),
-				"error_message":  terminal.WarningColor(T("does not exist.")),
+				"error_message":  terminal.WarningColor(i18n.T("does not exist.")),
 			}))
 		return
 	default:
@@ -84,5 +84,5 @@ func (cmd *unbindFromStagingGroup) Execute(context flags.FlagContext) {
 
 	cmd.ui.Ok()
 	cmd.ui.Say("\n\n")
-	cmd.ui.Say(T("TIP: Changes will not apply to existing running applications until they are restarted."))
+	cmd.ui.Say(i18n.T("TIP: Changes will not apply to existing running applications until they are restarted."))
 }

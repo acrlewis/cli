@@ -10,7 +10,7 @@ import (
 	"github.com/cloudfoundry/cli/cf/command_registry"
 	"github.com/cloudfoundry/cli/cf/commands"
 	"github.com/cloudfoundry/cli/cf/configuration/core_config"
-	. "github.com/cloudfoundry/cli/cf/i18n"
+	"github.com/cloudfoundry/cli/cf/i18n"
 	"github.com/cloudfoundry/cli/cf/net"
 	"github.com/cloudfoundry/cli/cf/requirements"
 	sshCmd "github.com/cloudfoundry/cli/cf/ssh"
@@ -42,35 +42,35 @@ func init() {
 
 func (cmd *SSH) MetaData() command_registry.CommandMetadata {
 	fs := make(map[string]flags.FlagSet)
-	fs["L"] = &cliFlags.StringSliceFlag{Name: "L", Usage: T("Local port forward specification. This flag can be defined more than once.")}
-	fs["command"] = &cliFlags.StringSliceFlag{Name: "command", ShortName: "c", Usage: T("Command to run. This flag can be defined more than once.")}
-	fs["app-instance-index"] = &cliFlags.IntFlag{Name: "app-instance-index", ShortName: "i", Usage: T("Application instance index")}
-	fs["skip-host-validation"] = &cliFlags.BoolFlag{Name: "skip-host-validation", ShortName: "k", Usage: T("Skip host key validation")}
-	fs["skip-remote-execution"] = &cliFlags.BoolFlag{Name: "skip-remote-execution", ShortName: "N", Usage: T("Do not execute a remote command")}
-	fs["request-pseudo-tty"] = &cliFlags.BoolFlag{Name: "request-pseudo-tty", ShortName: "t", Usage: T("Request pseudo-tty allocation")}
-	fs["force-pseudo-tty"] = &cliFlags.BoolFlag{Name: "force-pseudo-tty", ShortName: "tt", Usage: T("Force pseudo-tty allocation")}
-	fs["disable-pseudo-tty"] = &cliFlags.BoolFlag{Name: "disable-pseudo-tty", ShortName: "T", Usage: T("Disable pseudo-tty allocation")}
+	fs["L"] = &cliFlags.StringSliceFlag{Name: "L", Usage: i18n.T("Local port forward specification. This flag can be defined more than once.")}
+	fs["command"] = &cliFlags.StringSliceFlag{Name: "command", ShortName: "c", Usage: i18n.T("Command to run. This flag can be defined more than once.")}
+	fs["app-instance-index"] = &cliFlags.IntFlag{Name: "app-instance-index", ShortName: "i", Usage: i18n.T("Application instance index")}
+	fs["skip-host-validation"] = &cliFlags.BoolFlag{Name: "skip-host-validation", ShortName: "k", Usage: i18n.T("Skip host key validation")}
+	fs["skip-remote-execution"] = &cliFlags.BoolFlag{Name: "skip-remote-execution", ShortName: "N", Usage: i18n.T("Do not execute a remote command")}
+	fs["request-pseudo-tty"] = &cliFlags.BoolFlag{Name: "request-pseudo-tty", ShortName: "t", Usage: i18n.T("Request pseudo-tty allocation")}
+	fs["force-pseudo-tty"] = &cliFlags.BoolFlag{Name: "force-pseudo-tty", ShortName: "tt", Usage: i18n.T("Force pseudo-tty allocation")}
+	fs["disable-pseudo-tty"] = &cliFlags.BoolFlag{Name: "disable-pseudo-tty", ShortName: "T", Usage: i18n.T("Disable pseudo-tty allocation")}
 
 	return command_registry.CommandMetadata{
 		Name:        "ssh",
-		Description: T("SSH to an application container instance"),
-		Usage:       T("CF_NAME ssh APP_NAME [-i app-instance-index] [-c command] [-L [bind_address:]port:host:hostport] [--skip-host-validation] [--skip-remote-execution] [--request-pseudo-tty] [--force-pseudo-tty] [--disable-pseudo-tty]"),
+		Description: i18n.T("SSH to an application container instance"),
+		Usage:       i18n.T("CF_NAME ssh APP_NAME [-i app-instance-index] [-c command] [-L [bind_address:]port:host:hostport] [--skip-host-validation] [--skip-remote-execution] [--request-pseudo-tty] [--force-pseudo-tty] [--disable-pseudo-tty]"),
 		Flags:       fs,
 	}
 }
 
 func (cmd *SSH) Requirements(requirementsFactory requirements.Factory, fc flags.FlagContext) (reqs []requirements.Requirement, err error) {
 	if len(fc.Args()) == 0 {
-		cmd.ui.Failed(T("Incorrect Usage. Requires APP_NAME as argument") + "\n\n" + command_registry.Commands.CommandUsage("ssh"))
+		cmd.ui.Failed(i18n.T("Incorrect Usage. Requires APP_NAME as argument") + "\n\n" + command_registry.Commands.CommandUsage("ssh"))
 	}
 
 	if fc.IsSet("i") && fc.Int("i") < 0 {
-		cmd.ui.Failed(fmt.Sprintf(T("Incorrect Usage:")+" %s\n\n%s", T("Value for flag 'app-instance-index' cannot be negative"), command_registry.Commands.CommandUsage("ssh")))
+		cmd.ui.Failed(fmt.Sprintf(i18n.T("Incorrect Usage:")+" %s\n\n%s", i18n.T("Value for flag 'app-instance-index' cannot be negative"), command_registry.Commands.CommandUsage("ssh")))
 	}
 
 	cmd.opts, err = options.NewSSHOptions(fc)
 	if err != nil {
-		cmd.ui.Failed(fmt.Sprintf(T("Incorrect Usage:")+" %s\n\n%s", err.Error(), command_registry.Commands.CommandUsage("ssh")))
+		cmd.ui.Failed(fmt.Sprintf(i18n.T("Incorrect Usage:")+" %s\n\n%s", err.Error(), command_registry.Commands.CommandUsage("ssh")))
 	}
 
 	cmd.appReq = requirementsFactory.NewApplicationRequirement(cmd.opts.AppName)
@@ -104,12 +104,12 @@ func (cmd *SSH) Execute(fc flags.FlagContext) {
 	app := cmd.appReq.GetApplication()
 	info, err := cmd.getSSHEndpointInfo()
 	if err != nil {
-		cmd.ui.Failed(T("Error getting SSH info:") + err.Error())
+		cmd.ui.Failed(i18n.T("Error getting SSH info:") + err.Error())
 	}
 
 	sshAuthCode, err := cmd.sshCodeGetter.Get()
 	if err != nil {
-		cmd.ui.Failed(T("Error getting one time auth code: ") + err.Error())
+		cmd.ui.Failed(i18n.T("Error getting one time auth code: ") + err.Error())
 	}
 
 	//init secureShell if it is not already set by SetDependency() with fakes
@@ -128,13 +128,13 @@ func (cmd *SSH) Execute(fc flags.FlagContext) {
 
 	err = cmd.secureShell.Connect(cmd.opts)
 	if err != nil {
-		cmd.ui.Failed(T("Error opening SSH connection: ") + err.Error())
+		cmd.ui.Failed(i18n.T("Error opening SSH connection: ") + err.Error())
 	}
 	defer cmd.secureShell.Close()
 
 	err = cmd.secureShell.LocalPortForward()
 	if err != nil {
-		cmd.ui.Failed(T("Error forwarding port: ") + err.Error())
+		cmd.ui.Failed(i18n.T("Error forwarding port: ") + err.Error())
 	}
 
 	if cmd.opts.SkipRemoteExecution {
@@ -150,11 +150,11 @@ func (cmd *SSH) Execute(fc flags.FlagContext) {
 	if exitError, ok := err.(*ssh.ExitError); ok {
 		exitStatus := exitError.ExitStatus()
 		if sig := exitError.Signal(); sig != "" {
-			cmd.ui.Say(fmt.Sprintf(T("Process terminated by signal: %s. Exited with")+" %d.\n", sig, exitStatus))
+			cmd.ui.Say(fmt.Sprintf(i18n.T("Process terminated by signal: %s. Exited with")+" %d.\n", sig, exitStatus))
 		}
 		os.Exit(exitStatus)
 	} else {
-		cmd.ui.Failed(T("Error: ") + err.Error())
+		cmd.ui.Failed(i18n.T("Error: ") + err.Error())
 	}
 }
 

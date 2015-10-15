@@ -4,7 +4,7 @@ import (
 	"github.com/cloudfoundry/cli/cf/api"
 	"github.com/cloudfoundry/cli/cf/command_registry"
 	"github.com/cloudfoundry/cli/cf/configuration/core_config"
-	. "github.com/cloudfoundry/cli/cf/i18n"
+	"github.com/cloudfoundry/cli/cf/i18n"
 	"github.com/cloudfoundry/cli/cf/requirements"
 	"github.com/cloudfoundry/cli/cf/terminal"
 	"github.com/simonleung8/flags"
@@ -24,14 +24,14 @@ func init() {
 func (cmd *CreateSharedDomain) MetaData() command_registry.CommandMetadata {
 	return command_registry.CommandMetadata{
 		Name:        "create-shared-domain",
-		Description: T("Create a domain that can be used by all orgs (admin-only)"),
-		Usage:       T("CF_NAME create-shared-domain DOMAIN"),
+		Description: i18n.T("Create a domain that can be used by all orgs (admin-only)"),
+		Usage:       i18n.T("CF_NAME create-shared-domain DOMAIN"),
 	}
 }
 
 func (cmd *CreateSharedDomain) Requirements(requirementsFactory requirements.Factory, fc flags.FlagContext) (reqs []requirements.Requirement, err error) {
 	if len(fc.Args()) != 1 {
-		cmd.ui.Failed(T("Incorrect Usage. Requires an argument\n\n") + command_registry.Commands.CommandUsage("create-shared-domain"))
+		cmd.ui.Failed(i18n.T("Incorrect Usage. Requires an argument\n\n") + command_registry.Commands.CommandUsage("create-shared-domain"))
 	}
 
 	reqs = []requirements.Requirement{
@@ -50,7 +50,7 @@ func (cmd *CreateSharedDomain) SetDependency(deps command_registry.Dependency, p
 func (cmd *CreateSharedDomain) Execute(c flags.FlagContext) {
 	domainName := c.Args()[0]
 
-	cmd.ui.Say(T("Creating shared domain {{.DomainName}} as {{.Username}}...",
+	cmd.ui.Say(i18n.T("Creating shared domain {{.DomainName}} as {{.Username}}...",
 		map[string]interface{}{
 			"DomainName": terminal.EntityNameColor(domainName),
 			"Username":   terminal.EntityNameColor(cmd.config.Username())}))

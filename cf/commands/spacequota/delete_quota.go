@@ -5,12 +5,11 @@ import (
 	"github.com/cloudfoundry/cli/cf/command_registry"
 	"github.com/cloudfoundry/cli/cf/configuration/core_config"
 	"github.com/cloudfoundry/cli/cf/errors"
+	"github.com/cloudfoundry/cli/cf/i18n"
 	"github.com/cloudfoundry/cli/cf/requirements"
 	"github.com/cloudfoundry/cli/cf/terminal"
 	"github.com/simonleung8/flags"
 	"github.com/simonleung8/flags/flag"
-
-	. "github.com/cloudfoundry/cli/cf/i18n"
 )
 
 type DeleteSpaceQuota struct {
@@ -25,19 +24,19 @@ func init() {
 
 func (cmd *DeleteSpaceQuota) MetaData() command_registry.CommandMetadata {
 	fs := make(map[string]flags.FlagSet)
-	fs["f"] = &cliFlags.BoolFlag{Name: "f", Usage: T("Force delete (do not prompt for confirmation)")}
+	fs["f"] = &cliFlags.BoolFlag{Name: "f", Usage: i18n.T("Force delete (do not prompt for confirmation)")}
 
 	return command_registry.CommandMetadata{
 		Name:        "delete-space-quota",
-		Description: T("Delete a space quota definition and unassign the space quota from all spaces"),
-		Usage:       T("CF_NAME delete-space-quota SPACE-QUOTA-NAME"),
+		Description: i18n.T("Delete a space quota definition and unassign the space quota from all spaces"),
+		Usage:       i18n.T("CF_NAME delete-space-quota SPACE-QUOTA-NAME"),
 		Flags:       fs,
 	}
 }
 
 func (cmd *DeleteSpaceQuota) Requirements(requirementsFactory requirements.Factory, fc flags.FlagContext) (reqs []requirements.Requirement, err error) {
 	if len(fc.Args()) != 1 {
-		cmd.ui.Failed(T("Incorrect Usage. Requires an argument\n\n") + command_registry.Commands.CommandUsage("delete-space-quota"))
+		cmd.ui.Failed(i18n.T("Incorrect Usage. Requires an argument\n\n") + command_registry.Commands.CommandUsage("delete-space-quota"))
 	}
 
 	return []requirements.Requirement{
@@ -62,7 +61,7 @@ func (cmd *DeleteSpaceQuota) Execute(c flags.FlagContext) {
 		}
 	}
 
-	cmd.ui.Say(T("Deleting space quota {{.QuotaName}} as {{.Username}}...", map[string]interface{}{
+	cmd.ui.Say(i18n.T("Deleting space quota {{.QuotaName}} as {{.Username}}...", map[string]interface{}{
 		"QuotaName": terminal.EntityNameColor(quotaName),
 		"Username":  terminal.EntityNameColor(cmd.config.Username()),
 	}))
@@ -72,7 +71,7 @@ func (cmd *DeleteSpaceQuota) Execute(c flags.FlagContext) {
 	case nil: // no error
 	case *errors.ModelNotFoundError:
 		cmd.ui.Ok()
-		cmd.ui.Warn(T("Quota {{.QuotaName}} does not exist", map[string]interface{}{"QuotaName": quotaName}))
+		cmd.ui.Warn(i18n.T("Quota {{.QuotaName}} does not exist", map[string]interface{}{"QuotaName": quotaName}))
 		return
 	default:
 		cmd.ui.Failed(apiErr.Error())

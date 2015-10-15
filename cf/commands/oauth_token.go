@@ -4,7 +4,7 @@ import (
 	"github.com/cloudfoundry/cli/cf/api/authentication"
 	"github.com/cloudfoundry/cli/cf/command_registry"
 	"github.com/cloudfoundry/cli/cf/configuration/core_config"
-	. "github.com/cloudfoundry/cli/cf/i18n"
+	"github.com/cloudfoundry/cli/cf/i18n"
 	"github.com/cloudfoundry/cli/cf/requirements"
 	"github.com/cloudfoundry/cli/cf/terminal"
 	"github.com/cloudfoundry/cli/plugin/models"
@@ -26,8 +26,8 @@ func init() {
 func (cmd *OAuthToken) MetaData() command_registry.CommandMetadata {
 	return command_registry.CommandMetadata{
 		Name:        "oauth-token",
-		Description: T("Retrieve and display the OAuth token for the current session"),
-		Usage:       T("CF_NAME oauth-token"),
+		Description: i18n.T("Retrieve and display the OAuth token for the current session"),
+		Usage:       i18n.T("CF_NAME oauth-token"),
 	}
 }
 
@@ -48,7 +48,7 @@ func (cmd *OAuthToken) SetDependency(deps command_registry.Dependency, pluginCal
 }
 
 func (cmd *OAuthToken) Execute(c flags.FlagContext) {
-	cmd.ui.Say(T("Getting OAuth token..."))
+	cmd.ui.Say(i18n.T("Getting OAuth token..."))
 
 	token, err := cmd.authRepo.RefreshAuthToken()
 	if err != nil {

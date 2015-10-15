@@ -5,7 +5,7 @@ import (
 	"github.com/cloudfoundry/cli/cf/command_registry"
 	"github.com/cloudfoundry/cli/cf/configuration/core_config"
 	"github.com/cloudfoundry/cli/cf/errors"
-	. "github.com/cloudfoundry/cli/cf/i18n"
+	"github.com/cloudfoundry/cli/cf/i18n"
 	"github.com/cloudfoundry/cli/cf/models"
 	"github.com/cloudfoundry/cli/cf/requirements"
 	"github.com/cloudfoundry/cli/cf/terminal"
@@ -27,14 +27,14 @@ func (cmd *Restage) MetaData() command_registry.CommandMetadata {
 	return command_registry.CommandMetadata{
 		Name:        "restage",
 		ShortName:   "rg",
-		Description: T("Restage an app"),
-		Usage:       T("CF_NAME restage APP_NAME"),
+		Description: i18n.T("Restage an app"),
+		Usage:       i18n.T("CF_NAME restage APP_NAME"),
 	}
 }
 
 func (cmd *Restage) Requirements(requirementsFactory requirements.Factory, fc flags.FlagContext) (reqs []requirements.Requirement, err error) {
 	if len(fc.Args()) != 1 {
-		cmd.ui.Failed(T("Incorrect Usage. Requires an argument\n\n") + command_registry.Commands.CommandUsage("restage"))
+		cmd.ui.Failed(i18n.T("Incorrect Usage. Requires an argument\n\n") + command_registry.Commands.CommandUsage("restage"))
 	}
 
 	reqs = []requirements.Requirement{
@@ -63,7 +63,7 @@ func (cmd *Restage) Execute(c flags.FlagContext) {
 		cmd.ui.Failed(notFound.Error())
 	}
 
-	cmd.ui.Say(T("Restaging app {{.AppName}} in org {{.OrgName}} / space {{.SpaceName}} as {{.CurrentUser}}...",
+	cmd.ui.Say(i18n.T("Restaging app {{.AppName}} in org {{.OrgName}} / space {{.SpaceName}} as {{.CurrentUser}}...",
 		map[string]interface{}{
 			"AppName":     terminal.EntityNameColor(app.Name),
 			"OrgName":     terminal.EntityNameColor(cmd.config.OrganizationFields().Name),

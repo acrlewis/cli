@@ -1,8 +1,6 @@
 package errors
 
-import (
-	. "github.com/cloudfoundry/cli/cf/i18n"
-)
+import "github.com/cloudfoundry/cli/cf/i18n"
 
 type UnbindableServiceError struct {
 }
@@ -12,5 +10,5 @@ func NewUnbindableServiceError() error {
 }
 
 func (err *UnbindableServiceError) Error() string {
-	return T("This service doesn't support creation of keys.")
+	return i18n.T("This service doesn't support creation of keys.")
 }

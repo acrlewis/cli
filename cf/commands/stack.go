@@ -4,7 +4,7 @@ import (
 	"github.com/cloudfoundry/cli/cf/api/stacks"
 	"github.com/cloudfoundry/cli/cf/command_registry"
 	"github.com/cloudfoundry/cli/cf/configuration/core_config"
-	. "github.com/cloudfoundry/cli/cf/i18n"
+	"github.com/cloudfoundry/cli/cf/i18n"
 	"github.com/cloudfoundry/cli/cf/requirements"
 	"github.com/cloudfoundry/cli/cf/terminal"
 	"github.com/simonleung8/flags"
@@ -23,12 +23,12 @@ func init() {
 
 func (cmd *ListStack) MetaData() command_registry.CommandMetadata {
 	fs := make(map[string]flags.FlagSet)
-	fs["guid"] = &cliFlags.BoolFlag{Name: "guid", Usage: T("Retrieve and display the given stack's guid. All other output for the stack is suppressed.")}
+	fs["guid"] = &cliFlags.BoolFlag{Name: "guid", Usage: i18n.T("Retrieve and display the given stack's guid. All other output for the stack is suppressed.")}
 
 	return command_registry.CommandMetadata{
 		Name:        "stack",
-		Description: T("Show information for a stack (a stack is a pre-built file system, including an operating system, that can run apps)"),
-		Usage:       T("CF_NAME stack STACK_NAME"),
+		Description: i18n.T("Show information for a stack (a stack is a pre-built file system, including an operating system, that can run apps)"),
+		Usage:       i18n.T("CF_NAME stack STACK_NAME"),
 		Flags:       fs,
 		TotalArgs:   1,
 	}
@@ -36,7 +36,7 @@ func (cmd *ListStack) MetaData() command_registry.CommandMetadata {
 
 func (cmd *ListStack) Requirements(requirementsFactory requirements.Factory, fc flags.FlagContext) (reqs []requirements.Requirement, err error) {
 	if len(fc.Args()) != 1 {
-		cmd.ui.Failed(T("Incorrect Usage. Requires app name as argument\n\n") + command_registry.Commands.CommandUsage("auth"))
+		cmd.ui.Failed(i18n.T("Incorrect Usage. Requires app name as argument\n\n") + command_registry.Commands.CommandUsage("auth"))
 	}
 
 	reqs = append(reqs, requirementsFactory.NewLoginRequirement())
@@ -63,7 +63,7 @@ func (cmd *ListStack) Execute(c flags.FlagContext) {
 			return
 		}
 
-		cmd.ui.Say(T("Getting stack '{{.Stack}}' in org {{.OrganizationName}} / space {{.SpaceName}} as {{.Username}}...",
+		cmd.ui.Say(i18n.T("Getting stack '{{.Stack}}' in org {{.OrganizationName}} / space {{.SpaceName}} as {{.Username}}...",
 			map[string]interface{}{"Stack": stackName,
 				"OrganizationName": terminal.EntityNameColor(cmd.config.OrganizationFields().Name),
 				"SpaceName":        terminal.EntityNameColor(cmd.config.SpaceFields().Name),
@@ -72,7 +72,7 @@ func (cmd *ListStack) Execute(c flags.FlagContext) {
 		cmd.ui.Ok()
 		cmd.ui.Say("")
 
-		table := terminal.NewTable(cmd.ui, []string{T("name"), T("description")})
+		table := terminal.NewTable(cmd.ui, []string{i18n.T("name"), i18n.T("description")})
 		table.Add(stack.Name, stack.Description)
 		table.Print()
 	}

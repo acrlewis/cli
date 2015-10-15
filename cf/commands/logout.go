@@ -3,7 +3,7 @@ package commands
 import (
 	"github.com/cloudfoundry/cli/cf/command_registry"
 	"github.com/cloudfoundry/cli/cf/configuration/core_config"
-	. "github.com/cloudfoundry/cli/cf/i18n"
+	"github.com/cloudfoundry/cli/cf/i18n"
 	"github.com/cloudfoundry/cli/cf/requirements"
 	"github.com/cloudfoundry/cli/cf/terminal"
 	"github.com/simonleung8/flags"
@@ -22,8 +22,8 @@ func (cmd *Logout) MetaData() command_registry.CommandMetadata {
 	return command_registry.CommandMetadata{
 		Name:        "logout",
 		ShortName:   "lo",
-		Description: T("Log user out"),
-		Usage:       T("CF_NAME logout"),
+		Description: i18n.T("Log user out"),
+		Usage:       i18n.T("CF_NAME logout"),
 	}
 }
 
@@ -38,7 +38,7 @@ func (cmd *Logout) SetDependency(deps command_registry.Dependency, _ bool) comma
 }
 
 func (cmd *Logout) Execute(c flags.FlagContext) {
-	cmd.ui.Say(T("Logging out..."))
+	cmd.ui.Say(i18n.T("Logging out..."))
 	cmd.config.ClearSession()
 	cmd.ui.Ok()
 }

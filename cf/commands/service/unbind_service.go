@@ -4,7 +4,7 @@ import (
 	"github.com/cloudfoundry/cli/cf/api"
 	"github.com/cloudfoundry/cli/cf/command_registry"
 	"github.com/cloudfoundry/cli/cf/configuration/core_config"
-	. "github.com/cloudfoundry/cli/cf/i18n"
+	"github.com/cloudfoundry/cli/cf/i18n"
 	"github.com/cloudfoundry/cli/cf/requirements"
 	"github.com/cloudfoundry/cli/cf/terminal"
 	"github.com/simonleung8/flags"
@@ -26,14 +26,14 @@ func (cmd *UnbindService) MetaData() command_registry.CommandMetadata {
 	return command_registry.CommandMetadata{
 		Name:        "unbind-service",
 		ShortName:   "us",
-		Description: T("Unbind a service instance from an app"),
-		Usage:       T("CF_NAME unbind-service APP_NAME SERVICE_INSTANCE"),
+		Description: i18n.T("Unbind a service instance from an app"),
+		Usage:       i18n.T("CF_NAME unbind-service APP_NAME SERVICE_INSTANCE"),
 	}
 }
 
 func (cmd *UnbindService) Requirements(requirementsFactory requirements.Factory, fc flags.FlagContext) ([]requirements.Requirement, error) {
 	if len(fc.Args()) != 2 {
-		cmd.ui.Failed(T("Incorrect Usage. Requires APP SERVICE_INSTANCE as arguments\n\n") + command_registry.Commands.CommandUsage("unbind-service"))
+		cmd.ui.Failed(i18n.T("Incorrect Usage. Requires APP SERVICE_INSTANCE as arguments\n\n") + command_registry.Commands.CommandUsage("unbind-service"))
 	}
 
 	serviceName := fc.Args()[1]
@@ -60,7 +60,7 @@ func (cmd *UnbindService) Execute(c flags.FlagContext) {
 	app := cmd.appReq.GetApplication()
 	instance := cmd.serviceInstanceReq.GetServiceInstance()
 
-	cmd.ui.Say(T("Unbinding app {{.AppName}} from service {{.ServiceName}} in org {{.OrgName}} / space {{.SpaceName}} as {{.CurrentUser}}...",
+	cmd.ui.Say(i18n.T("Unbinding app {{.AppName}} from service {{.ServiceName}} in org {{.OrgName}} / space {{.SpaceName}} as {{.CurrentUser}}...",
 		map[string]interface{}{
 			"AppName":     terminal.EntityNameColor(app.Name),
 			"ServiceName": terminal.EntityNameColor(instance.Name),
@@ -78,7 +78,7 @@ func (cmd *UnbindService) Execute(c flags.FlagContext) {
 	cmd.ui.Ok()
 
 	if !found {
-		cmd.ui.Warn(T("Binding between {{.InstanceName}} and {{.AppName}} did not exist",
+		cmd.ui.Warn(i18n.T("Binding between {{.InstanceName}} and {{.AppName}} did not exist",
 			map[string]interface{}{"InstanceName": instance.Name, "AppName": app.Name}))
 	}
 

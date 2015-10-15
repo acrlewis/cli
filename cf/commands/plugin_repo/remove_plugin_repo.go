@@ -5,11 +5,10 @@ import (
 
 	"github.com/cloudfoundry/cli/cf/command_registry"
 	"github.com/cloudfoundry/cli/cf/configuration/core_config"
+	"github.com/cloudfoundry/cli/cf/i18n"
 	"github.com/cloudfoundry/cli/cf/requirements"
 	"github.com/cloudfoundry/cli/cf/terminal"
 	"github.com/simonleung8/flags"
-
-	. "github.com/cloudfoundry/cli/cf/i18n"
 )
 
 type RemovePluginRepo struct {
@@ -24,8 +23,8 @@ func init() {
 func (cmd *RemovePluginRepo) MetaData() command_registry.CommandMetadata {
 	return command_registry.CommandMetadata{
 		Name:        "remove-plugin-repo",
-		Description: T("Remove a plugin repository"),
-		Usage: T(`CF_NAME remove-plugin-repo [REPO_NAME] [URL]
+		Description: i18n.T("Remove a plugin repository"),
+		Usage: i18n.T(`CF_NAME remove-plugin-repo [REPO_NAME] [URL]
 
 EXAMPLE:
    cf remove-plugin-repo PrivateRepo
@@ -36,7 +35,7 @@ EXAMPLE:
 
 func (cmd *RemovePluginRepo) Requirements(requirementsFactory requirements.Factory, fc flags.FlagContext) (reqs []requirements.Requirement, err error) {
 	if len(fc.Args()) != 1 {
-		cmd.ui.Failed(T("Incorrect Usage. Requires an argument\n\n") + command_registry.Commands.CommandUsage("remove-plugin-repo"))
+		cmd.ui.Failed(i18n.T("Incorrect Usage. Requires an argument\n\n") + command_registry.Commands.CommandUsage("remove-plugin-repo"))
 	}
 
 	return
@@ -55,10 +54,10 @@ func (cmd *RemovePluginRepo) Execute(c flags.FlagContext) {
 	if i := cmd.findRepoIndex(repoName); i != -1 {
 		cmd.config.UnSetPluginRepo(i)
 		cmd.ui.Ok()
-		cmd.ui.Say(repoName + T(" removed from list of repositories"))
+		cmd.ui.Say(repoName + i18n.T(" removed from list of repositories"))
 		cmd.ui.Say("")
 	} else {
-		cmd.ui.Failed(repoName + T(" does not exist as a repo"))
+		cmd.ui.Failed(repoName + i18n.T(" does not exist as a repo"))
 	}
 }
 

@@ -6,10 +6,9 @@ import (
 	"net/url"
 	"strings"
 
-	. "github.com/cloudfoundry/cli/cf/i18n"
-
 	"github.com/cloudfoundry/cli/cf/configuration/core_config"
 	"github.com/cloudfoundry/cli/cf/errors"
+	"github.com/cloudfoundry/cli/cf/i18n"
 	"github.com/cloudfoundry/cli/cf/net"
 )
 
@@ -47,7 +46,7 @@ func (uaa UAAAuthenticationRepository) Authenticate(credentials map[string]strin
 	switch response := apiErr.(type) {
 	case errors.HttpError:
 		if response.StatusCode() == 401 {
-			apiErr = errors.New(T("Credentials were rejected, please try again."))
+			apiErr = errors.New(i18n.T("Credentials were rejected, please try again."))
 		}
 	}
 
@@ -118,7 +117,7 @@ func (uaa UAAAuthenticationRepository) getAuthToken(data url.Values) error {
 	path := fmt.Sprintf("%s/oauth/token", uaa.config.AuthenticationEndpoint())
 	request, err := uaa.gateway.NewRequest("POST", path, "Basic "+base64.StdEncoding.EncodeToString([]byte("cf:")), strings.NewReader(data.Encode()))
 	if err != nil {
-		return errors.NewWithError(T("Failed to start oauth request"), err)
+		return errors.NewWithError(i18n.T("Failed to start oauth request"), err)
 	}
 	request.HttpReq.Header.Set("Content-Type", "application/x-www-form-urlencoded")
 
@@ -130,9 +129,9 @@ func (uaa UAAAuthenticationRepository) getAuthToken(data url.Values) error {
 	case errors.HttpError:
 		return err
 	case *errors.InvalidTokenError:
-		return errors.New(T("Authentication has expired.  Please log back in to re-authenticate.\n\nTIP: Use `cf login -a <endpoint> -u <user> -o <org> -s <space>` to log back in and re-authenticate."))
+		return errors.New(i18n.T("Authentication has expired.  Please log back in to re-authenticate.\n\nTIP: Use `cf login -a <endpoint> -u <user> -o <org> -s <space>` to log back in and re-authenticate."))
 	default:
-		return errors.NewWithError(T("auth request failed"), err)
+		return errors.NewWithError(i18n.T("auth request failed"), err)
 	}
 
 	// TODO: get the actual status code

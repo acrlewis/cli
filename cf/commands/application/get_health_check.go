@@ -2,7 +2,7 @@ package application
 
 import (
 	"github.com/cloudfoundry/cli/cf/api/applications"
-	. "github.com/cloudfoundry/cli/cf/i18n"
+	"github.com/cloudfoundry/cli/cf/i18n"
 
 	"github.com/cloudfoundry/cli/cf/command_registry"
 	"github.com/cloudfoundry/cli/cf/configuration/core_config"
@@ -25,17 +25,17 @@ func init() {
 func (cmd *GetHealthCheck) MetaData() command_registry.CommandMetadata {
 	return command_registry.CommandMetadata{
 		Name:        "get-health-check",
-		Description: T("get the health_check_type value of an app"),
-		Usage:       T("CF_NAME get-health-check APP_NAME"),
+		Description: i18n.T("get the health_check_type value of an app"),
+		Usage:       i18n.T("CF_NAME get-health-check APP_NAME"),
 	}
 }
 
 func (cmd *GetHealthCheck) Requirements(requirementsFactory requirements.Factory, fc flags.FlagContext) (reqs []requirements.Requirement, err error) {
 	if len(fc.Args()) != 1 {
-		cmd.ui.Failed(T("Incorrect Usage. Requires APP_NAME as argument\n\n") + command_registry.Commands.CommandUsage("get-health-check"))
+		cmd.ui.Failed(i18n.T("Incorrect Usage. Requires APP_NAME as argument\n\n") + command_registry.Commands.CommandUsage("get-health-check"))
 	}
 
-	cmd.ui.Say(T("Getting health_check_type value for ") + terminal.EntityNameColor(fc.Args()[0]))
+	cmd.ui.Say(i18n.T("Getting health_check_type value for ") + terminal.EntityNameColor(fc.Args()[0]))
 	cmd.ui.Say("")
 
 	cmd.appReq = requirementsFactory.NewApplicationRequirement(fc.Args()[0])
@@ -59,5 +59,5 @@ func (cmd *GetHealthCheck) SetDependency(deps command_registry.Dependency, plugi
 func (cmd *GetHealthCheck) Execute(fc flags.FlagContext) {
 	app := cmd.appReq.GetApplication()
 
-	cmd.ui.Say(T("health_check_type is ") + terminal.HeaderColor(app.HealthCheckType))
+	cmd.ui.Say(i18n.T("health_check_type is ") + terminal.HeaderColor(app.HealthCheckType))
 }

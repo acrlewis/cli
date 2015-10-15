@@ -1,8 +1,6 @@
 package errors
 
-import (
-	. "github.com/cloudfoundry/cli/cf/i18n"
-)
+import "github.com/cloudfoundry/cli/cf/i18n"
 
 type InvalidSSLCert struct {
 	URL    string
@@ -17,7 +15,7 @@ func NewInvalidSSLCert(url, reason string) *InvalidSSLCert {
 }
 
 func (err *InvalidSSLCert) Error() string {
-	message := T("Received invalid SSL certificate from ") + err.URL
+	message := i18n.T("Received invalid SSL certificate from ") + err.URL
 	if err.Reason != "" {
 		message += " - " + err.Reason
 	}

@@ -6,7 +6,6 @@ import (
 
 	"github.com/cloudfoundry/cli/cf/command_registry"
 	"github.com/cloudfoundry/cli/cf/commands"
-	. "github.com/cloudfoundry/cli/cf/i18n"
 	"github.com/cloudfoundry/cli/cf/requirements"
 	"github.com/simonleung8/flags"
 )
@@ -15,7 +14,7 @@ type FakeSSHCodeGetter struct {
 	MetaDataStub        func() command_registry.CommandMetadata
 	metaDataMutex       sync.RWMutex
 	metaDataArgsForCall []struct{}
-	metaDataReturns struct {
+	metaDataReturns     struct {
 		result1 command_registry.CommandMetadata
 	}
 	SetDependencyStub        func(deps command_registry.Dependency, pluginCall bool) command_registry.Command
@@ -45,7 +44,7 @@ type FakeSSHCodeGetter struct {
 	GetStub        func() (string, error)
 	getMutex       sync.RWMutex
 	getArgsForCall []struct{}
-	getReturns struct {
+	getReturns     struct {
 		result1 string
 		result2 error
 	}

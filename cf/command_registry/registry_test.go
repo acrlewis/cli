@@ -4,11 +4,11 @@ import (
 	"strings"
 
 	. "github.com/cloudfoundry/cli/cf/command_registry/fake_command"
+	"github.com/cloudfoundry/cli/cf/i18n"
 
 	. "github.com/cloudfoundry/cli/cf/command_registry"
 	. "github.com/cloudfoundry/cli/testhelpers/matchers"
 
-	. "github.com/cloudfoundry/cli/cf/i18n"
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
 )
@@ -21,7 +21,7 @@ var _ = Describe("CommandRegistry", func() {
 
 	Context("i18n", func() {
 		It("initialize i18n T() func", func() {
-			Ω(T).ToNot(BeNil())
+			Ω(i18n.T).ToNot(BeNil())
 		})
 	})
 

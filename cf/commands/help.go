@@ -6,11 +6,10 @@ import (
 	"github.com/cloudfoundry/cli/cf/command_registry"
 	"github.com/cloudfoundry/cli/cf/configuration/plugin_config"
 	"github.com/cloudfoundry/cli/cf/help"
+	"github.com/cloudfoundry/cli/cf/i18n"
 	"github.com/cloudfoundry/cli/cf/requirements"
 	"github.com/cloudfoundry/cli/cf/terminal"
 	"github.com/simonleung8/flags"
-
-	. "github.com/cloudfoundry/cli/cf/i18n"
 )
 
 type Help struct {
@@ -26,8 +25,8 @@ func (cmd *Help) MetaData() command_registry.CommandMetadata {
 	return command_registry.CommandMetadata{
 		Name:        "help",
 		ShortName:   "h",
-		Description: T("Show help"),
-		Usage:       T("CF_NAME help [COMMAND]"),
+		Description: i18n.T("Show help"),
+		Usage:       i18n.T("CF_NAME help [COMMAND]"),
 	}
 }
 
@@ -54,19 +53,19 @@ func (cmd *Help) Execute(c flags.FlagContext) {
 			for _, meta := range cmd.config.Plugins() {
 				for _, c := range meta.Commands {
 					if c.Name == cmdName || c.Alias == cmdName {
-						output := T("NAME") + ":" + "\n"
+						output := i18n.T("NAME") + ":" + "\n"
 						output += "   " + c.Name + " - " + c.HelpText + "\n"
 
 						if c.Alias != "" {
-							output += "\n" + T("ALIAS") + ":" + "\n"
+							output += "\n" + i18n.T("ALIAS") + ":" + "\n"
 							output += "   " + c.Alias + "\n"
 						}
 
-						output += "\n" + T("USAGE") + ":" + "\n"
+						output += "\n" + i18n.T("USAGE") + ":" + "\n"
 						output += "   " + c.UsageDetails.Usage + "\n"
 
 						if len(c.UsageDetails.Options) > 0 {
-							output += "\n" + T("OPTIONS") + ":" + "\n"
+							output += "\n" + i18n.T("OPTIONS") + ":" + "\n"
 
 							//find longest name length
 							l := 0

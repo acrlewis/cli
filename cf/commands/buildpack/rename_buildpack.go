@@ -3,7 +3,7 @@ package buildpack
 import (
 	"github.com/cloudfoundry/cli/cf/api"
 	"github.com/cloudfoundry/cli/cf/command_registry"
-	. "github.com/cloudfoundry/cli/cf/i18n"
+	"github.com/cloudfoundry/cli/cf/i18n"
 	"github.com/cloudfoundry/cli/cf/requirements"
 	"github.com/cloudfoundry/cli/cf/terminal"
 	"github.com/simonleung8/flags"
@@ -21,14 +21,14 @@ func init() {
 func (cmd *RenameBuildpack) MetaData() command_registry.CommandMetadata {
 	return command_registry.CommandMetadata{
 		Name:        "rename-buildpack",
-		Description: T("Rename a buildpack"),
-		Usage:       T("CF_NAME rename-buildpack BUILDPACK_NAME NEW_BUILDPACK_NAME"),
+		Description: i18n.T("Rename a buildpack"),
+		Usage:       i18n.T("CF_NAME rename-buildpack BUILDPACK_NAME NEW_BUILDPACK_NAME"),
 	}
 }
 
 func (cmd *RenameBuildpack) Requirements(requirementsFactory requirements.Factory, fc flags.FlagContext) (reqs []requirements.Requirement, err error) {
 	if len(fc.Args()) != 2 {
-		cmd.ui.Failed(T("Incorrect Usage. Requires BUILDPACK_NAME, NEW_BUILDPACK_NAME as arguments\n\n") + command_registry.Commands.CommandUsage("rename-buildpack"))
+		cmd.ui.Failed(i18n.T("Incorrect Usage. Requires BUILDPACK_NAME, NEW_BUILDPACK_NAME as arguments\n\n") + command_registry.Commands.CommandUsage("rename-buildpack"))
 	}
 
 	reqs = []requirements.Requirement{requirementsFactory.NewLoginRequirement()}
@@ -52,7 +52,7 @@ func (cmd *RenameBuildpack) Execute(c flags.FlagContext) {
 	buildpackName := c.Args()[0]
 	newBuildpackName := c.Args()[1]
 
-	cmd.ui.Say(T("Renaming buildpack {{.OldBuildpackName}} to {{.NewBuildpackName}}...", map[string]interface{}{"OldBuildpackName": terminal.EntityNameColor(buildpackName), "NewBuildpackName": terminal.EntityNameColor(newBuildpackName)}))
+	cmd.ui.Say(i18n.T("Renaming buildpack {{.OldBuildpackName}} to {{.NewBuildpackName}}...", map[string]interface{}{"OldBuildpackName": terminal.EntityNameColor(buildpackName), "NewBuildpackName": terminal.EntityNameColor(newBuildpackName)}))
 
 	buildpack, apiErr := cmd.buildpackRepo.FindByName(buildpackName)
 
@@ -63,7 +63,7 @@ func (cmd *RenameBuildpack) Execute(c flags.FlagContext) {
 	buildpack.Name = newBuildpackName
 	buildpack, apiErr = cmd.buildpackRepo.Update(buildpack)
 	if apiErr != nil {
-		cmd.ui.Failed(T("Error renaming buildpack {{.Name}}\n{{.Error}}", map[string]interface{}{
+		cmd.ui.Failed(i18n.T("Error renaming buildpack {{.Name}}\n{{.Error}}", map[string]interface{}{
 			"Name":  terminal.EntityNameColor(buildpack.Name),
 			"Error": apiErr.Error(),
 		}))

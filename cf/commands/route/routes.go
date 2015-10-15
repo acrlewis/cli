@@ -3,13 +3,13 @@ package route
 import (
 	"strings"
 
-	. "github.com/cloudfoundry/cli/cf/i18n"
 	"github.com/simonleung8/flags"
 	"github.com/simonleung8/flags/flag"
 
 	"github.com/cloudfoundry/cli/cf/api"
 	"github.com/cloudfoundry/cli/cf/command_registry"
 	"github.com/cloudfoundry/cli/cf/configuration/core_config"
+	"github.com/cloudfoundry/cli/cf/i18n"
 	"github.com/cloudfoundry/cli/cf/models"
 	"github.com/cloudfoundry/cli/cf/requirements"
 	"github.com/cloudfoundry/cli/cf/terminal"
@@ -27,12 +27,12 @@ func init() {
 
 func (cmd *ListRoutes) MetaData() command_registry.CommandMetadata {
 	fs := make(map[string]flags.FlagSet)
-	fs["orglevel"] = &cliFlags.BoolFlag{Name: "orglevel", Usage: T("List all the routes for all spaces of current organization")}
+	fs["orglevel"] = &cliFlags.BoolFlag{Name: "orglevel", Usage: i18n.T("List all the routes for all spaces of current organization")}
 
 	return command_registry.CommandMetadata{
 		Name:        "routes",
 		ShortName:   "r",
-		Description: T("List all routes in the current space or the current organization"),
+		Description: i18n.T("List all routes in the current space or the current organization"),
 		Usage:       "CF_NAME routes",
 		Flags:       fs,
 	}
@@ -40,7 +40,7 @@ func (cmd *ListRoutes) MetaData() command_registry.CommandMetadata {
 
 func (cmd *ListRoutes) Requirements(requirementsFactory requirements.Factory, fc flags.FlagContext) ([]requirements.Requirement, error) {
 	if len(fc.Args()) != 0 {
-		cmd.ui.Failed(T("Incorrect Usage. No argument required\n\n") + command_registry.Commands.CommandUsage("routes"))
+		cmd.ui.Failed(i18n.T("Incorrect Usage. No argument required\n\n") + command_registry.Commands.CommandUsage("routes"))
 	}
 
 	return []requirements.Requirement{
@@ -57,10 +57,10 @@ func (cmd *ListRoutes) SetDependency(deps command_registry.Dependency, pluginCal
 }
 
 func (cmd *ListRoutes) Execute(c flags.FlagContext) {
-	cmd.ui.Say(T("Getting routes as {{.Username}} ...\n",
+	cmd.ui.Say(i18n.T("Getting routes as {{.Username}} ...\n",
 		map[string]interface{}{"Username": terminal.EntityNameColor(cmd.config.Username())}))
 
-	table := cmd.ui.Table([]string{T("space"), T("host"), T("domain"), T("apps")})
+	table := cmd.ui.Table([]string{i18n.T("space"), i18n.T("host"), i18n.T("domain"), i18n.T("apps")})
 
 	noRoutes := true
 	var apiErr error
@@ -95,11 +95,11 @@ func (cmd *ListRoutes) Execute(c flags.FlagContext) {
 	table.Print()
 
 	if apiErr != nil {
-		cmd.ui.Failed(T("Failed fetching routes.\n{{.Err}}", map[string]interface{}{"Err": apiErr.Error()}))
+		cmd.ui.Failed(i18n.T("Failed fetching routes.\n{{.Err}}", map[string]interface{}{"Err": apiErr.Error()}))
 		return
 	}
 
 	if noRoutes {
-		cmd.ui.Say(T("No routes found"))
+		cmd.ui.Say(i18n.T("No routes found"))
 	}
 }

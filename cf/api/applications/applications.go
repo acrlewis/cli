@@ -6,11 +6,10 @@ import (
 	"net/url"
 	"strings"
 
-	. "github.com/cloudfoundry/cli/cf/i18n"
-
 	"github.com/cloudfoundry/cli/cf/api/resources"
 	"github.com/cloudfoundry/cli/cf/configuration/core_config"
 	"github.com/cloudfoundry/cli/cf/errors"
+	"github.com/cloudfoundry/cli/cf/i18n"
 	"github.com/cloudfoundry/cli/cf/models"
 	"github.com/cloudfoundry/cli/cf/net"
 )
@@ -40,7 +39,7 @@ func NewCloudControllerApplicationRepository(config core_config.Reader, gateway 
 func (repo CloudControllerApplicationRepository) Create(params models.AppParams) (createdApp models.Application, apiErr error) {
 	data, err := repo.formatAppJSON(params)
 	if err != nil {
-		apiErr = errors.NewWithError(T("Failed to marshal JSON"), err)
+		apiErr = errors.NewWithError(i18n.T("Failed to marshal JSON"), err)
 		return
 	}
 
@@ -92,7 +91,7 @@ func (repo CloudControllerApplicationRepository) ReadFromSpace(name string, spac
 func (repo CloudControllerApplicationRepository) Update(appGuid string, params models.AppParams) (updatedApp models.Application, apiErr error) {
 	data, err := repo.formatAppJSON(params)
 	if err != nil {
-		apiErr = errors.NewWithError(T("Failed to marshal JSON"), err)
+		apiErr = errors.NewWithError(i18n.T("Failed to marshal JSON"), err)
 		return
 	}
 

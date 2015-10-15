@@ -9,7 +9,7 @@ import (
 	"github.com/cloudfoundry/cli/cf/api/spaces"
 	"github.com/cloudfoundry/cli/cf/command_registry"
 	"github.com/cloudfoundry/cli/cf/configuration/core_config"
-	. "github.com/cloudfoundry/cli/cf/i18n"
+	"github.com/cloudfoundry/cli/cf/i18n"
 	"github.com/cloudfoundry/cli/cf/requirements"
 	"github.com/cloudfoundry/cli/cf/terminal"
 	"github.com/simonleung8/flags"
@@ -29,18 +29,18 @@ func init() {
 }
 
 func (cmd *BindSecurityGroup) MetaData() command_registry.CommandMetadata {
-	primaryUsage := T("CF_NAME bind-security-group SECURITY_GROUP ORG SPACE")
-	tipUsage := T("TIP: Changes will not apply to existing running applications until they are restarted.")
+	primaryUsage := i18n.T("CF_NAME bind-security-group SECURITY_GROUP ORG SPACE")
+	tipUsage := i18n.T("TIP: Changes will not apply to existing running applications until they are restarted.")
 	return command_registry.CommandMetadata{
 		Name:        "bind-security-group",
-		Description: T("Bind a security group to a space"),
+		Description: i18n.T("Bind a security group to a space"),
 		Usage:       strings.Join([]string{primaryUsage, tipUsage}, "\n\n"),
 	}
 }
 
 func (cmd *BindSecurityGroup) Requirements(requirementsFactory requirements.Factory, fc flags.FlagContext) ([]requirements.Requirement, error) {
 	if len(fc.Args()) != 3 {
-		cmd.ui.Failed(T("Incorrect Usage. Requires SECURITY_GROUP, ORG and SPACE as arguments\n\n") + command_registry.Commands.CommandUsage("bind-security-group"))
+		cmd.ui.Failed(i18n.T("Incorrect Usage. Requires SECURITY_GROUP, ORG and SPACE as arguments\n\n") + command_registry.Commands.CommandUsage("bind-security-group"))
 	}
 
 	reqs := []requirements.Requirement{}
@@ -63,7 +63,7 @@ func (cmd *BindSecurityGroup) Execute(context flags.FlagContext) {
 	orgName := context.Args()[1]
 	spaceName := context.Args()[2]
 
-	cmd.ui.Say(T("Assigning security group {{.security_group}} to space {{.space}} in org {{.organization}} as {{.username}}...",
+	cmd.ui.Say(i18n.T("Assigning security group {{.security_group}} to space {{.space}} in org {{.organization}} as {{.username}}...",
 		map[string]interface{}{
 			"security_group": securityGroupName,
 			"space":          spaceName,
@@ -96,5 +96,5 @@ func (cmd *BindSecurityGroup) Execute(context flags.FlagContext) {
 
 	cmd.ui.Ok()
 	cmd.ui.Say("\n\n")
-	cmd.ui.Say(T("TIP: Changes will not apply to existing running applications until they are restarted."))
+	cmd.ui.Say(i18n.T("TIP: Changes will not apply to existing running applications until they are restarted."))
 }

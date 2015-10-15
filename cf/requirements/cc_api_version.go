@@ -6,7 +6,7 @@ import (
 
 	"github.com/cloudfoundry/cli/cf"
 	"github.com/cloudfoundry/cli/cf/configuration/core_config"
-	. "github.com/cloudfoundry/cli/cf/i18n"
+	"github.com/cloudfoundry/cli/cf/i18n"
 	"github.com/cloudfoundry/cli/cf/terminal"
 )
 
@@ -64,10 +64,10 @@ func (req CCApiVersionRequirement) Execute() bool {
 		return true
 	}
 
-	req.ui.Say(terminal.FailureColor(T("FAILED")))
-	req.ui.Say(T("Current CF CLI version {{.Version}}", map[string]interface{}{"Version": cf.Version}))
-	req.ui.Say(T("Current CF API version {{.ApiVersion}}", map[string]interface{}{"ApiVersion": req.config.ApiVersion()}))
-	req.ui.Say(T("To use the {{.CommandName}} feature, you need to upgrade the CF API to at least {{.MinApiVersionMajor}}.{{.MinApiVersionMinor}}.{{.MinApiVersionPatch}}",
+	req.ui.Say(terminal.FailureColor(i18n.T("FAILED")))
+	req.ui.Say(i18n.T("Current CF CLI version {{.Version}}", map[string]interface{}{"Version": cf.Version}))
+	req.ui.Say(i18n.T("Current CF API version {{.ApiVersion}}", map[string]interface{}{"ApiVersion": req.config.ApiVersion()}))
+	req.ui.Say(i18n.T("To use the {{.CommandName}} feature, you need to upgrade the CF API to at least {{.MinApiVersionMajor}}.{{.MinApiVersionMinor}}.{{.MinApiVersionPatch}}",
 		map[string]interface{}{
 			"CommandName":        req.commandName,
 			"MinApiVersionMajor": req.major,

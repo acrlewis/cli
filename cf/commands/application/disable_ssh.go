@@ -6,7 +6,7 @@ import (
 	"github.com/cloudfoundry/cli/cf/api/applications"
 	"github.com/cloudfoundry/cli/cf/command_registry"
 	"github.com/cloudfoundry/cli/cf/configuration/core_config"
-	. "github.com/cloudfoundry/cli/cf/i18n"
+	"github.com/cloudfoundry/cli/cf/i18n"
 	"github.com/cloudfoundry/cli/cf/models"
 	"github.com/cloudfoundry/cli/cf/requirements"
 	"github.com/cloudfoundry/cli/cf/terminal"
@@ -27,14 +27,14 @@ func init() {
 func (cmd *DisableSSH) MetaData() command_registry.CommandMetadata {
 	return command_registry.CommandMetadata{
 		Name:        "disable-ssh",
-		Description: T("disable ssh for the application"),
-		Usage:       T("CF_NAME disable-ssh APP_NAME"),
+		Description: i18n.T("disable ssh for the application"),
+		Usage:       i18n.T("CF_NAME disable-ssh APP_NAME"),
 	}
 }
 
 func (cmd *DisableSSH) Requirements(requirementsFactory requirements.Factory, fc flags.FlagContext) (reqs []requirements.Requirement, err error) {
 	if len(fc.Args()) != 1 {
-		cmd.ui.Failed(T("Incorrect Usage. Requires APP_NAME as argument\n\n") + command_registry.Commands.CommandUsage("disable-ssh"))
+		cmd.ui.Failed(i18n.T("Incorrect Usage. Requires APP_NAME as argument\n\n") + command_registry.Commands.CommandUsage("disable-ssh"))
 	}
 
 	cmd.appReq = requirementsFactory.NewApplicationRequirement(fc.Args()[0])
@@ -59,22 +59,22 @@ func (cmd *DisableSSH) Execute(fc flags.FlagContext) {
 	app := cmd.appReq.GetApplication()
 
 	if !app.EnableSsh {
-		cmd.ui.Say(fmt.Sprintf(T("ssh support is already disabled")+" for '%s'", app.Name))
+		cmd.ui.Say(fmt.Sprintf(i18n.T("ssh support is already disabled")+" for '%s'", app.Name))
 		return
 	}
 
-	cmd.ui.Say(fmt.Sprintf(T("Disabling ssh support for '%s'..."), app.Name))
+	cmd.ui.Say(fmt.Sprintf(i18n.T("Disabling ssh support for '%s'..."), app.Name))
 	cmd.ui.Say("")
 
 	enable := false
 	updatedApp, err := cmd.appRepo.Update(app.Guid, models.AppParams{EnableSsh: &enable})
 	if err != nil {
-		cmd.ui.Failed(T("Error disabling ssh support for ") + app.Name + ": " + err.Error())
+		cmd.ui.Failed(i18n.T("Error disabling ssh support for ") + app.Name + ": " + err.Error())
 	}
 
 	if !updatedApp.EnableSsh {
 		cmd.ui.Ok()
 	} else {
-		cmd.ui.Failed(T("ssh support is not disabled for ") + app.Name)
+		cmd.ui.Failed(i18n.T("ssh support is not disabled for ") + app.Name)
 	}
 }

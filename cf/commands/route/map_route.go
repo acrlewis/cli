@@ -4,7 +4,7 @@ import (
 	"github.com/cloudfoundry/cli/cf/api"
 	"github.com/cloudfoundry/cli/cf/command_registry"
 	"github.com/cloudfoundry/cli/cf/configuration/core_config"
-	. "github.com/cloudfoundry/cli/cf/i18n"
+	"github.com/cloudfoundry/cli/cf/i18n"
 	"github.com/cloudfoundry/cli/cf/requirements"
 	"github.com/cloudfoundry/cli/cf/terminal"
 	"github.com/simonleung8/flags"
@@ -26,19 +26,19 @@ func init() {
 
 func (cmd *MapRoute) MetaData() command_registry.CommandMetadata {
 	fs := make(map[string]flags.FlagSet)
-	fs["n"] = &cliFlags.StringFlag{Name: "n", Usage: T("Hostname")}
+	fs["n"] = &cliFlags.StringFlag{Name: "n", Usage: i18n.T("Hostname")}
 
 	return command_registry.CommandMetadata{
 		Name:        "map-route",
-		Description: T("Add a url route to an app"),
-		Usage:       T("CF_NAME map-route APP_NAME DOMAIN [-n HOSTNAME]"),
+		Description: i18n.T("Add a url route to an app"),
+		Usage:       i18n.T("CF_NAME map-route APP_NAME DOMAIN [-n HOSTNAME]"),
 		Flags:       fs,
 	}
 }
 
 func (cmd *MapRoute) Requirements(requirementsFactory requirements.Factory, fc flags.FlagContext) (reqs []requirements.Requirement, err error) {
 	if len(fc.Args()) != 2 {
-		cmd.ui.Failed(T("Incorrect Usage. Requires APP and DOMAIN as arguments\n\n") + command_registry.Commands.CommandUsage("map-route"))
+		cmd.ui.Failed(i18n.T("Incorrect Usage. Requires APP and DOMAIN as arguments\n\n") + command_registry.Commands.CommandUsage("map-route"))
 	}
 
 	domainName := fc.Args()[1]
@@ -75,9 +75,9 @@ func (cmd *MapRoute) Execute(c flags.FlagContext) {
 
 	route, apiErr := cmd.routeCreator.CreateRoute(hostName, domain, cmd.config.SpaceFields())
 	if apiErr != nil {
-		cmd.ui.Failed(T("Error resolving route:\n{{.Err}}", map[string]interface{}{"Err": apiErr.Error()}))
+		cmd.ui.Failed(i18n.T("Error resolving route:\n{{.Err}}", map[string]interface{}{"Err": apiErr.Error()}))
 	}
-	cmd.ui.Say(T("Adding route {{.URL}} to app {{.AppName}} in org {{.OrgName}} / space {{.SpaceName}} as {{.Username}}...",
+	cmd.ui.Say(i18n.T("Adding route {{.URL}} to app {{.AppName}} in org {{.OrgName}} / space {{.SpaceName}} as {{.Username}}...",
 		map[string]interface{}{
 			"URL":       terminal.EntityNameColor(route.URL()),
 			"AppName":   terminal.EntityNameColor(app.Name),

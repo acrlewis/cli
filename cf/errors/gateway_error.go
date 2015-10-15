@@ -2,7 +2,8 @@ package errors
 
 import (
 	"fmt"
-	. "github.com/cloudfoundry/cli/cf/i18n"
+
+	"github.com/cloudfoundry/cli/cf/i18n"
 )
 
 type AsyncTimeoutError struct {
@@ -14,6 +15,6 @@ func NewAsyncTimeoutError(url string) error {
 }
 
 func (err *AsyncTimeoutError) Error() string {
-	return fmt.Sprintf(T("Error: timed out waiting for async job '{{.ErrURL}}' to finish",
+	return fmt.Sprintf(i18n.T("Error: timed out waiting for async job '{{.ErrURL}}' to finish",
 		map[string]interface{}{"ErrURL": err.url}))
 }

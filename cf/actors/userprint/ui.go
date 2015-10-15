@@ -3,7 +3,7 @@ package userprint
 import (
 	"fmt"
 
-	. "github.com/cloudfoundry/cli/cf/i18n"
+	"github.com/cloudfoundry/cli/cf/i18n"
 	"github.com/cloudfoundry/cli/cf/models"
 	"github.com/cloudfoundry/cli/cf/terminal"
 )
@@ -27,7 +27,7 @@ func (p *OrgUsersUiPrinter) PrintUsers(guid string, username string) {
 		displayName := p.RoleDisplayNames[role]
 		users, err := p.UserLister(guid, role)
 		if err != nil {
-			p.Ui.Failed(T("Failed fetching org-users for role {{.OrgRoleToDisplayName}}.\n{{.Error}}",
+			p.Ui.Failed(i18n.T("Failed fetching org-users for role {{.OrgRoleToDisplayName}}.\n{{.Error}}",
 				map[string]interface{}{
 					"Error":                err.Error(),
 					"OrgRoleToDisplayName": displayName,
@@ -38,7 +38,7 @@ func (p *OrgUsersUiPrinter) PrintUsers(guid string, username string) {
 		p.Ui.Say("%s", terminal.HeaderColor(displayName))
 
 		if len(users) == 0 {
-			p.Ui.Say(fmt.Sprintf("  "+T("No %s found"), displayName))
+			p.Ui.Say(fmt.Sprintf("  "+i18n.T("No %s found"), displayName))
 		} else {
 			for _, user := range users {
 				p.Ui.Say("  %s", user.Username)
@@ -52,7 +52,7 @@ func (p *SpaceUsersUiPrinter) PrintUsers(guid string, username string) {
 		displayName := p.RoleDisplayNames[role]
 		users, err := p.UserLister(guid, role)
 		if err != nil {
-			p.Ui.Failed(T("Failed fetching space-users for role {{.SpaceRoleToDisplayName}}.\n{{.Error}}",
+			p.Ui.Failed(i18n.T("Failed fetching space-users for role {{.SpaceRoleToDisplayName}}.\n{{.Error}}",
 				map[string]interface{}{
 					"Error":                  err.Error(),
 					"SpaceRoleToDisplayName": displayName,
@@ -63,7 +63,7 @@ func (p *SpaceUsersUiPrinter) PrintUsers(guid string, username string) {
 		p.Ui.Say("%s", terminal.HeaderColor(displayName))
 
 		if len(users) == 0 {
-			p.Ui.Say(fmt.Sprintf("  "+T("No %s found"), displayName))
+			p.Ui.Say(fmt.Sprintf("  "+i18n.T("No %s found"), displayName))
 		} else {
 			for _, user := range users {
 				p.Ui.Say("  %s", user.Username)

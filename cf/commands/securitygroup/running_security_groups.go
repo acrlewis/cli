@@ -4,7 +4,7 @@ import (
 	"github.com/cloudfoundry/cli/cf/api/security_groups/defaults/running"
 	"github.com/cloudfoundry/cli/cf/command_registry"
 	"github.com/cloudfoundry/cli/cf/configuration/core_config"
-	. "github.com/cloudfoundry/cli/cf/i18n"
+	"github.com/cloudfoundry/cli/cf/i18n"
 	"github.com/cloudfoundry/cli/cf/requirements"
 	"github.com/cloudfoundry/cli/cf/terminal"
 	"github.com/simonleung8/flags"
@@ -23,14 +23,14 @@ func init() {
 func (cmd *listRunningSecurityGroups) MetaData() command_registry.CommandMetadata {
 	return command_registry.CommandMetadata{
 		Name:        "running-security-groups",
-		Description: T("List security groups in the set of security groups for running applications"),
+		Description: i18n.T("List security groups in the set of security groups for running applications"),
 		Usage:       "CF_NAME running-security-groups",
 	}
 }
 
 func (cmd *listRunningSecurityGroups) Requirements(requirementsFactory requirements.Factory, fc flags.FlagContext) ([]requirements.Requirement, error) {
 	if len(fc.Args()) != 0 {
-		cmd.ui.Failed(T("Incorrect Usage. No argument required\n\n") + command_registry.Commands.CommandUsage("running-security-groups"))
+		cmd.ui.Failed(i18n.T("Incorrect Usage. No argument required\n\n") + command_registry.Commands.CommandUsage("running-security-groups"))
 	}
 
 	requirements := []requirements.Requirement{requirementsFactory.NewLoginRequirement()}
@@ -45,7 +45,7 @@ func (cmd *listRunningSecurityGroups) SetDependency(deps command_registry.Depend
 }
 
 func (cmd *listRunningSecurityGroups) Execute(context flags.FlagContext) {
-	cmd.ui.Say(T("Acquiring running security groups as '{{.username}}'", map[string]interface{}{
+	cmd.ui.Say(i18n.T("Acquiring running security groups as '{{.username}}'", map[string]interface{}{
 		"username": terminal.EntityNameColor(cmd.configRepo.Username()),
 	}))
 
@@ -62,6 +62,6 @@ func (cmd *listRunningSecurityGroups) Execute(context flags.FlagContext) {
 			cmd.ui.Say(value.Name)
 		}
 	} else {
-		cmd.ui.Say(T("No running security groups set"))
+		cmd.ui.Say(i18n.T("No running security groups set"))
 	}
 }

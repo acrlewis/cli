@@ -12,7 +12,7 @@ import (
 	"github.com/cloudfoundry/cli/cf"
 	"github.com/cloudfoundry/cli/cf/command_registry"
 	"github.com/cloudfoundry/cli/cf/configuration/plugin_config"
-	. "github.com/cloudfoundry/cli/cf/i18n"
+	"github.com/cloudfoundry/cli/cf/i18n"
 	"github.com/cloudfoundry/cli/cf/terminal"
 )
 
@@ -35,7 +35,7 @@ type cmdPresenter struct {
 }
 
 func ShowHelp(helpTemplate string) {
-	translatedTemplatedHelp := T(strings.Replace(helpTemplate, "{{", "[[", -1))
+	translatedTemplatedHelp := i18n.T(strings.Replace(helpTemplate, "{{", "[[", -1))
 	translatedTemplatedHelp = strings.Replace(translatedTemplatedHelp, "[[", "{{", -1)
 
 	showAppHelp(translatedTemplatedHelp)
@@ -94,7 +94,7 @@ func newAppPresenter() (presenter appPresenter) {
 	}
 
 	presenter.Name = os.Args[0]
-	presenter.Usage = T("A command line tool to interact with Cloud Foundry")
+	presenter.Usage = i18n.T("A command line tool to interact with Cloud Foundry")
 	presenter.Version = cf.Version + "-" + cf.BuiltOnDate
 	compiledAtTime, err := time.Parse("2006-01-02T03:04:05+00:00", cf.BuiltOnDate)
 	if err == nil {
@@ -104,7 +104,7 @@ func newAppPresenter() (presenter appPresenter) {
 	}
 	presenter.Commands = []groupedCommands{
 		{
-			Name: T("GETTING STARTED"),
+			Name: i18n.T("GETTING STARTED"),
 			CommandSubGroups: [][]cmdPresenter{
 				{
 					presentNonCodegangstaCommand("help"),
@@ -118,7 +118,7 @@ func newAppPresenter() (presenter appPresenter) {
 				},
 			},
 		}, {
-			Name: T("APPS"),
+			Name: i18n.T("APPS"),
 			CommandSubGroups: [][]cmdPresenter{
 				{
 					presentNonCodegangstaCommand("apps"),
@@ -159,7 +159,7 @@ func newAppPresenter() (presenter appPresenter) {
 				},
 			},
 		}, {
-			Name: T("SERVICES"),
+			Name: i18n.T("SERVICES"),
 			CommandSubGroups: [][]cmdPresenter{
 				{
 					presentNonCodegangstaCommand("marketplace"),
@@ -184,7 +184,7 @@ func newAppPresenter() (presenter appPresenter) {
 				},
 			},
 		}, {
-			Name: T("ORGS"),
+			Name: i18n.T("ORGS"),
 			CommandSubGroups: [][]cmdPresenter{
 				{
 					presentNonCodegangstaCommand("orgs"),
@@ -196,7 +196,7 @@ func newAppPresenter() (presenter appPresenter) {
 				},
 			},
 		}, {
-			Name: T("SPACES"),
+			Name: i18n.T("SPACES"),
 			CommandSubGroups: [][]cmdPresenter{
 				{
 					presentNonCodegangstaCommand("spaces"),
@@ -212,7 +212,7 @@ func newAppPresenter() (presenter appPresenter) {
 				},
 			},
 		}, {
-			Name: T("DOMAINS"),
+			Name: i18n.T("DOMAINS"),
 			CommandSubGroups: [][]cmdPresenter{
 				{
 					presentNonCodegangstaCommand("domains"),
@@ -223,7 +223,7 @@ func newAppPresenter() (presenter appPresenter) {
 				},
 			},
 		}, {
-			Name: T("ROUTES"),
+			Name: i18n.T("ROUTES"),
 			CommandSubGroups: [][]cmdPresenter{
 				{
 					presentNonCodegangstaCommand("routes"),
@@ -236,14 +236,14 @@ func newAppPresenter() (presenter appPresenter) {
 				},
 			},
 		}, {
-			Name: T("ROUTER GROUPS"),
+			Name: i18n.T("ROUTER GROUPS"),
 			CommandSubGroups: [][]cmdPresenter{
 				{
 					presentNonCodegangstaCommand("router-groups"),
 				},
 			},
 		}, {
-			Name: T("BUILDPACKS"),
+			Name: i18n.T("BUILDPACKS"),
 			CommandSubGroups: [][]cmdPresenter{
 				{
 					presentNonCodegangstaCommand("buildpacks"),
@@ -254,7 +254,7 @@ func newAppPresenter() (presenter appPresenter) {
 				},
 			},
 		}, {
-			Name: T("USER ADMIN"),
+			Name: i18n.T("USER ADMIN"),
 			CommandSubGroups: [][]cmdPresenter{
 				{
 					presentNonCodegangstaCommand("create-user"),
@@ -270,7 +270,7 @@ func newAppPresenter() (presenter appPresenter) {
 				},
 			},
 		}, {
-			Name: T("ORG ADMIN"),
+			Name: i18n.T("ORG ADMIN"),
 			CommandSubGroups: [][]cmdPresenter{
 				{
 					presentNonCodegangstaCommand("quotas"),
@@ -287,7 +287,7 @@ func newAppPresenter() (presenter appPresenter) {
 				},
 			},
 		}, {
-			Name: T("SPACE ADMIN"),
+			Name: i18n.T("SPACE ADMIN"),
 			CommandSubGroups: [][]cmdPresenter{
 				{
 					presentNonCodegangstaCommand("space-quotas"),
@@ -300,7 +300,7 @@ func newAppPresenter() (presenter appPresenter) {
 				},
 			},
 		}, {
-			Name: T("SERVICE ADMIN"),
+			Name: i18n.T("SERVICE ADMIN"),
 			CommandSubGroups: [][]cmdPresenter{
 				{
 					presentNonCodegangstaCommand("service-auth-tokens"),
@@ -323,7 +323,7 @@ func newAppPresenter() (presenter appPresenter) {
 				},
 			},
 		}, {
-			Name: T("SECURITY GROUP"),
+			Name: i18n.T("SECURITY GROUP"),
 			CommandSubGroups: [][]cmdPresenter{
 				{
 					presentNonCodegangstaCommand("security-group"),
@@ -344,7 +344,7 @@ func newAppPresenter() (presenter appPresenter) {
 				},
 			},
 		}, {
-			Name: T("ENVIRONMENT VARIABLE GROUPS"),
+			Name: i18n.T("ENVIRONMENT VARIABLE GROUPS"),
 			CommandSubGroups: [][]cmdPresenter{
 				{
 					presentNonCodegangstaCommand("running-environment-variable-group"),
@@ -355,7 +355,7 @@ func newAppPresenter() (presenter appPresenter) {
 			},
 		},
 		{
-			Name: T("FEATURE FLAGS"),
+			Name: i18n.T("FEATURE FLAGS"),
 			CommandSubGroups: [][]cmdPresenter{
 				{
 					presentNonCodegangstaCommand("feature-flags"),
@@ -365,7 +365,7 @@ func newAppPresenter() (presenter appPresenter) {
 				},
 			},
 		}, {
-			Name: T("ADVANCED"),
+			Name: i18n.T("ADVANCED"),
 			CommandSubGroups: [][]cmdPresenter{
 				{
 					presentNonCodegangstaCommand("curl"),
@@ -375,7 +375,7 @@ func newAppPresenter() (presenter appPresenter) {
 				},
 			},
 		}, {
-			Name: T("ADD/REMOVE PLUGIN REPOSITORY"),
+			Name: i18n.T("ADD/REMOVE PLUGIN REPOSITORY"),
 			CommandSubGroups: [][]cmdPresenter{
 				{
 					presentNonCodegangstaCommand("add-plugin-repo"),
@@ -385,7 +385,7 @@ func newAppPresenter() (presenter appPresenter) {
 				},
 			},
 		}, {
-			Name: T("ADD/REMOVE PLUGIN"),
+			Name: i18n.T("ADD/REMOVE PLUGIN"),
 			CommandSubGroups: [][]cmdPresenter{
 				{
 					presentNonCodegangstaCommand("plugins"),
@@ -394,7 +394,7 @@ func newAppPresenter() (presenter appPresenter) {
 				},
 			},
 		}, {
-			Name: T("INSTALLED PLUGIN COMMANDS"),
+			Name: i18n.T("INSTALLED PLUGIN COMMANDS"),
 			CommandSubGroups: [][]cmdPresenter{
 				presentPluginCommands(),
 			},

@@ -7,7 +7,7 @@ import (
 	"github.com/cloudfoundry/cli/cf/api/security_groups/defaults/running"
 	"github.com/cloudfoundry/cli/cf/command_registry"
 	"github.com/cloudfoundry/cli/cf/configuration/core_config"
-	. "github.com/cloudfoundry/cli/cf/i18n"
+	"github.com/cloudfoundry/cli/cf/i18n"
 	"github.com/cloudfoundry/cli/cf/requirements"
 	"github.com/cloudfoundry/cli/cf/terminal"
 	"github.com/simonleung8/flags"
@@ -25,18 +25,18 @@ func init() {
 }
 
 func (cmd *bindToRunningGroup) MetaData() command_registry.CommandMetadata {
-	primaryUsage := T("CF_NAME bind-running-security-group SECURITY_GROUP")
-	tipUsage := T("TIP: Changes will not apply to existing running applications until they are restarted.")
+	primaryUsage := i18n.T("CF_NAME bind-running-security-group SECURITY_GROUP")
+	tipUsage := i18n.T("TIP: Changes will not apply to existing running applications until they are restarted.")
 	return command_registry.CommandMetadata{
 		Name:        "bind-running-security-group",
-		Description: T("Bind a security group to the list of security groups to be used for running applications"),
+		Description: i18n.T("Bind a security group to the list of security groups to be used for running applications"),
 		Usage:       strings.Join([]string{primaryUsage, tipUsage}, "\n\n"),
 	}
 }
 
 func (cmd *bindToRunningGroup) Requirements(requirementsFactory requirements.Factory, fc flags.FlagContext) ([]requirements.Requirement, error) {
 	if len(fc.Args()) != 1 {
-		cmd.ui.Failed(T("Incorrect Usage. Requires an argument\n\n") + command_registry.Commands.CommandUsage("bind-running-security-group"))
+		cmd.ui.Failed(i18n.T("Incorrect Usage. Requires an argument\n\n") + command_registry.Commands.CommandUsage("bind-running-security-group"))
 	}
 
 	return []requirements.Requirement{
@@ -60,7 +60,7 @@ func (cmd *bindToRunningGroup) Execute(context flags.FlagContext) {
 		cmd.ui.Failed(err.Error())
 	}
 
-	cmd.ui.Say(T("Binding security group {{.security_group}} to defaults for running as {{.username}}",
+	cmd.ui.Say(i18n.T("Binding security group {{.security_group}} to defaults for running as {{.username}}",
 		map[string]interface{}{
 			"security_group": terminal.EntityNameColor(securityGroup.Name),
 			"username":       terminal.EntityNameColor(cmd.configRepo.Username()),
@@ -73,5 +73,5 @@ func (cmd *bindToRunningGroup) Execute(context flags.FlagContext) {
 
 	cmd.ui.Ok()
 	cmd.ui.Say("\n\n")
-	cmd.ui.Say(T("TIP: Changes will not apply to existing running applications until they are restarted."))
+	cmd.ui.Say(i18n.T("TIP: Changes will not apply to existing running applications until they are restarted."))
 }

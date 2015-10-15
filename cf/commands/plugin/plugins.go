@@ -5,7 +5,7 @@ import (
 
 	"github.com/cloudfoundry/cli/cf/command_registry"
 	"github.com/cloudfoundry/cli/cf/configuration/plugin_config"
-	. "github.com/cloudfoundry/cli/cf/i18n"
+	"github.com/cloudfoundry/cli/cf/i18n"
 	"github.com/cloudfoundry/cli/cf/requirements"
 	"github.com/cloudfoundry/cli/cf/terminal"
 	"github.com/cloudfoundry/cli/utils"
@@ -24,19 +24,19 @@ func init() {
 
 func (cmd *Plugins) MetaData() command_registry.CommandMetadata {
 	fs := make(map[string]flags.FlagSet)
-	fs["checksum"] = &cliFlags.BoolFlag{Name: "checksum", Usage: T("Compute and show the sha1 value of the plugin binary file")}
+	fs["checksum"] = &cliFlags.BoolFlag{Name: "checksum", Usage: i18n.T("Compute and show the sha1 value of the plugin binary file")}
 
 	return command_registry.CommandMetadata{
 		Name:        "plugins",
-		Description: T("list all available plugin commands"),
-		Usage:       T("CF_NAME plugins"),
+		Description: i18n.T("list all available plugin commands"),
+		Usage:       i18n.T("CF_NAME plugins"),
 		Flags:       fs,
 	}
 }
 
 func (cmd *Plugins) Requirements(requirementsFactory requirements.Factory, fc flags.FlagContext) (reqs []requirements.Requirement, err error) {
 	if len(fc.Args()) != 0 {
-		cmd.ui.Failed(T("Incorrect Usage. No argument required\n\n") + command_registry.Commands.CommandUsage("plugins"))
+		cmd.ui.Failed(i18n.T("Incorrect Usage. No argument required\n\n") + command_registry.Commands.CommandUsage("plugins"))
 	}
 
 	return
@@ -51,16 +51,16 @@ func (cmd *Plugins) SetDependency(deps command_registry.Dependency, pluginCall b
 func (cmd *Plugins) Execute(c flags.FlagContext) {
 	var version string
 
-	cmd.ui.Say(T("Listing Installed Plugins..."))
+	cmd.ui.Say(i18n.T("Listing Installed Plugins..."))
 
 	plugins := cmd.config.Plugins()
 
 	var table terminal.Table
 	if c.Bool("checksum") {
-		cmd.ui.Say(T("Computing sha1 for installed plugins, this may take a while ..."))
-		table = terminal.NewTable(cmd.ui, []string{T("Plugin Name"), T("Version"), T("Command Name"), "sha1", T("Command Help")})
+		cmd.ui.Say(i18n.T("Computing sha1 for installed plugins, this may take a while ..."))
+		table = terminal.NewTable(cmd.ui, []string{i18n.T("Plugin Name"), i18n.T("Version"), i18n.T("Command Name"), "sha1", i18n.T("Command Help")})
 	} else {
-		table = terminal.NewTable(cmd.ui, []string{T("Plugin Name"), T("Version"), T("Command Name"), T("Command Help")})
+		table = terminal.NewTable(cmd.ui, []string{i18n.T("Plugin Name"), i18n.T("Version"), i18n.T("Command Name"), i18n.T("Command Help")})
 	}
 
 	for pluginName, metadata := range plugins {

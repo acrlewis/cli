@@ -5,10 +5,9 @@ import (
 	"sync"
 	"time"
 
-	. "github.com/cloudfoundry/cli/cf/i18n"
-
 	"github.com/cloudfoundry/cli/cf/api/authentication"
 	"github.com/cloudfoundry/cli/cf/configuration/core_config"
+	"github.com/cloudfoundry/cli/cf/i18n"
 	"github.com/cloudfoundry/cli/cf/models"
 
 	"github.com/cloudfoundry/noaa"
@@ -98,7 +97,7 @@ func (l *logNoaaRepository) TailNoaaLogsFor(appGuid string, onConnect func(), on
 
 	endpoint := l.config.DopplerEndpoint()
 	if endpoint == "" {
-		return errors.New(T("Loggregator endpoint missing from config file"))
+		return errors.New(i18n.T("Loggregator endpoint missing from config file"))
 	}
 
 	l.consumer.SetOnConnectCallback(onConnect)

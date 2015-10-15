@@ -5,7 +5,7 @@ import (
 
 	"github.com/cloudfoundry/cli/cf/command_registry"
 	"github.com/cloudfoundry/cli/cf/configuration/core_config"
-	. "github.com/cloudfoundry/cli/cf/i18n"
+	"github.com/cloudfoundry/cli/cf/i18n"
 	"github.com/cloudfoundry/cli/cf/requirements"
 	"github.com/cloudfoundry/cli/cf/terminal"
 	"github.com/simonleung8/flags"
@@ -23,15 +23,15 @@ func init() {
 
 func (cmd *ConfigCommands) MetaData() command_registry.CommandMetadata {
 	fs := make(map[string]flags.FlagSet)
-	fs["async-timeout"] = &cliFlags.IntFlag{Name: "async-timeout", Usage: T("Timeout for async HTTP requests")}
-	fs["trace"] = &cliFlags.StringFlag{Name: "trace", Usage: T("Trace HTTP requests")}
-	fs["color"] = &cliFlags.StringFlag{Name: "color", Usage: T("Enable or disable color")}
-	fs["locale"] = &cliFlags.StringFlag{Name: "locale", Usage: T("Set default locale. If LOCALE is CLEAR, previous locale is deleted.")}
+	fs["async-timeout"] = &cliFlags.IntFlag{Name: "async-timeout", Usage: i18n.T("Timeout for async HTTP requests")}
+	fs["trace"] = &cliFlags.StringFlag{Name: "trace", Usage: i18n.T("Trace HTTP requests")}
+	fs["color"] = &cliFlags.StringFlag{Name: "color", Usage: i18n.T("Enable or disable color")}
+	fs["locale"] = &cliFlags.StringFlag{Name: "locale", Usage: i18n.T("Set default locale. If LOCALE is CLEAR, previous locale is deleted.")}
 
 	return command_registry.CommandMetadata{
 		Name:        "config",
-		Description: T("write default values to the config"),
-		Usage:       T("CF_NAME config [--async-timeout TIMEOUT_IN_MINUTES] [--trace true | false | path/to/file] [--color true | false] [--locale (LOCALE | CLEAR)]"),
+		Description: i18n.T("write default values to the config"),
+		Usage:       i18n.T("CF_NAME config [--async-timeout TIMEOUT_IN_MINUTES] [--trace true | false | path/to/file] [--color true | false] [--locale (LOCALE | CLEAR)]"),
 		Flags:       fs,
 	}
 }
@@ -48,14 +48,14 @@ func (cmd *ConfigCommands) SetDependency(deps command_registry.Dependency, plugi
 
 func (cmd *ConfigCommands) Execute(context flags.FlagContext) {
 	if !context.IsSet("trace") && !context.IsSet("async-timeout") && !context.IsSet("color") && !context.IsSet("locale") {
-		cmd.ui.Failed(T("Incorrect Usage\n\n") + command_registry.Commands.CommandUsage("config"))
+		cmd.ui.Failed(i18n.T("Incorrect Usage\n\n") + command_registry.Commands.CommandUsage("config"))
 		return
 	}
 
 	if context.IsSet("async-timeout") {
 		asyncTimeout := context.Int("async-timeout")
 		if asyncTimeout < 0 {
-			cmd.ui.Failed(T("Incorrect Usage\n\n") + command_registry.Commands.CommandUsage("config"))
+			cmd.ui.Failed(i18n.T("Incorrect Usage\n\n") + command_registry.Commands.CommandUsage("config"))
 		}
 
 		cmd.config.SetAsyncTimeout(uint(asyncTimeout))
@@ -73,7 +73,7 @@ func (cmd *ConfigCommands) Execute(context flags.FlagContext) {
 		case "false":
 			cmd.config.SetColorEnabled("false")
 		default:
-			cmd.ui.Failed(T("Incorrect Usage\n\n") + command_registry.Commands.CommandUsage("config"))
+			cmd.ui.Failed(i18n.T("Incorrect Usage\n\n") + command_registry.Commands.CommandUsage("config"))
 		}
 	}
 
@@ -87,7 +87,7 @@ func (cmd *ConfigCommands) Execute(context flags.FlagContext) {
 
 		foundLocale := false
 
-		for _, value := range SUPPORTED_LOCALES {
+		for _, value := range i18n.SUPPORTED_LOCALES {
 			if value == locale {
 				cmd.config.SetLocale(locale)
 				foundLocale = true
@@ -98,7 +98,7 @@ func (cmd *ConfigCommands) Execute(context flags.FlagContext) {
 		if !foundLocale {
 			cmd.ui.Say(fmt.Sprintf("Could not find locale %s. The known locales are:", locale))
 			cmd.ui.Say("")
-			for _, locale := range SUPPORTED_LOCALES {
+			for _, locale := range i18n.SUPPORTED_LOCALES {
 				cmd.ui.Say(locale)
 			}
 		}

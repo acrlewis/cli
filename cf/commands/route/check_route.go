@@ -4,7 +4,7 @@ import (
 	"github.com/cloudfoundry/cli/cf/api"
 	"github.com/cloudfoundry/cli/cf/command_registry"
 	"github.com/cloudfoundry/cli/cf/configuration/core_config"
-	. "github.com/cloudfoundry/cli/cf/i18n"
+	"github.com/cloudfoundry/cli/cf/i18n"
 	"github.com/cloudfoundry/cli/cf/requirements"
 	"github.com/cloudfoundry/cli/cf/terminal"
 	"github.com/simonleung8/flags"
@@ -24,14 +24,14 @@ func init() {
 func (cmd *CheckRoute) MetaData() command_registry.CommandMetadata {
 	return command_registry.CommandMetadata{
 		Name:        "check-route",
-		Description: T("Perform a simple check to determine whether a route currently exists or not."),
-		Usage:       T("CF_NAME check-route HOST DOMAIN"),
+		Description: i18n.T("Perform a simple check to determine whether a route currently exists or not."),
+		Usage:       i18n.T("CF_NAME check-route HOST DOMAIN"),
 	}
 }
 
 func (cmd *CheckRoute) Requirements(requirementsFactory requirements.Factory, fc flags.FlagContext) (reqs []requirements.Requirement, err error) {
 	if len(fc.Args()) != 2 {
-		cmd.ui.Failed(T("Incorrect Usage. Requires host and domain as arguments\n\n") + command_registry.Commands.CommandUsage("check-route"))
+		cmd.ui.Failed(i18n.T("Incorrect Usage. Requires host and domain as arguments\n\n") + command_registry.Commands.CommandUsage("check-route"))
 	}
 
 	reqs = []requirements.Requirement{
@@ -53,7 +53,7 @@ func (cmd *CheckRoute) Execute(c flags.FlagContext) {
 	hostName := c.Args()[0]
 	domainName := c.Args()[1]
 
-	cmd.ui.Say(T("Checking for route..."))
+	cmd.ui.Say(i18n.T("Checking for route..."))
 
 	exists, err := cmd.CheckRoute(hostName, domainName)
 	if err != nil {
@@ -63,11 +63,11 @@ func (cmd *CheckRoute) Execute(c flags.FlagContext) {
 	cmd.ui.Ok()
 
 	if exists {
-		cmd.ui.Say(T("Route {{.HostName}}.{{.DomainName}} does exist",
+		cmd.ui.Say(i18n.T("Route {{.HostName}}.{{.DomainName}} does exist",
 			map[string]interface{}{"HostName": hostName, "DomainName": domainName},
 		))
 	} else {
-		cmd.ui.Say(T("Route {{.HostName}}.{{.DomainName}} does not exist",
+		cmd.ui.Say(i18n.T("Route {{.HostName}}.{{.DomainName}} does not exist",
 			map[string]interface{}{"HostName": hostName, "DomainName": domainName},
 		))
 	}

@@ -3,12 +3,12 @@ package securitygroup
 import (
 	"fmt"
 
-	. "github.com/cloudfoundry/cli/cf/i18n"
 	"github.com/simonleung8/flags"
 
 	"github.com/cloudfoundry/cli/cf/api/security_groups"
 	"github.com/cloudfoundry/cli/cf/command_registry"
 	"github.com/cloudfoundry/cli/cf/configuration/core_config"
+	"github.com/cloudfoundry/cli/cf/i18n"
 	"github.com/cloudfoundry/cli/cf/models"
 	"github.com/cloudfoundry/cli/cf/requirements"
 	"github.com/cloudfoundry/cli/cf/terminal"
@@ -27,14 +27,14 @@ func init() {
 func (cmd *SecurityGroups) MetaData() command_registry.CommandMetadata {
 	return command_registry.CommandMetadata{
 		Name:        "security-groups",
-		Description: T("List all security groups"),
+		Description: i18n.T("List all security groups"),
 		Usage:       "CF_NAME security-groups",
 	}
 }
 
 func (cmd *SecurityGroups) Requirements(requirementsFactory requirements.Factory, fc flags.FlagContext) ([]requirements.Requirement, error) {
 	if len(fc.Args()) != 0 {
-		cmd.ui.Failed(T("Incorrect Usage. No argument required\n\n") + command_registry.Commands.CommandUsage("security-groups"))
+		cmd.ui.Failed(i18n.T("Incorrect Usage. No argument required\n\n") + command_registry.Commands.CommandUsage("security-groups"))
 	}
 
 	requirements := []requirements.Requirement{requirementsFactory.NewLoginRequirement()}
@@ -49,7 +49,7 @@ func (cmd *SecurityGroups) SetDependency(deps command_registry.Dependency, plugi
 }
 
 func (cmd *SecurityGroups) Execute(c flags.FlagContext) {
-	cmd.ui.Say(T("Getting security groups as {{.username}}",
+	cmd.ui.Say(i18n.T("Getting security groups as {{.username}}",
 		map[string]interface{}{
 			"username": terminal.EntityNameColor(cmd.configRepo.Username()),
 		}))
@@ -63,11 +63,11 @@ func (cmd *SecurityGroups) Execute(c flags.FlagContext) {
 	cmd.ui.Say("")
 
 	if len(securityGroups) == 0 {
-		cmd.ui.Say(T("No security groups"))
+		cmd.ui.Say(i18n.T("No security groups"))
 		return
 	}
 
-	table := terminal.NewTable(cmd.ui, []string{"", T("Name"), T("Organization"), T("Space")})
+	table := terminal.NewTable(cmd.ui, []string{"", i18n.T("Name"), i18n.T("Organization"), i18n.T("Space")})
 
 	for index, securityGroup := range securityGroups {
 		if len(securityGroup.Spaces) > 0 {

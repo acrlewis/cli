@@ -15,7 +15,7 @@ import (
 	"github.com/cloudfoundry/cli/cf/api/applications"
 	"github.com/cloudfoundry/cli/cf/command_registry"
 	"github.com/cloudfoundry/cli/cf/configuration/core_config"
-	. "github.com/cloudfoundry/cli/cf/i18n"
+	"github.com/cloudfoundry/cli/cf/i18n"
 	"github.com/cloudfoundry/cli/cf/models"
 	"github.com/cloudfoundry/cli/cf/requirements"
 	"github.com/cloudfoundry/cli/cf/terminal"
@@ -66,14 +66,14 @@ func (cmd *Start) MetaData() command_registry.CommandMetadata {
 	return command_registry.CommandMetadata{
 		Name:        "start",
 		ShortName:   "st",
-		Description: T("Start an app"),
-		Usage:       T("CF_NAME start APP_NAME"),
+		Description: i18n.T("Start an app"),
+		Usage:       i18n.T("CF_NAME start APP_NAME"),
 	}
 }
 
 func (cmd *Start) Requirements(requirementsFactory requirements.Factory, fc flags.FlagContext) (reqs []requirements.Requirement, err error) {
 	if len(fc.Args()) != 1 {
-		cmd.ui.Failed(T("Incorrect Usage. Requires an argument\n\n") + command_registry.Commands.CommandUsage("start"))
+		cmd.ui.Failed(i18n.T("Incorrect Usage. Requires an argument\n\n") + command_registry.Commands.CommandUsage("start"))
 	}
 
 	cmd.appReq = requirementsFactory.NewApplicationRequirement(fc.Args()[0])
@@ -95,7 +95,7 @@ func (cmd *Start) SetDependency(deps command_registry.Dependency, pluginCall boo
 	if os.Getenv("CF_STAGING_TIMEOUT") != "" {
 		duration, err := strconv.ParseInt(os.Getenv("CF_STAGING_TIMEOUT"), 10, 64)
 		if err != nil {
-			cmd.ui.Failed(T("invalid value for env var CF_STAGING_TIMEOUT\n{{.Err}}",
+			cmd.ui.Failed(i18n.T("invalid value for env var CF_STAGING_TIMEOUT\n{{.Err}}",
 				map[string]interface{}{"Err": err}))
 		}
 		cmd.StagingTimeout = time.Duration(duration) * time.Minute
@@ -106,7 +106,7 @@ func (cmd *Start) SetDependency(deps command_registry.Dependency, pluginCall boo
 	if os.Getenv("CF_STARTUP_TIMEOUT") != "" {
 		duration, err := strconv.ParseInt(os.Getenv("CF_STARTUP_TIMEOUT"), 10, 64)
 		if err != nil {
-			cmd.ui.Failed(T("invalid value for env var CF_STARTUP_TIMEOUT\n{{.Err}}",
+			cmd.ui.Failed(i18n.T("invalid value for env var CF_STARTUP_TIMEOUT\n{{.Err}}",
 				map[string]interface{}{"Err": err}))
 		}
 		cmd.StartupTimeout = time.Duration(duration) * time.Minute
@@ -127,12 +127,12 @@ func (cmd *Start) Execute(c flags.FlagContext) {
 
 func (cmd *Start) ApplicationStart(app models.Application, orgName, spaceName string) (updatedApp models.Application, err error) {
 	if app.State == "started" {
-		cmd.ui.Say(terminal.WarningColor(T("App ") + app.Name + T(" is already started")))
+		cmd.ui.Say(terminal.WarningColor(i18n.T("App ") + app.Name + i18n.T(" is already started")))
 		return
 	}
 
 	return cmd.ApplicationWatchStaging(app, orgName, spaceName, func(app models.Application) (models.Application, error) {
-		cmd.ui.Say(T("Starting app {{.AppName}} in org {{.OrgName}} / space {{.SpaceName}} as {{.CurrentUser}}...",
+		cmd.ui.Say(i18n.T("Starting app {{.AppName}} in org {{.OrgName}} / space {{.SpaceName}} as {{.CurrentUser}}...",
 			map[string]interface{}{
 				"AppName":     terminal.EntityNameColor(app.Name),
 				"OrgName":     terminal.EntityNameColor(orgName),
@@ -187,7 +187,7 @@ func (cmd *Start) ApplicationWatchStaging(app models.Application, orgName, space
 	}
 
 	cmd.waitForOneRunningInstance(updatedApp)
-	cmd.ui.Say(terminal.HeaderColor(T("\nApp started\n")))
+	cmd.ui.Say(terminal.HeaderColor(i18n.T("\nApp started\n")))
 	cmd.ui.Say("")
 	cmd.ui.Ok()
 
@@ -205,7 +205,7 @@ func (cmd *Start) ApplicationWatchStaging(app models.Application, orgName, space
 		appStartCommand = startedApp.Command
 	}
 
-	cmd.ui.Say(T("\nApp {{.AppName}} was started using this command `{{.Command}}`\n",
+	cmd.ui.Say(i18n.T("\nApp {{.AppName}} was started using this command `{{.Command}}`\n",
 		map[string]interface{}{
 			"AppName": terminal.EntityNameColor(startedApp.Name),
 			"Command": appStartCommand,
@@ -241,7 +241,7 @@ func (cmd *Start) tailStagingLogs(app models.Application, startChan, doneChan ch
 	})
 
 	if err != nil {
-		cmd.ui.Warn(T("Warning: error tailing logs"))
+		cmd.ui.Warn(i18n.T("Warning: error tailing logs"))
 		cmd.ui.Say("%s", err)
 		close(startChan)
 	}
@@ -273,7 +273,7 @@ func (cmd *Start) waitForInstancesToStage(app models.Application) bool {
 	if app.PackageState == "FAILED" {
 		cmd.ui.Say("")
 		if app.StagingFailedReason == "NoAppDetectedError" {
-			cmd.ui.Failed(T(`{{.Err}}
+			cmd.ui.Failed(i18n.T(`{{.Err}}
 			
 TIP: Buildpacks are detected when the "{{.PushCommand}}" is executed from within the directory that contains the app source code.
 
@@ -286,7 +286,7 @@ Use '{{.Command}}' for more in depth log information.`,
 					"BuildpackCommand": terminal.CommandColor(fmt.Sprintf("%s buildpacks", cf.Name())),
 					"Command":          terminal.CommandColor(fmt.Sprintf("%s logs %s --recent", cf.Name(), app.Name))}))
 		} else {
-			cmd.ui.Failed(T("{{.Err}}\n\nTIP: use '{{.Command}}' for more information",
+			cmd.ui.Failed(i18n.T("{{.Err}}\n\nTIP: use '{{.Command}}' for more information",
 				map[string]interface{}{
 					"Err":     app.StagingFailedReason,
 					"Command": terminal.CommandColor(fmt.Sprintf("%s logs %s --recent", cf.Name(), app.Name))}))
@@ -305,7 +305,7 @@ func (cmd *Start) waitForOneRunningInstance(app models.Application) {
 
 	for {
 		if time.Since(startupStartTime) > cmd.StartupTimeout {
-			cmd.ui.Failed(fmt.Sprintf(T("Start app timeout\n\nTIP: use '{{.Command}}' for more information",
+			cmd.ui.Failed(fmt.Sprintf(i18n.T("Start app timeout\n\nTIP: use '{{.Command}}' for more information",
 				map[string]interface{}{
 					"Command": terminal.CommandColor(fmt.Sprintf("%s logs %s --recent", cf.Name(), app.Name))})))
 			return
@@ -324,7 +324,7 @@ func (cmd *Start) waitForOneRunningInstance(app models.Application) {
 		}
 
 		if count.flapping > 0 || count.crashed > 0 {
-			cmd.ui.Failed(fmt.Sprintf(T("Start unsuccessful\n\nTIP: use '{{.Command}}' for more information",
+			cmd.ui.Failed(fmt.Sprintf(i18n.T("Start unsuccessful\n\nTIP: use '{{.Command}}' for more information",
 				map[string]interface{}{"Command": terminal.CommandColor(fmt.Sprintf("%s logs %s --recent", cf.Name(), app.Name))})))
 			return
 		}
@@ -377,12 +377,12 @@ func (cmd Start) fetchInstanceCount(appGuid string) (instanceCount, error) {
 }
 
 func instancesDetails(count instanceCount) string {
-	details := []string{fmt.Sprintf(T("{{.RunningCount}} of {{.TotalCount}} instances running",
+	details := []string{fmt.Sprintf(i18n.T("{{.RunningCount}} of {{.TotalCount}} instances running",
 		map[string]interface{}{"RunningCount": count.running, "TotalCount": count.total}))}
 
 	if count.starting > 0 {
 		if len(count.startingDetails) == 0 {
-			details = append(details, fmt.Sprintf(T("{{.StartingCount}} starting",
+			details = append(details, fmt.Sprintf(i18n.T("{{.StartingCount}} starting",
 				map[string]interface{}{"StartingCount": count.starting})))
 		} else {
 			info := []string{}
@@ -390,7 +390,7 @@ func instancesDetails(count instanceCount) string {
 				info = append(info, d)
 			}
 			sort.Strings(info)
-			details = append(details, fmt.Sprintf(T("{{.StartingCount}} starting ({{.Details}})",
+			details = append(details, fmt.Sprintf(i18n.T("{{.StartingCount}} starting ({{.Details}})",
 				map[string]interface{}{
 					"StartingCount": count.starting,
 					"Details":       strings.Join(info, ", "),
@@ -399,17 +399,17 @@ func instancesDetails(count instanceCount) string {
 	}
 
 	if count.down > 0 {
-		details = append(details, fmt.Sprintf(T("{{.DownCount}} down",
+		details = append(details, fmt.Sprintf(i18n.T("{{.DownCount}} down",
 			map[string]interface{}{"DownCount": count.down})))
 	}
 
 	if count.flapping > 0 {
-		details = append(details, fmt.Sprintf(T("{{.FlappingCount}} failing",
+		details = append(details, fmt.Sprintf(i18n.T("{{.FlappingCount}} failing",
 			map[string]interface{}{"FlappingCount": count.flapping})))
 	}
 
 	if count.crashed > 0 {
-		details = append(details, fmt.Sprintf(T("{{.CrashedCount}} crashed",
+		details = append(details, fmt.Sprintf(i18n.T("{{.CrashedCount}} crashed",
 			map[string]interface{}{"CrashedCount": count.crashed})))
 	}
 

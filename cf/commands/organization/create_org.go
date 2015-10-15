@@ -7,7 +7,7 @@ import (
 	"github.com/cloudfoundry/cli/cf/command_registry"
 	"github.com/cloudfoundry/cli/cf/configuration/core_config"
 	"github.com/cloudfoundry/cli/cf/errors"
-	. "github.com/cloudfoundry/cli/cf/i18n"
+	"github.com/cloudfoundry/cli/cf/i18n"
 	"github.com/cloudfoundry/cli/cf/models"
 	"github.com/cloudfoundry/cli/cf/requirements"
 	"github.com/cloudfoundry/cli/cf/terminal"
@@ -28,20 +28,20 @@ func init() {
 
 func (cmd *CreateOrg) MetaData() command_registry.CommandMetadata {
 	fs := make(map[string]flags.FlagSet)
-	fs["q"] = &cliFlags.StringFlag{Name: "q", Usage: T("Quota to assign to the newly created org (excluding this option results in assignment of default quota)")}
+	fs["q"] = &cliFlags.StringFlag{Name: "q", Usage: i18n.T("Quota to assign to the newly created org (excluding this option results in assignment of default quota)")}
 
 	return command_registry.CommandMetadata{
 		Name:        "create-org",
 		ShortName:   "co",
-		Description: T("Create an org"),
-		Usage:       T("CF_NAME create-org ORG"),
+		Description: i18n.T("Create an org"),
+		Usage:       i18n.T("CF_NAME create-org ORG"),
 		Flags:       fs,
 	}
 }
 
 func (cmd *CreateOrg) Requirements(requirementsFactory requirements.Factory, fc flags.FlagContext) (reqs []requirements.Requirement, err error) {
 	if len(fc.Args()) != 1 {
-		cmd.ui.Failed(T("Incorrect Usage. Requires an argument\n\n") + command_registry.Commands.CommandUsage("create-org"))
+		cmd.ui.Failed(i18n.T("Incorrect Usage. Requires an argument\n\n") + command_registry.Commands.CommandUsage("create-org"))
 	}
 
 	reqs = []requirements.Requirement{
@@ -60,7 +60,7 @@ func (cmd *CreateOrg) SetDependency(deps command_registry.Dependency, pluginCall
 
 func (cmd *CreateOrg) Execute(c flags.FlagContext) {
 	name := c.Args()[0]
-	cmd.ui.Say(T("Creating org {{.OrgName}} as {{.Username}}...",
+	cmd.ui.Say(i18n.T("Creating org {{.OrgName}} as {{.Username}}...",
 		map[string]interface{}{
 			"OrgName":  terminal.EntityNameColor(name),
 			"Username": terminal.EntityNameColor(cmd.config.Username())}))
@@ -81,7 +81,7 @@ func (cmd *CreateOrg) Execute(c flags.FlagContext) {
 	if err != nil {
 		if apiErr, ok := err.(errors.HttpError); ok && apiErr.ErrorCode() == errors.ORG_EXISTS {
 			cmd.ui.Ok()
-			cmd.ui.Warn(T("Org {{.OrgName}} already exists",
+			cmd.ui.Warn(i18n.T("Org {{.OrgName}} already exists",
 				map[string]interface{}{"OrgName": name}))
 			return
 		} else {
@@ -90,6 +90,6 @@ func (cmd *CreateOrg) Execute(c flags.FlagContext) {
 	}
 
 	cmd.ui.Ok()
-	cmd.ui.Say(T("\nTIP: Use '{{.Command}}' to target new org",
+	cmd.ui.Say(i18n.T("\nTIP: Use '{{.Command}}' to target new org",
 		map[string]interface{}{"Command": terminal.CommandColor(cf.Name() + " target -o " + name)}))
 }

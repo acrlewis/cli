@@ -4,7 +4,7 @@ import (
 	"github.com/cloudfoundry/cli/cf/api/spaces"
 	"github.com/cloudfoundry/cli/cf/command_registry"
 	"github.com/cloudfoundry/cli/cf/configuration/core_config"
-	. "github.com/cloudfoundry/cli/cf/i18n"
+	"github.com/cloudfoundry/cli/cf/i18n"
 	"github.com/cloudfoundry/cli/cf/models"
 	"github.com/cloudfoundry/cli/cf/requirements"
 	"github.com/cloudfoundry/cli/cf/terminal"
@@ -28,15 +28,15 @@ func init() {
 func (cmd *ListSpaces) MetaData() command_registry.CommandMetadata {
 	return command_registry.CommandMetadata{
 		Name:        "spaces",
-		Description: T("List all spaces in an org"),
-		Usage:       T("CF_NAME spaces"),
+		Description: i18n.T("List all spaces in an org"),
+		Usage:       i18n.T("CF_NAME spaces"),
 	}
 
 }
 
 func (cmd *ListSpaces) Requirements(requirementsFactory requirements.Factory, fc flags.FlagContext) (reqs []requirements.Requirement, err error) {
 	if len(fc.Args()) != 0 {
-		cmd.ui.Failed(T("Incorrect Usage. No argument required\n\n") + command_registry.Commands.CommandUsage("spaces"))
+		cmd.ui.Failed(i18n.T("Incorrect Usage. No argument required\n\n") + command_registry.Commands.CommandUsage("spaces"))
 	}
 
 	reqs = []requirements.Requirement{
@@ -56,14 +56,14 @@ func (cmd *ListSpaces) SetDependency(deps command_registry.Dependency, pluginCal
 }
 
 func (cmd *ListSpaces) Execute(c flags.FlagContext) {
-	cmd.ui.Say(T("Getting spaces in org {{.TargetOrgName}} as {{.CurrentUser}}...\n",
+	cmd.ui.Say(i18n.T("Getting spaces in org {{.TargetOrgName}} as {{.CurrentUser}}...\n",
 		map[string]interface{}{
 			"TargetOrgName": terminal.EntityNameColor(cmd.config.OrganizationFields().Name),
 			"CurrentUser":   terminal.EntityNameColor(cmd.config.Username()),
 		}))
 
 	foundSpaces := false
-	table := cmd.ui.Table([]string{T("name")})
+	table := cmd.ui.Table([]string{i18n.T("name")})
 	apiErr := cmd.spaceRepo.ListSpaces(func(space models.Space) bool {
 		table.Add(space.Name)
 		foundSpaces = true
@@ -80,7 +80,7 @@ func (cmd *ListSpaces) Execute(c flags.FlagContext) {
 	table.Print()
 
 	if apiErr != nil {
-		cmd.ui.Failed(T("Failed fetching spaces.\n{{.ErrorDescription}}",
+		cmd.ui.Failed(i18n.T("Failed fetching spaces.\n{{.ErrorDescription}}",
 			map[string]interface{}{
 				"ErrorDescription": apiErr.Error(),
 			}))
@@ -88,6 +88,6 @@ func (cmd *ListSpaces) Execute(c flags.FlagContext) {
 	}
 
 	if !foundSpaces {
-		cmd.ui.Say(T("No spaces found"))
+		cmd.ui.Say(i18n.T("No spaces found"))
 	}
 }

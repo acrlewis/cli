@@ -5,7 +5,7 @@ import (
 	"github.com/cloudfoundry/cli/cf/command_registry"
 	"github.com/cloudfoundry/cli/cf/configuration/core_config"
 	"github.com/cloudfoundry/cli/cf/errors"
-	. "github.com/cloudfoundry/cli/cf/i18n"
+	"github.com/cloudfoundry/cli/cf/i18n"
 	"github.com/cloudfoundry/cli/cf/requirements"
 	"github.com/cloudfoundry/cli/cf/terminal"
 	"github.com/simonleung8/flags"
@@ -25,19 +25,19 @@ func init() {
 
 func (cmd *DeleteQuota) MetaData() command_registry.CommandMetadata {
 	fs := make(map[string]flags.FlagSet)
-	fs["f"] = &cliFlags.BoolFlag{Name: "f", Usage: T("Can provision instances of paid service plans")}
+	fs["f"] = &cliFlags.BoolFlag{Name: "f", Usage: i18n.T("Can provision instances of paid service plans")}
 
 	return command_registry.CommandMetadata{
 		Name:        "delete-quota",
-		Description: T("Delete a quota"),
-		Usage:       T("CF_NAME delete-quota QUOTA [-f]"),
+		Description: i18n.T("Delete a quota"),
+		Usage:       i18n.T("CF_NAME delete-quota QUOTA [-f]"),
 		Flags:       fs,
 	}
 }
 
 func (cmd *DeleteQuota) Requirements(requirementsFactory requirements.Factory, fc flags.FlagContext) (reqs []requirements.Requirement, err error) {
 	if len(fc.Args()) != 1 {
-		cmd.ui.Failed(T("Incorrect Usage. Requires an argument\n\n") + command_registry.Commands.CommandUsage("delete-quota"))
+		cmd.ui.Failed(i18n.T("Incorrect Usage. Requires an argument\n\n") + command_registry.Commands.CommandUsage("delete-quota"))
 	}
 
 	reqs = []requirements.Requirement{
@@ -63,7 +63,7 @@ func (cmd *DeleteQuota) Execute(c flags.FlagContext) {
 		}
 	}
 
-	cmd.ui.Say(T("Deleting quota {{.QuotaName}} as {{.Username}}...", map[string]interface{}{
+	cmd.ui.Say(i18n.T("Deleting quota {{.QuotaName}} as {{.Username}}...", map[string]interface{}{
 		"QuotaName": terminal.EntityNameColor(quotaName),
 		"Username":  terminal.EntityNameColor(cmd.config.Username()),
 	}))
@@ -74,7 +74,7 @@ func (cmd *DeleteQuota) Execute(c flags.FlagContext) {
 	case nil: // no error
 	case *errors.ModelNotFoundError:
 		cmd.ui.Ok()
-		cmd.ui.Warn(T("Quota {{.QuotaName}} does not exist", map[string]interface{}{"QuotaName": quotaName}))
+		cmd.ui.Warn(i18n.T("Quota {{.QuotaName}} does not exist", map[string]interface{}{"QuotaName": quotaName}))
 		return
 	default:
 		cmd.ui.Failed(apiErr.Error())

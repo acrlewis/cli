@@ -6,7 +6,7 @@ import (
 	"github.com/cloudfoundry/cli/cf/command_registry"
 	"github.com/cloudfoundry/cli/cf/configuration/core_config"
 	"github.com/cloudfoundry/cli/cf/errors"
-	. "github.com/cloudfoundry/cli/cf/i18n"
+	"github.com/cloudfoundry/cli/cf/i18n"
 	"github.com/cloudfoundry/cli/cf/requirements"
 	"github.com/cloudfoundry/cli/cf/terminal"
 	"github.com/simonleung8/flags"
@@ -25,15 +25,15 @@ func init() {
 func (cmd *CreateUser) MetaData() command_registry.CommandMetadata {
 	return command_registry.CommandMetadata{
 		Name:        "create-user",
-		Description: T("Create a new user"),
-		Usage:       T("CF_NAME create-user USERNAME PASSWORD"),
+		Description: i18n.T("Create a new user"),
+		Usage:       i18n.T("CF_NAME create-user USERNAME PASSWORD"),
 	}
 }
 
 func (cmd *CreateUser) Requirements(requirementsFactory requirements.Factory, fc flags.FlagContext) (reqs []requirements.Requirement, err error) {
 	if len(fc.Args()) != 2 {
 		usage := command_registry.Commands.CommandUsage("create-user")
-		cmd.ui.Failed(T("Incorrect Usage. Requires arguments\n\n") + usage)
+		cmd.ui.Failed(i18n.T("Incorrect Usage. Requires arguments\n\n") + usage)
 	}
 
 	reqs = append(reqs, requirementsFactory.NewLoginRequirement())
@@ -52,7 +52,7 @@ func (cmd *CreateUser) Execute(c flags.FlagContext) {
 	username := c.Args()[0]
 	password := c.Args()[1]
 
-	cmd.ui.Say(T("Creating user {{.TargetUser}}...",
+	cmd.ui.Say(i18n.T("Creating user {{.TargetUser}}...",
 		map[string]interface{}{
 			"TargetUser":  terminal.EntityNameColor(username),
 			"CurrentUser": terminal.EntityNameColor(cmd.config.Username()),
@@ -64,7 +64,7 @@ func (cmd *CreateUser) Execute(c flags.FlagContext) {
 	case *errors.ModelAlreadyExistsError:
 		cmd.ui.Warn("%s", err.Error())
 	default:
-		cmd.ui.Failed(T("Error creating user {{.TargetUser}}.\n{{.Error}}",
+		cmd.ui.Failed(i18n.T("Error creating user {{.TargetUser}}.\n{{.Error}}",
 			map[string]interface{}{
 				"TargetUser": terminal.EntityNameColor(username),
 				"Error":      err.Error(),
@@ -72,5 +72,5 @@ func (cmd *CreateUser) Execute(c flags.FlagContext) {
 	}
 
 	cmd.ui.Ok()
-	cmd.ui.Say(T("\nTIP: Assign roles with '{{.CurrentUser}} set-org-role' and '{{.CurrentUser}} set-space-role'", map[string]interface{}{"CurrentUser": cf.Name()}))
+	cmd.ui.Say(i18n.T("\nTIP: Assign roles with '{{.CurrentUser}} set-org-role' and '{{.CurrentUser}} set-space-role'", map[string]interface{}{"CurrentUser": cf.Name()}))
 }

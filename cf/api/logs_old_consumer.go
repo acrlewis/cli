@@ -4,10 +4,9 @@ import (
 	"errors"
 	"time"
 
-	. "github.com/cloudfoundry/cli/cf/i18n"
-
 	"github.com/cloudfoundry/cli/cf/api/authentication"
 	"github.com/cloudfoundry/cli/cf/configuration/core_config"
+	"github.com/cloudfoundry/cli/cf/i18n"
 	consumer "github.com/cloudfoundry/loggregator_consumer"
 	"github.com/cloudfoundry/loggregatorlib/logmessage"
 	noaa_errors "github.com/cloudfoundry/noaa/errors"
@@ -66,7 +65,7 @@ func (repo *LoggregatorLogsRepository) TailLogsFor(appGuid string, onConnect fun
 
 	endpoint := repo.config.LoggregatorEndpoint()
 	if endpoint == "" {
-		return errors.New(T("Loggregator endpoint missing from config file"))
+		return errors.New(i18n.T("Loggregator endpoint missing from config file"))
 	}
 
 	repo.consumer.SetOnConnectCallback(onConnect)

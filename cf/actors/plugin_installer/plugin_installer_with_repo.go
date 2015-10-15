@@ -6,7 +6,7 @@ import (
 
 	clipr "github.com/cloudfoundry-incubator/cli-plugin-repo/models"
 	"github.com/cloudfoundry/cli/cf/actors/plugin_repo"
-	. "github.com/cloudfoundry/cli/cf/i18n"
+	"github.com/cloudfoundry/cli/cf/i18n"
 	"github.com/cloudfoundry/cli/cf/models"
 	"github.com/cloudfoundry/cli/cf/terminal"
 	"github.com/cloudfoundry/cli/utils"
@@ -25,16 +25,16 @@ type PluginInstallerWithRepo struct {
 func (installer *PluginInstallerWithRepo) Install(inputSourceFilepath string) (outputSourceFilepath string) {
 	targetPluginName := strings.ToLower(inputSourceFilepath)
 
-	installer.Ui.Say(T("Looking up '{{.filePath}}' from repository '{{.repoName}}'", map[string]interface{}{"filePath": inputSourceFilepath, "repoName": installer.RepoName}))
+	installer.Ui.Say(i18n.T("Looking up '{{.filePath}}' from repository '{{.repoName}}'", map[string]interface{}{"filePath": inputSourceFilepath, "repoName": installer.RepoName}))
 
 	repoModel, err := installer.getRepoFromConfig(installer.RepoName)
 	if err != nil {
-		installer.Ui.Failed(err.Error() + "\n" + T("Tip: use 'add-plugin-repo' to register the repo"))
+		installer.Ui.Failed(err.Error() + "\n" + i18n.T("Tip: use 'add-plugin-repo' to register the repo"))
 	}
 
 	pluginList, repoAry := installer.PluginRepo.GetPlugins([]models.PluginRepo{repoModel})
 	if len(repoAry) != 0 {
-		installer.Ui.Failed(T("Error getting plugin metadata from repo: ") + repoAry[0])
+		installer.Ui.Failed(i18n.T("Error getting plugin metadata from repo: ") + repoAry[0])
 	}
 
 	found := false
@@ -46,13 +46,13 @@ func (installer *PluginInstallerWithRepo) Install(inputSourceFilepath string) (o
 
 			installer.Checksummer.SetFilePath(outputSourceFilepath)
 			if !installer.Checksummer.CheckSha1(sha1) {
-				installer.Ui.Failed(T("Downloaded plugin binary's checksum does not match repo metadata"))
+				installer.Ui.Failed(i18n.T("Downloaded plugin binary's checksum does not match repo metadata"))
 			}
 		}
 
 	}
 	if !found {
-		installer.Ui.Failed(inputSourceFilepath + T(" is not available in repo '") + installer.RepoName + "'")
+		installer.Ui.Failed(inputSourceFilepath + i18n.T(" is not available in repo '") + installer.RepoName + "'")
 	}
 
 	return outputSourceFilepath
@@ -68,7 +68,7 @@ func (installer *PluginInstallerWithRepo) getRepoFromConfig(repoName string) (mo
 		}
 	}
 
-	return models.PluginRepo{}, errors.New(repoName + T(" not found"))
+	return models.PluginRepo{}, errors.New(repoName + i18n.T(" not found"))
 }
 
 func findRepoCaseInsensity(repoList map[string][]clipr.Plugin, repoName string) []clipr.Plugin {

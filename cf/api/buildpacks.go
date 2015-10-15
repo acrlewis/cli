@@ -9,7 +9,7 @@ import (
 	"github.com/cloudfoundry/cli/cf/api/resources"
 	"github.com/cloudfoundry/cli/cf/configuration/core_config"
 	"github.com/cloudfoundry/cli/cf/errors"
-	. "github.com/cloudfoundry/cli/cf/i18n"
+	"github.com/cloudfoundry/cli/cf/i18n"
 	"github.com/cloudfoundry/cli/cf/models"
 	"github.com/cloudfoundry/cli/cf/net"
 )
@@ -65,7 +65,7 @@ func (repo CloudControllerBuildpackRepository) Create(name string, position *int
 	entity := resources.BuildpackEntity{Name: name, Position: position, Enabled: enabled, Locked: locked}
 	body, err := json.Marshal(entity)
 	if err != nil {
-		apiErr = errors.NewWithError(T("Could not serialize information"), err)
+		apiErr = errors.NewWithError(i18n.T("Could not serialize information"), err)
 		return
 	}
 
@@ -99,7 +99,7 @@ func (repo CloudControllerBuildpackRepository) Update(buildpack models.Buildpack
 
 	body, err := json.Marshal(entity)
 	if err != nil {
-		apiErr = errors.NewWithError(T("Could not serialize updates."), err)
+		apiErr = errors.NewWithError(i18n.T("Could not serialize updates."), err)
 		return
 	}
 

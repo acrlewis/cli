@@ -5,7 +5,7 @@ import (
 	"github.com/cloudfoundry/cli/cf/api/spaces"
 	"github.com/cloudfoundry/cli/cf/command_registry"
 	"github.com/cloudfoundry/cli/cf/configuration/core_config"
-	. "github.com/cloudfoundry/cli/cf/i18n"
+	"github.com/cloudfoundry/cli/cf/i18n"
 	"github.com/cloudfoundry/cli/cf/requirements"
 	"github.com/cloudfoundry/cli/cf/terminal"
 	"github.com/simonleung8/flags"
@@ -25,14 +25,14 @@ func init() {
 func (cmd *SetSpaceQuota) MetaData() command_registry.CommandMetadata {
 	return command_registry.CommandMetadata{
 		Name:        "set-space-quota",
-		Description: T("Assign a space quota definition to a space"),
-		Usage:       T("CF_NAME set-space-quota SPACE-NAME SPACE-QUOTA-NAME"),
+		Description: i18n.T("Assign a space quota definition to a space"),
+		Usage:       i18n.T("CF_NAME set-space-quota SPACE-NAME SPACE-QUOTA-NAME"),
 	}
 }
 
 func (cmd *SetSpaceQuota) Requirements(requirementsFactory requirements.Factory, fc flags.FlagContext) (reqs []requirements.Requirement, err error) {
 	if len(fc.Args()) != 2 {
-		cmd.ui.Failed(T("Incorrect Usage. Requires SPACE-NAME and SPACE-QUOTA-NAME as arguments\n\n") + command_registry.Commands.CommandUsage("set-space-quota"))
+		cmd.ui.Failed(i18n.T("Incorrect Usage. Requires SPACE-NAME and SPACE-QUOTA-NAME as arguments\n\n") + command_registry.Commands.CommandUsage("set-space-quota"))
 	}
 
 	return []requirements.Requirement{
@@ -54,7 +54,7 @@ func (cmd *SetSpaceQuota) Execute(c flags.FlagContext) {
 	spaceName := c.Args()[0]
 	quotaName := c.Args()[1]
 
-	cmd.ui.Say(T("Assigning space quota {{.QuotaName}} to space {{.SpaceName}} as {{.Username}}...", map[string]interface{}{
+	cmd.ui.Say(i18n.T("Assigning space quota {{.QuotaName}} to space {{.SpaceName}} as {{.Username}}...", map[string]interface{}{
 		"QuotaName": terminal.EntityNameColor(quotaName),
 		"SpaceName": terminal.EntityNameColor(spaceName),
 		"Username":  terminal.EntityNameColor(cmd.config.Username()),
@@ -66,7 +66,7 @@ func (cmd *SetSpaceQuota) Execute(c flags.FlagContext) {
 	}
 
 	if space.SpaceQuotaGuid != "" {
-		cmd.ui.Failed(T("This space already has an assigned space quota."))
+		cmd.ui.Failed(i18n.T("This space already has an assigned space quota."))
 	}
 
 	quota, err := cmd.quotaRepo.FindByName(quotaName)

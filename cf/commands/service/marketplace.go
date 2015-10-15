@@ -4,13 +4,13 @@ import (
 	"sort"
 	"strings"
 
-	. "github.com/cloudfoundry/cli/cf/i18n"
 	"github.com/simonleung8/flags"
 	"github.com/simonleung8/flags/flag"
 
 	"github.com/cloudfoundry/cli/cf/actors/service_builder"
 	"github.com/cloudfoundry/cli/cf/command_registry"
 	"github.com/cloudfoundry/cli/cf/configuration/core_config"
+	"github.com/cloudfoundry/cli/cf/i18n"
 	"github.com/cloudfoundry/cli/cf/models"
 	"github.com/cloudfoundry/cli/cf/requirements"
 	"github.com/cloudfoundry/cli/cf/terminal"
@@ -28,12 +28,12 @@ func init() {
 
 func (cmd *MarketplaceServices) MetaData() command_registry.CommandMetadata {
 	fs := make(map[string]flags.FlagSet)
-	fs["s"] = &cliFlags.StringFlag{Name: "s", Usage: T("Show plan details for a particular service offering")}
+	fs["s"] = &cliFlags.StringFlag{Name: "s", Usage: i18n.T("Show plan details for a particular service offering")}
 
 	return command_registry.CommandMetadata{
 		Name:        "marketplace",
 		ShortName:   "m",
-		Description: T("List available offerings in the marketplace"),
+		Description: i18n.T("List available offerings in the marketplace"),
 		Usage:       "CF_NAME marketplace",
 		Flags:       fs,
 	}
@@ -41,7 +41,7 @@ func (cmd *MarketplaceServices) MetaData() command_registry.CommandMetadata {
 
 func (cmd *MarketplaceServices) Requirements(requirementsFactory requirements.Factory, fc flags.FlagContext) (reqs []requirements.Requirement, err error) {
 	if len(fc.Args()) != 0 {
-		cmd.ui.Failed(T("Incorrect Usage. No argument required\n\n") + command_registry.Commands.CommandUsage("marketplace"))
+		cmd.ui.Failed(i18n.T("Incorrect Usage. No argument required\n\n") + command_registry.Commands.CommandUsage("marketplace"))
 	}
 
 	reqs = append(reqs, requirementsFactory.NewApiEndpointRequirement())
@@ -73,17 +73,17 @@ func (cmd MarketplaceServices) marketplaceByService(serviceName string) {
 	)
 
 	if cmd.config.HasSpace() {
-		cmd.ui.Say(T("Getting service plan information for service {{.ServiceName}} as {{.CurrentUser}}...",
+		cmd.ui.Say(i18n.T("Getting service plan information for service {{.ServiceName}} as {{.CurrentUser}}...",
 			map[string]interface{}{
 				"ServiceName": terminal.EntityNameColor(serviceName),
 				"CurrentUser": terminal.EntityNameColor(cmd.config.Username()),
 			}))
 		serviceOffering, apiErr = cmd.serviceBuilder.GetServiceByNameForSpaceWithPlans(serviceName, cmd.config.SpaceFields().Guid)
 	} else if !cmd.config.IsLoggedIn() {
-		cmd.ui.Say(T("Getting service plan information for service {{.ServiceName}}...", map[string]interface{}{"ServiceName": terminal.EntityNameColor(serviceName)}))
+		cmd.ui.Say(i18n.T("Getting service plan information for service {{.ServiceName}}...", map[string]interface{}{"ServiceName": terminal.EntityNameColor(serviceName)}))
 		serviceOffering, apiErr = cmd.serviceBuilder.GetServiceByNameWithPlans(serviceName)
 	} else {
-		cmd.ui.Failed(T("Cannot list plan information for {{.ServiceName}} without a targeted space",
+		cmd.ui.Failed(i18n.T("Cannot list plan information for {{.ServiceName}} without a targeted space",
 			map[string]interface{}{"ServiceName": terminal.EntityNameColor(serviceName)}))
 	}
 
@@ -96,11 +96,11 @@ func (cmd MarketplaceServices) marketplaceByService(serviceName string) {
 	cmd.ui.Say("")
 
 	if serviceOffering.Guid == "" {
-		cmd.ui.Say(T("Service offering not found"))
+		cmd.ui.Say(i18n.T("Service offering not found"))
 		return
 	}
 
-	table := terminal.NewTable(cmd.ui, []string{T("service plan"), T("description"), T("free or paid")})
+	table := terminal.NewTable(cmd.ui, []string{i18n.T("service plan"), i18n.T("description"), i18n.T("free or paid")})
 	for _, plan := range serviceOffering.Plans {
 		var freeOrPaid string
 		if plan.Free {
@@ -121,7 +121,7 @@ func (cmd MarketplaceServices) marketplace() {
 	)
 
 	if cmd.config.HasSpace() {
-		cmd.ui.Say(T("Getting services from marketplace in org {{.OrgName}} / space {{.SpaceName}} as {{.CurrentUser}}...",
+		cmd.ui.Say(i18n.T("Getting services from marketplace in org {{.OrgName}} / space {{.SpaceName}} as {{.CurrentUser}}...",
 			map[string]interface{}{
 				"OrgName":     terminal.EntityNameColor(cmd.config.OrganizationFields().Name),
 				"SpaceName":   terminal.EntityNameColor(cmd.config.SpaceFields().Name),
@@ -129,10 +129,10 @@ func (cmd MarketplaceServices) marketplace() {
 			}))
 		serviceOfferings, apiErr = cmd.serviceBuilder.GetServicesForSpaceWithPlans(cmd.config.SpaceFields().Guid)
 	} else if !cmd.config.IsLoggedIn() {
-		cmd.ui.Say(T("Getting all services from marketplace..."))
+		cmd.ui.Say(i18n.T("Getting all services from marketplace..."))
 		serviceOfferings, apiErr = cmd.serviceBuilder.GetAllServicesWithPlans()
 	} else {
-		cmd.ui.Failed(T("Cannot list marketplace services without a targeted space"))
+		cmd.ui.Failed(i18n.T("Cannot list marketplace services without a targeted space"))
 	}
 
 	if apiErr != nil {
@@ -144,11 +144,11 @@ func (cmd MarketplaceServices) marketplace() {
 	cmd.ui.Say("")
 
 	if len(serviceOfferings) == 0 {
-		cmd.ui.Say(T("No service offerings found"))
+		cmd.ui.Say(i18n.T("No service offerings found"))
 		return
 	}
 
-	table := terminal.NewTable(cmd.ui, []string{T("service"), T("plans"), T("description")})
+	table := terminal.NewTable(cmd.ui, []string{i18n.T("service"), i18n.T("plans"), i18n.T("description")})
 
 	sort.Sort(serviceOfferings)
 	var paidPlanExists bool
@@ -174,7 +174,7 @@ func (cmd MarketplaceServices) marketplace() {
 
 	table.Print()
 	if paidPlanExists {
-		cmd.ui.Say(T("\n* These service plans have an associated cost. Creating a service instance will incur this cost."))
+		cmd.ui.Say(i18n.T("\n* These service plans have an associated cost. Creating a service instance will incur this cost."))
 	}
-	cmd.ui.Say(T("\nTIP:  Use 'cf marketplace -s SERVICE' to view descriptions of individual plans of a given service."))
+	cmd.ui.Say(i18n.T("\nTIP:  Use 'cf marketplace -s SERVICE' to view descriptions of individual plans of a given service."))
 }

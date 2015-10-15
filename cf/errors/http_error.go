@@ -3,7 +3,7 @@ package errors
 import (
 	"fmt"
 
-	. "github.com/cloudfoundry/cli/cf/i18n"
+	"github.com/cloudfoundry/cli/cf/i18n"
 )
 
 type HttpError interface {
@@ -41,7 +41,7 @@ func (err *baseHttpError) StatusCode() int {
 }
 
 func (err *baseHttpError) Error() string {
-	return fmt.Sprintf(T("Server error, status code: {{.ErrStatusCode}}, error code: {{.ErrApiErrorCode}}, message: {{.ErrDescription}}",
+	return fmt.Sprintf(i18n.T("Server error, status code: {{.ErrStatusCode}}, error code: {{.ErrApiErrorCode}}, message: {{.ErrDescription}}",
 		map[string]interface{}{"ErrStatusCode": err.statusCode,
 			"ErrApiErrorCode": err.apiErrorCode,
 			"ErrDescription":  err.description}),

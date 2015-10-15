@@ -8,7 +8,7 @@ import (
 	"github.com/cloudfoundry/cli/cf/command_registry"
 	"github.com/cloudfoundry/cli/cf/configuration/core_config"
 	"github.com/cloudfoundry/cli/cf/errors"
-	. "github.com/cloudfoundry/cli/cf/i18n"
+	"github.com/cloudfoundry/cli/cf/i18n"
 	"github.com/cloudfoundry/cli/cf/models"
 	"github.com/cloudfoundry/cli/cf/requirements"
 	"github.com/cloudfoundry/cli/cf/terminal"
@@ -31,11 +31,11 @@ func init() {
 
 func (cmd *CreateService) MetaData() command_registry.CommandMetadata {
 	fs := make(map[string]flags.FlagSet)
-	fs["c"] = &cliFlags.StringFlag{Name: "c", Usage: T("Valid JSON object containing service-specific configuration parameters, provided either in-line or in a file. For a list of supported configuration parameters, see documentation for the particular service offering.")}
-	fs["t"] = &cliFlags.StringFlag{Name: "t", Usage: T("User provided tags")}
+	fs["c"] = &cliFlags.StringFlag{Name: "c", Usage: i18n.T("Valid JSON object containing service-specific configuration parameters, provided either in-line or in a file. For a list of supported configuration parameters, see documentation for the particular service offering.")}
+	fs["t"] = &cliFlags.StringFlag{Name: "t", Usage: i18n.T("User provided tags")}
 
-	baseUsage := T("CF_NAME create-service SERVICE PLAN SERVICE_INSTANCE [-c PARAMETERS_AS_JSON] [-t TAGS]")
-	paramsUsage := T(`   Optionally provide service-specific configuration parameters in a valid JSON object in-line:
+	baseUsage := i18n.T("CF_NAME create-service SERVICE PLAN SERVICE_INSTANCE [-c PARAMETERS_AS_JSON] [-t TAGS]")
+	paramsUsage := i18n.T(`   Optionally provide service-specific configuration parameters in a valid JSON object in-line:
 
    CF_NAME create-service SERVICE PLAN SERVICE_INSTANCE -c '{"name":"value","name":"value"}'
 
@@ -51,7 +51,7 @@ func (cmd *CreateService) MetaData() command_registry.CommandMetadata {
          "memory_mb": 1024
       }
    }`)
-	exampleUsage := T(`EXAMPLE:
+	exampleUsage := i18n.T(`EXAMPLE:
    Linux/Mac:
       CF_NAME create-service db-service silver -c '{"ram_gb":4}'
 
@@ -64,12 +64,12 @@ func (cmd *CreateService) MetaData() command_registry.CommandMetadata {
    CF_NAME create-service db-service silver mydb -c ~/workspace/tmp/instance_config.json
 
    CF_NAME create-service dbaas silver mydb -t "list, of, tags"`)
-	tipsUsage := T(`TIP:
+	tipsUsage := i18n.T(`TIP:
    Use 'CF_NAME create-user-provided-service' to make user-provided services available to cf apps`)
 	return command_registry.CommandMetadata{
 		Name:        "create-service",
 		ShortName:   "cs",
-		Description: T("Create a service instance"),
+		Description: i18n.T("Create a service instance"),
 		Usage:       strings.Join([]string{baseUsage, paramsUsage, exampleUsage, tipsUsage}, "\n\n"),
 		Flags:       fs,
 	}
@@ -77,7 +77,7 @@ func (cmd *CreateService) MetaData() command_registry.CommandMetadata {
 
 func (cmd *CreateService) Requirements(requirementsFactory requirements.Factory, fc flags.FlagContext) (reqs []requirements.Requirement, err error) {
 	if len(fc.Args()) != 3 {
-		cmd.ui.Failed(T("Incorrect Usage. Requires service, service plan, service instance as arguments\n\n") + command_registry.Commands.CommandUsage("create-service"))
+		cmd.ui.Failed(i18n.T("Incorrect Usage. Requires service, service plan, service instance as arguments\n\n") + command_registry.Commands.CommandUsage("create-service"))
 	}
 
 	reqs = []requirements.Requirement{
@@ -107,10 +107,10 @@ func (cmd *CreateService) Execute(c flags.FlagContext) {
 
 	paramsMap, err := json.ParseJsonFromFileOrString(params)
 	if err != nil {
-		cmd.ui.Failed(T("Invalid configuration provided for -c flag. Please provide a valid JSON object or path to a file containing a valid JSON object."))
+		cmd.ui.Failed(i18n.T("Invalid configuration provided for -c flag. Please provide a valid JSON object or path to a file containing a valid JSON object."))
 	}
 
-	cmd.ui.Say(T("Creating service instance {{.ServiceName}} in org {{.OrgName}} / space {{.SpaceName}} as {{.CurrentUser}}...",
+	cmd.ui.Say(i18n.T("Creating service instance {{.ServiceName}} in org {{.OrgName}} / space {{.SpaceName}} as {{.CurrentUser}}...",
 		map[string]interface{}{
 			"ServiceName": terminal.EntityNameColor(serviceInstanceName),
 			"OrgName":     terminal.EntityNameColor(cmd.config.OrganizationFields().Name),
@@ -129,7 +129,7 @@ func (cmd *CreateService) Execute(c flags.FlagContext) {
 
 		if !plan.Free {
 			cmd.ui.Say("")
-			cmd.ui.Say(T("Attention: The plan `{{.PlanName}}` of service `{{.ServiceName}}` is not free.  The instance `{{.ServiceInstanceName}}` will incur a cost.  Contact your administrator if you think this is in error.",
+			cmd.ui.Say(i18n.T("Attention: The plan `{{.PlanName}}` of service `{{.ServiceName}}` is not free.  The instance `{{.ServiceInstanceName}}` will incur a cost.  Contact your administrator if you think this is in error.",
 				map[string]interface{}{
 					"PlanName":            terminal.EntityNameColor(plan.Name),
 					"ServiceName":         terminal.EntityNameColor(serviceName),
@@ -169,7 +169,7 @@ func findPlanFromOfferings(offerings models.ServiceOfferings, name string) (plan
 		}
 	}
 
-	err = errors.New(T("Could not find plan with name {{.ServicePlanName}}",
+	err = errors.New(i18n.T("Could not find plan with name {{.ServicePlanName}}",
 		map[string]interface{}{"ServicePlanName": name},
 	))
 	return

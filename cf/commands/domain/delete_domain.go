@@ -5,7 +5,7 @@ import (
 	"github.com/cloudfoundry/cli/cf/command_registry"
 	"github.com/cloudfoundry/cli/cf/configuration/core_config"
 	"github.com/cloudfoundry/cli/cf/errors"
-	. "github.com/cloudfoundry/cli/cf/i18n"
+	"github.com/cloudfoundry/cli/cf/i18n"
 	"github.com/cloudfoundry/cli/cf/requirements"
 	"github.com/cloudfoundry/cli/cf/terminal"
 	"github.com/simonleung8/flags"
@@ -25,19 +25,19 @@ func init() {
 
 func (cmd *DeleteDomain) MetaData() command_registry.CommandMetadata {
 	fs := make(map[string]flags.FlagSet)
-	fs["f"] = &cliFlags.BoolFlag{Name: "f", Usage: T("Force deletion without confirmation")}
+	fs["f"] = &cliFlags.BoolFlag{Name: "f", Usage: i18n.T("Force deletion without confirmation")}
 
 	return command_registry.CommandMetadata{
 		Name:        "delete-domain",
-		Description: T("Delete a domain"),
-		Usage:       T("CF_NAME delete-domain DOMAIN [-f]"),
+		Description: i18n.T("Delete a domain"),
+		Usage:       i18n.T("CF_NAME delete-domain DOMAIN [-f]"),
 		Flags:       fs,
 	}
 }
 
 func (cmd *DeleteDomain) Requirements(requirementsFactory requirements.Factory, fc flags.FlagContext) (reqs []requirements.Requirement, err error) {
 	if len(fc.Args()) != 1 {
-		cmd.ui.Failed(T("Incorrect Usage. Requires an argument\n\n") + command_registry.Commands.CommandUsage("delete-domain"))
+		cmd.ui.Failed(i18n.T("Incorrect Usage. Requires an argument\n\n") + command_registry.Commands.CommandUsage("delete-domain"))
 	}
 
 	loginReq := requirementsFactory.NewLoginRequirement()
@@ -65,7 +65,7 @@ func (cmd *DeleteDomain) Execute(c flags.FlagContext) {
 	switch apiErr.(type) {
 	case nil:
 		if domain.Shared {
-			cmd.ui.Failed(T("domain {{.DomainName}} is a shared domain, not an owned domain.",
+			cmd.ui.Failed(i18n.T("domain {{.DomainName}} is a shared domain, not an owned domain.",
 				map[string]interface{}{
 					"DomainName": domainName}))
 			return
@@ -75,25 +75,25 @@ func (cmd *DeleteDomain) Execute(c flags.FlagContext) {
 		cmd.ui.Warn(apiErr.Error())
 		return
 	default:
-		cmd.ui.Failed(T("Error finding domain {{.DomainName}}\n{{.ApiErr}}",
+		cmd.ui.Failed(i18n.T("Error finding domain {{.DomainName}}\n{{.ApiErr}}",
 			map[string]interface{}{"DomainName": domainName, "ApiErr": apiErr.Error()}))
 		return
 	}
 
 	if !c.Bool("f") {
-		if !cmd.ui.ConfirmDelete(T("domain"), domainName) {
+		if !cmd.ui.ConfirmDelete(i18n.T("domain"), domainName) {
 			return
 		}
 	}
 
-	cmd.ui.Say(T("Deleting domain {{.DomainName}} as {{.Username}}...",
+	cmd.ui.Say(i18n.T("Deleting domain {{.DomainName}} as {{.Username}}...",
 		map[string]interface{}{
 			"DomainName": terminal.EntityNameColor(domainName),
 			"Username":   terminal.EntityNameColor(cmd.config.Username())}))
 
 	apiErr = cmd.domainRepo.Delete(domain.Guid)
 	if apiErr != nil {
-		cmd.ui.Failed(T("Error deleting domain {{.DomainName}}\n{{.ApiErr}}",
+		cmd.ui.Failed(i18n.T("Error deleting domain {{.DomainName}}\n{{.ApiErr}}",
 			map[string]interface{}{"DomainName": domainName, "ApiErr": apiErr.Error()}))
 		return
 	}

@@ -5,7 +5,7 @@ import (
 	"github.com/cloudfoundry/cli/cf/command_registry"
 	"github.com/cloudfoundry/cli/cf/configuration/core_config"
 	cf_errors "github.com/cloudfoundry/cli/cf/errors"
-	. "github.com/cloudfoundry/cli/cf/i18n"
+	"github.com/cloudfoundry/cli/cf/i18n"
 	"github.com/cloudfoundry/cli/cf/requirements"
 	"github.com/cloudfoundry/cli/cf/terminal"
 	"github.com/simonleung8/flags"
@@ -24,15 +24,15 @@ func init() {
 func (cmd *SetRunningEnvironmentVariableGroup) MetaData() command_registry.CommandMetadata {
 	return command_registry.CommandMetadata{
 		Name:        "set-running-environment-variable-group",
-		Description: T("Pass parameters as JSON to create a running environment variable group"),
+		Description: i18n.T("Pass parameters as JSON to create a running environment variable group"),
 		ShortName:   "srevg",
-		Usage:       T(`CF_NAME set-running-environment-variable-group '{"name":"value","name":"value"}'`),
+		Usage:       i18n.T(`CF_NAME set-running-environment-variable-group '{"name":"value","name":"value"}'`),
 	}
 }
 
 func (cmd *SetRunningEnvironmentVariableGroup) Requirements(requirementsFactory requirements.Factory, fc flags.FlagContext) ([]requirements.Requirement, error) {
 	if len(fc.Args()) != 1 {
-		cmd.ui.Failed(T("Incorrect Usage. Requires an argument\n\n") + command_registry.Commands.CommandUsage("set-running-environment-variable-group"))
+		cmd.ui.Failed(i18n.T("Incorrect Usage. Requires an argument\n\n") + command_registry.Commands.CommandUsage("set-running-environment-variable-group"))
 	}
 
 	reqs := []requirements.Requirement{
@@ -49,7 +49,7 @@ func (cmd *SetRunningEnvironmentVariableGroup) SetDependency(deps command_regist
 }
 
 func (cmd *SetRunningEnvironmentVariableGroup) Execute(c flags.FlagContext) {
-	cmd.ui.Say(T("Setting the contents of the running environment variable group as {{.Username}}...", map[string]interface{}{
+	cmd.ui.Say(i18n.T("Setting the contents of the running environment variable group as {{.Username}}...", map[string]interface{}{
 		"Username": terminal.EntityNameColor(cmd.config.Username())}))
 
 	err := cmd.environmentVariableGroupRepo.SetRunning(c.Args()[0])
@@ -58,7 +58,7 @@ func (cmd *SetRunningEnvironmentVariableGroup) Execute(c flags.FlagContext) {
 
 		httpError, ok := err.(cf_errors.HttpError)
 		if ok && httpError.ErrorCode() == cf_errors.PARSE_ERROR {
-			suggestionText = T(`
+			suggestionText = i18n.T(`
 
 Your JSON string syntax is invalid.  Proper syntax is this:  cf set-running-environment-variable-group '{"name":"value","name":"value"}'`)
 		}

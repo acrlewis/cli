@@ -4,7 +4,7 @@ import (
 	"github.com/cloudfoundry/cli/cf/api"
 	"github.com/cloudfoundry/cli/cf/command_registry"
 	"github.com/cloudfoundry/cli/cf/configuration/core_config"
-	. "github.com/cloudfoundry/cli/cf/i18n"
+	"github.com/cloudfoundry/cli/cf/i18n"
 	"github.com/cloudfoundry/cli/cf/models"
 	"github.com/cloudfoundry/cli/cf/requirements"
 	"github.com/cloudfoundry/cli/cf/terminal"
@@ -30,19 +30,19 @@ func init() {
 
 func (cmd *CreateRoute) MetaData() command_registry.CommandMetadata {
 	fs := make(map[string]flags.FlagSet)
-	fs["n"] = &cliFlags.StringFlag{Name: "n", Usage: T("Hostname")}
+	fs["n"] = &cliFlags.StringFlag{Name: "n", Usage: i18n.T("Hostname")}
 
 	return command_registry.CommandMetadata{
 		Name:        "create-route",
-		Description: T("Create a url route in a space for later use"),
-		Usage:       T("CF_NAME create-route SPACE DOMAIN [-n HOSTNAME]"),
+		Description: i18n.T("Create a url route in a space for later use"),
+		Usage:       i18n.T("CF_NAME create-route SPACE DOMAIN [-n HOSTNAME]"),
 		Flags:       fs,
 	}
 }
 
 func (cmd *CreateRoute) Requirements(requirementsFactory requirements.Factory, fc flags.FlagContext) (reqs []requirements.Requirement, err error) {
 	if len(fc.Args()) != 2 {
-		cmd.ui.Failed(T("Incorrect Usage. Requires SPACE and DOMAIN as arguments\n\n") + command_registry.Commands.CommandUsage("create-route"))
+		cmd.ui.Failed(i18n.T("Incorrect Usage. Requires SPACE and DOMAIN as arguments\n\n") + command_registry.Commands.CommandUsage("create-route"))
 	}
 
 	domainName := fc.Args()[1]
@@ -79,7 +79,7 @@ func (cmd *CreateRoute) Execute(c flags.FlagContext) {
 }
 
 func (cmd *CreateRoute) CreateRoute(hostName string, domain models.DomainFields, space models.SpaceFields) (route models.Route, apiErr error) {
-	cmd.ui.Say(T("Creating route {{.Hostname}} for org {{.OrgName}} / space {{.SpaceName}} as {{.Username}}...",
+	cmd.ui.Say(i18n.T("Creating route {{.Hostname}} for org {{.OrgName}} / space {{.SpaceName}} as {{.Username}}...",
 		map[string]interface{}{
 			"Hostname":  terminal.EntityNameColor(domain.UrlForHost(hostName)),
 			"OrgName":   terminal.EntityNameColor(cmd.config.OrganizationFields().Name),
@@ -99,7 +99,7 @@ func (cmd *CreateRoute) CreateRoute(hostName string, domain models.DomainFields,
 
 		apiErr = nil
 		cmd.ui.Ok()
-		cmd.ui.Warn(T("Route {{.URL}} already exists",
+		cmd.ui.Warn(i18n.T("Route {{.URL}} already exists",
 			map[string]interface{}{"URL": route.URL()}))
 		return
 	}

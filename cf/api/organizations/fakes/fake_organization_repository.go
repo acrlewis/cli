@@ -12,7 +12,7 @@ type FakeOrganizationRepository struct {
 	ListOrgsStub        func() (orgs []models.Organization, apiErr error)
 	listOrgsMutex       sync.RWMutex
 	listOrgsArgsForCall []struct{}
-	listOrgsReturns struct {
+	listOrgsReturns     struct {
 		result1 []models.Organization
 		result2 error
 	}

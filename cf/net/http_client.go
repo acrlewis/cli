@@ -10,7 +10,7 @@ import (
 	"time"
 
 	"github.com/cloudfoundry/cli/cf/errors"
-	. "github.com/cloudfoundry/cli/cf/i18n"
+	"github.com/cloudfoundry/cli/cf/i18n"
 	"github.com/cloudfoundry/cli/cf/terminal"
 	"github.com/cloudfoundry/cli/cf/trace"
 	"golang.org/x/net/websocket"
@@ -29,7 +29,7 @@ var NewHttpClient = func(tr *http.Transport) HttpClientInterface {
 
 func PrepareRedirect(req *http.Request, via []*http.Request) error {
 	if len(via) > 1 {
-		return errors.New(T("stopped after 1 redirect"))
+		return errors.New(i18n.T("stopped after 1 redirect"))
 	}
 
 	prevReq := via[len(via)-1]
@@ -52,11 +52,11 @@ func dumpRequest(req *http.Request) {
 	shouldDisplayBody := !strings.Contains(req.Header.Get("Content-Type"), "multipart/form-data")
 	dumpedRequest, err := httputil.DumpRequest(req, shouldDisplayBody)
 	if err != nil {
-		trace.Logger.Printf(T("Error dumping request\n{{.Err}}\n", map[string]interface{}{"Err": err}))
+		trace.Logger.Printf(i18n.T("Error dumping request\n{{.Err}}\n", map[string]interface{}{"Err": err}))
 	} else {
-		trace.Logger.Printf("\n%s [%s]\n%s\n", terminal.HeaderColor(T("REQUEST:")), time.Now().Format(time.RFC3339), trace.Sanitize(string(dumpedRequest)))
+		trace.Logger.Printf("\n%s [%s]\n%s\n", terminal.HeaderColor(i18n.T("REQUEST:")), time.Now().Format(time.RFC3339), trace.Sanitize(string(dumpedRequest)))
 		if !shouldDisplayBody {
-			trace.Logger.Println(T("[MULTIPART/FORM-DATA CONTENT HIDDEN]"))
+			trace.Logger.Println(i18n.T("[MULTIPART/FORM-DATA CONTENT HIDDEN]"))
 		}
 	}
 }
@@ -64,9 +64,9 @@ func dumpRequest(req *http.Request) {
 func dumpResponse(res *http.Response) {
 	dumpedResponse, err := httputil.DumpResponse(res, true)
 	if err != nil {
-		trace.Logger.Printf(T("Error dumping response\n{{.Err}}\n", map[string]interface{}{"Err": err}))
+		trace.Logger.Printf(i18n.T("Error dumping response\n{{.Err}}\n", map[string]interface{}{"Err": err}))
 	} else {
-		trace.Logger.Printf("\n%s [%s]\n%s\n", terminal.HeaderColor(T("RESPONSE:")), time.Now().Format(time.RFC3339), trace.Sanitize(string(dumpedResponse)))
+		trace.Logger.Printf("\n%s [%s]\n%s\n", terminal.HeaderColor(i18n.T("RESPONSE:")), time.Now().Format(time.RFC3339), trace.Sanitize(string(dumpedResponse)))
 	}
 }
 
@@ -82,15 +82,15 @@ func WrapNetworkErrors(host string, err error) error {
 	if innerErr != nil {
 		switch innerErr.(type) {
 		case x509.UnknownAuthorityError:
-			return errors.NewInvalidSSLCert(host, T("unknown authority"))
+			return errors.NewInvalidSSLCert(host, i18n.T("unknown authority"))
 		case x509.HostnameError:
-			return errors.NewInvalidSSLCert(host, T("not valid for the requested host"))
+			return errors.NewInvalidSSLCert(host, i18n.T("not valid for the requested host"))
 		case x509.CertificateInvalidError:
 			return errors.NewInvalidSSLCert(host, "")
 		}
 	}
 
-	return errors.NewWithError(T("Error performing request"), err)
+	return errors.NewWithError(i18n.T("Error performing request"), err)
 
 }
 

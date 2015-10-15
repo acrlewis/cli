@@ -2,7 +2,8 @@ package errors
 
 import (
 	"fmt"
-	. "github.com/cloudfoundry/cli/cf/i18n"
+
+	"github.com/cloudfoundry/cli/cf/i18n"
 )
 
 type ModelAlreadyExistsError struct {
@@ -18,6 +19,6 @@ func NewModelAlreadyExistsError(modelType, name string) *ModelAlreadyExistsError
 }
 
 func (err *ModelAlreadyExistsError) Error() string {
-	return fmt.Sprintf(T("{{.ModelType}} {{.ModelName}} already exists",
+	return fmt.Sprintf(i18n.T("{{.ModelType}} {{.ModelName}} already exists",
 		map[string]interface{}{"ModelType": err.ModelType, "ModelName": err.ModelName}))
 }

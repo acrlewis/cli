@@ -4,7 +4,7 @@ import (
 	"github.com/cloudfoundry/cli/cf/api/security_groups/defaults/staging"
 	"github.com/cloudfoundry/cli/cf/command_registry"
 	"github.com/cloudfoundry/cli/cf/configuration/core_config"
-	. "github.com/cloudfoundry/cli/cf/i18n"
+	"github.com/cloudfoundry/cli/cf/i18n"
 	"github.com/cloudfoundry/cli/cf/requirements"
 	"github.com/cloudfoundry/cli/cf/terminal"
 	"github.com/simonleung8/flags"
@@ -23,14 +23,14 @@ func init() {
 func (cmd *listStagingSecurityGroups) MetaData() command_registry.CommandMetadata {
 	return command_registry.CommandMetadata{
 		Name:        "staging-security-groups",
-		Description: T("List security groups in the staging set for applications"),
+		Description: i18n.T("List security groups in the staging set for applications"),
 		Usage:       "CF_NAME staging-security-groups",
 	}
 }
 
 func (cmd *listStagingSecurityGroups) Requirements(requirementsFactory requirements.Factory, fc flags.FlagContext) ([]requirements.Requirement, error) {
 	if len(fc.Args()) != 0 {
-		cmd.ui.Failed(T("Incorrect Usage. No argument required\n\n") + command_registry.Commands.CommandUsage("staging-security-groups"))
+		cmd.ui.Failed(i18n.T("Incorrect Usage. No argument required\n\n") + command_registry.Commands.CommandUsage("staging-security-groups"))
 	}
 
 	requirements := []requirements.Requirement{requirementsFactory.NewLoginRequirement()}
@@ -45,7 +45,7 @@ func (cmd *listStagingSecurityGroups) SetDependency(deps command_registry.Depend
 }
 
 func (cmd *listStagingSecurityGroups) Execute(context flags.FlagContext) {
-	cmd.ui.Say(T("Acquiring staging security group as {{.username}}",
+	cmd.ui.Say(i18n.T("Acquiring staging security group as {{.username}}",
 		map[string]interface{}{
 			"username": terminal.EntityNameColor(cmd.configRepo.Username()),
 		}))
@@ -63,6 +63,6 @@ func (cmd *listStagingSecurityGroups) Execute(context flags.FlagContext) {
 			cmd.ui.Say(value.Name)
 		}
 	} else {
-		cmd.ui.Say(T("No staging security group set"))
+		cmd.ui.Say(i18n.T("No staging security group set"))
 	}
 }

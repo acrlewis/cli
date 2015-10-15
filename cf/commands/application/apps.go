@@ -4,7 +4,7 @@ import (
 	"strings"
 
 	"github.com/cloudfoundry/cli/cf/command_registry"
-	. "github.com/cloudfoundry/cli/cf/i18n"
+	"github.com/cloudfoundry/cli/cf/i18n"
 	"github.com/cloudfoundry/cli/cf/models"
 	"github.com/cloudfoundry/cli/plugin/models"
 	"github.com/simonleung8/flags"
@@ -34,14 +34,14 @@ func (cmd *ListApps) MetaData() command_registry.CommandMetadata {
 	return command_registry.CommandMetadata{
 		Name:        "apps",
 		ShortName:   "a",
-		Description: T("List all apps in the target space"),
+		Description: i18n.T("List all apps in the target space"),
 		Usage:       "CF_NAME apps",
 	}
 }
 
 func (cmd *ListApps) Requirements(requirementsFactory requirements.Factory, fc flags.FlagContext) (reqs []requirements.Requirement, err error) {
 	if len(fc.Args()) != 0 {
-		cmd.ui.Failed(T("Incorrect Usage. No argument required\n\n") + command_registry.Commands.CommandUsage("apps"))
+		cmd.ui.Failed(i18n.T("Incorrect Usage. No argument required\n\n") + command_registry.Commands.CommandUsage("apps"))
 	}
 
 	reqs = []requirements.Requirement{
@@ -61,7 +61,7 @@ func (cmd *ListApps) SetDependency(deps command_registry.Dependency, pluginCall 
 }
 
 func (cmd *ListApps) Execute(c flags.FlagContext) {
-	cmd.ui.Say(T("Getting apps in org {{.OrgName}} / space {{.SpaceName}} as {{.Username}}...",
+	cmd.ui.Say(i18n.T("Getting apps in org {{.OrgName}} / space {{.SpaceName}} as {{.Username}}...",
 		map[string]interface{}{
 			"OrgName":   terminal.EntityNameColor(cmd.config.OrganizationFields().Name),
 			"SpaceName": terminal.EntityNameColor(cmd.config.SpaceFields().Name),
@@ -78,11 +78,11 @@ func (cmd *ListApps) Execute(c flags.FlagContext) {
 	cmd.ui.Say("")
 
 	if len(apps) == 0 {
-		cmd.ui.Say(T("No apps found"))
+		cmd.ui.Say(i18n.T("No apps found"))
 		return
 	}
 
-	table := terminal.NewTable(cmd.ui, []string{T("name"), T("requested state"), T("instances"), T("memory"), T("disk"), T("urls")})
+	table := terminal.NewTable(cmd.ui, []string{i18n.T("name"), i18n.T("requested state"), i18n.T("instances"), i18n.T("memory"), i18n.T("disk"), i18n.T("urls")})
 
 	for _, application := range apps {
 		var urls []string

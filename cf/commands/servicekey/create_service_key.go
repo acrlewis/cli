@@ -5,13 +5,12 @@ import (
 	"github.com/cloudfoundry/cli/cf/command_registry"
 	"github.com/cloudfoundry/cli/cf/configuration/core_config"
 	"github.com/cloudfoundry/cli/cf/errors"
+	"github.com/cloudfoundry/cli/cf/i18n"
 	"github.com/cloudfoundry/cli/cf/requirements"
 	"github.com/cloudfoundry/cli/cf/terminal"
 	"github.com/cloudfoundry/cli/json"
 	"github.com/simonleung8/flags"
 	"github.com/simonleung8/flags/flag"
-
-	. "github.com/cloudfoundry/cli/cf/i18n"
 )
 
 type CreateServiceKey struct {
@@ -28,13 +27,13 @@ func init() {
 
 func (cmd *CreateServiceKey) MetaData() command_registry.CommandMetadata {
 	fs := make(map[string]flags.FlagSet)
-	fs["c"] = &cliFlags.StringFlag{Name: "c", Usage: T("Valid JSON object containing service-specific configuration parameters, provided either in-line or in a file. For a list of supported configuration parameters, see documentation for the particular service offering.")}
+	fs["c"] = &cliFlags.StringFlag{Name: "c", Usage: i18n.T("Valid JSON object containing service-specific configuration parameters, provided either in-line or in a file. For a list of supported configuration parameters, see documentation for the particular service offering.")}
 
 	return command_registry.CommandMetadata{
 		Name:        "create-service-key",
 		ShortName:   "csk",
-		Description: T("Create key for a service instance"),
-		Usage: T(`CF_NAME create-service-key SERVICE_INSTANCE SERVICE_KEY [-c PARAMETERS_AS_JSON]
+		Description: i18n.T("Create key for a service instance"),
+		Usage: i18n.T(`CF_NAME create-service-key SERVICE_INSTANCE SERVICE_KEY [-c PARAMETERS_AS_JSON]
 
   Optionally provide service-specific configuration parameters in a valid JSON object in-line.
   CF_NAME create-service-key SERVICE_INSTANCE SERVICE_KEY -c '{"name":"value","name":"value"}'
@@ -56,7 +55,7 @@ EXAMPLE:
 
 func (cmd *CreateServiceKey) Requirements(requirementsFactory requirements.Factory, fc flags.FlagContext) (reqs []requirements.Requirement, err error) {
 	if len(fc.Args()) != 2 {
-		cmd.ui.Failed(T("Incorrect Usage. Requires SERVICE_INSTANCE and SERVICE_KEY as arguments\n\n") + command_registry.Commands.CommandUsage("create-service-key"))
+		cmd.ui.Failed(i18n.T("Incorrect Usage. Requires SERVICE_INSTANCE and SERVICE_KEY as arguments\n\n") + command_registry.Commands.CommandUsage("create-service-key"))
 	}
 
 	loginRequirement := requirementsFactory.NewLoginRequirement()
@@ -83,10 +82,10 @@ func (cmd *CreateServiceKey) Execute(c flags.FlagContext) {
 
 	paramsMap, err := json.ParseJsonFromFileOrString(params)
 	if err != nil {
-		cmd.ui.Failed(T("Invalid configuration provided for -c flag. Please provide a valid JSON object or path to a file containing a valid JSON object."))
+		cmd.ui.Failed(i18n.T("Invalid configuration provided for -c flag. Please provide a valid JSON object or path to a file containing a valid JSON object."))
 	}
 
-	cmd.ui.Say(T("Creating service key {{.ServiceKeyName}} for service instance {{.ServiceInstanceName}} as {{.CurrentUser}}...",
+	cmd.ui.Say(i18n.T("Creating service key {{.ServiceKeyName}} for service instance {{.ServiceInstanceName}} as {{.CurrentUser}}...",
 		map[string]interface{}{
 			"ServiceInstanceName": terminal.EntityNameColor(serviceInstance.Name),
 			"ServiceKeyName":      terminal.EntityNameColor(serviceKeyName),

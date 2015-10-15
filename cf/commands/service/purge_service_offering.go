@@ -4,7 +4,7 @@ import (
 	"github.com/cloudfoundry/cli/cf/api"
 	"github.com/cloudfoundry/cli/cf/command_registry"
 	"github.com/cloudfoundry/cli/cf/errors"
-	. "github.com/cloudfoundry/cli/cf/i18n"
+	"github.com/cloudfoundry/cli/cf/i18n"
 	"github.com/cloudfoundry/cli/cf/requirements"
 	"github.com/cloudfoundry/cli/cf/terminal"
 	"github.com/simonleung8/flags"
@@ -22,20 +22,20 @@ func init() {
 
 func (cmd *PurgeServiceOffering) MetaData() command_registry.CommandMetadata {
 	fs := make(map[string]flags.FlagSet)
-	fs["f"] = &cliFlags.BoolFlag{Name: "f", Usage: T("Force deletion without confirmation")}
-	fs["p"] = &cliFlags.StringFlag{Name: "p", Usage: T("Provider")}
+	fs["f"] = &cliFlags.BoolFlag{Name: "f", Usage: i18n.T("Force deletion without confirmation")}
+	fs["p"] = &cliFlags.StringFlag{Name: "p", Usage: i18n.T("Provider")}
 
 	return command_registry.CommandMetadata{
 		Name:        "purge-service-offering",
-		Description: T("Recursively remove a service and child objects from Cloud Foundry database without making requests to a service broker"),
-		Usage:       T("CF_NAME purge-service-offering SERVICE [-p PROVIDER]") + "\n\n" + scaryWarningMessage(),
+		Description: i18n.T("Recursively remove a service and child objects from Cloud Foundry database without making requests to a service broker"),
+		Usage:       i18n.T("CF_NAME purge-service-offering SERVICE [-p PROVIDER]") + "\n\n" + scaryWarningMessage(),
 		Flags:       fs,
 	}
 }
 
 func (cmd *PurgeServiceOffering) Requirements(requirementsFactory requirements.Factory, fc flags.FlagContext) (reqs []requirements.Requirement, err error) {
 	if len(fc.Args()) != 1 {
-		cmd.ui.Failed(T("Incorrect Usage. Requires an argument\n\n") + command_registry.Commands.CommandUsage("purge-service-offering"))
+		cmd.ui.Failed(i18n.T("Incorrect Usage. Requires an argument\n\n") + command_registry.Commands.CommandUsage("purge-service-offering"))
 	}
 
 	reqs = []requirements.Requirement{requirementsFactory.NewLoginRequirement()}
@@ -49,7 +49,7 @@ func (cmd *PurgeServiceOffering) SetDependency(deps command_registry.Dependency,
 }
 
 func scaryWarningMessage() string {
-	return T(`WARNING: This operation assumes that the service broker responsible for this service offering is no longer available, and all service instances have been deleted, leaving orphan records in Cloud Foundry's database. All knowledge of the service will be removed from Cloud Foundry, including service instances and service bindings. No attempt will be made to contact the service broker; running this command without destroying the service broker will cause orphan service instances. After running this command you may want to run either delete-service-auth-token or delete-service-broker to complete the cleanup.`)
+	return i18n.T(`WARNING: This operation assumes that the service broker responsible for this service offering is no longer available, and all service instances have been deleted, leaving orphan records in Cloud Foundry's database. All knowledge of the service will be removed from Cloud Foundry, including service instances and service bindings. No attempt will be made to contact the service broker; running this command without destroying the service broker will cause orphan service instances. After running this command you may want to run either delete-service-auth-token or delete-service-broker to complete the cleanup.`)
 }
 
 func (cmd *PurgeServiceOffering) Execute(c flags.FlagContext) {
@@ -60,7 +60,7 @@ func (cmd *PurgeServiceOffering) Execute(c flags.FlagContext) {
 	switch apiErr.(type) {
 	case nil:
 	case *errors.ModelNotFoundError:
-		cmd.ui.Warn(T("Service offering does not exist\nTIP: If you are trying to purge a v1 service offering, you must set the -p flag."))
+		cmd.ui.Warn(i18n.T("Service offering does not exist\nTIP: If you are trying to purge a v1 service offering, you must set the -p flag."))
 		return
 	default:
 		cmd.ui.Failed(apiErr.Error())
@@ -69,7 +69,7 @@ func (cmd *PurgeServiceOffering) Execute(c flags.FlagContext) {
 	confirmed := c.Bool("f")
 	if !confirmed {
 		cmd.ui.Warn(scaryWarningMessage())
-		confirmed = cmd.ui.Confirm(T("Really purge service offering {{.ServiceName}} from Cloud Foundry?",
+		confirmed = cmd.ui.Confirm(i18n.T("Really purge service offering {{.ServiceName}} from Cloud Foundry?",
 			map[string]interface{}{"ServiceName": serviceName},
 		))
 	}
@@ -77,7 +77,7 @@ func (cmd *PurgeServiceOffering) Execute(c flags.FlagContext) {
 	if !confirmed {
 		return
 	}
-	cmd.ui.Say(T("Purging service {{.ServiceName}}...", map[string]interface{}{"ServiceName": serviceName}))
+	cmd.ui.Say(i18n.T("Purging service {{.ServiceName}}...", map[string]interface{}{"ServiceName": serviceName}))
 	err := cmd.serviceRepo.PurgeServiceOffering(offering)
 	if err != nil {
 		cmd.ui.Failed(err.Error())

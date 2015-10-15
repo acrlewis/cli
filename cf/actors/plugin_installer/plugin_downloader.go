@@ -7,7 +7,7 @@ import (
 	"runtime"
 
 	clipr "github.com/cloudfoundry-incubator/cli-plugin-repo/models"
-	. "github.com/cloudfoundry/cli/cf/i18n"
+	"github.com/cloudfoundry/cli/cf/i18n"
 	"github.com/cloudfoundry/cli/cf/terminal"
 	"github.com/cloudfoundry/cli/fileutils"
 )
@@ -22,10 +22,10 @@ func (downloader *PluginDownloader) downloadFromPath(pluginSourceFilepath string
 	size, filename, err := downloader.FileDownloader.DownloadFile(pluginSourceFilepath)
 
 	if err != nil {
-		downloader.Ui.Failed(fmt.Sprintf(T("Download attempt failed: {{.Error}}\n\nUnable to install, plugin is not available from the given url.", map[string]interface{}{"Error": err.Error()})))
+		downloader.Ui.Failed(fmt.Sprintf(i18n.T("Download attempt failed: {{.Error}}\n\nUnable to install, plugin is not available from the given url.", map[string]interface{}{"Error": err.Error()})))
 	}
 
-	downloader.Ui.Say(fmt.Sprintf("%d "+T("bytes downloaded")+"...", size))
+	downloader.Ui.Say(fmt.Sprintf("%d "+i18n.T("bytes downloaded")+"...", size))
 
 	executablePath := filepath.Join(downloader.FileDownloader.SavePath(), filename)
 	os.Chmod(executablePath, 0700)
@@ -77,5 +77,5 @@ func (downloader *PluginDownloader) getBinaryChecksum(plugin clipr.Plugin, os st
 }
 
 func (downloader *PluginDownloader) binaryNotAvailable() {
-	downloader.Ui.Failed(T("Plugin requested has no binary available for your OS: ") + runtime.GOOS + ", " + runtime.GOARCH)
+	downloader.Ui.Failed(i18n.T("Plugin requested has no binary available for your OS: ") + runtime.GOOS + ", " + runtime.GOARCH)
 }

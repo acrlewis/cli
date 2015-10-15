@@ -11,7 +11,7 @@ import (
 
 	"github.com/cloudfoundry/cli/cf/configuration/core_config"
 	"github.com/cloudfoundry/cli/cf/errors"
-	. "github.com/cloudfoundry/cli/cf/i18n"
+	"github.com/cloudfoundry/cli/cf/i18n"
 	"github.com/cloudfoundry/cli/cf/net"
 )
 
@@ -40,7 +40,7 @@ func (repo CloudControllerCurlRepository) Request(method, path, headerString, bo
 
 	err = mergeHeaders(req.HttpReq.Header, headerString)
 	if err != nil {
-		err = errors.NewWithError(T("Error parsing headers"), err)
+		err = errors.NewWithError(i18n.T("Error parsing headers"), err)
 		return
 	}
 
@@ -60,7 +60,7 @@ func (repo CloudControllerCurlRepository) Request(method, path, headerString, bo
 
 	bytes, err := ioutil.ReadAll(res.Body)
 	if err != nil {
-		err = errors.NewWithError(T("Error reading response"), err)
+		err = errors.NewWithError(i18n.T("Error reading response"), err)
 	}
 	resBody = string(bytes)
 

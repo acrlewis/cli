@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"strings"
 
-	. "github.com/cloudfoundry/cli/cf/i18n"
 	"github.com/cloudfoundry/cli/plugin/models"
 	"github.com/simonleung8/flags"
 	"github.com/simonleung8/flags/flag"
@@ -15,6 +14,7 @@ import (
 	"github.com/cloudfoundry/cli/cf/configuration/core_config"
 	"github.com/cloudfoundry/cli/cf/errors"
 	"github.com/cloudfoundry/cli/cf/formatters"
+	"github.com/cloudfoundry/cli/cf/i18n"
 	"github.com/cloudfoundry/cli/cf/models"
 	"github.com/cloudfoundry/cli/cf/requirements"
 	"github.com/cloudfoundry/cli/cf/terminal"
@@ -41,19 +41,19 @@ func init() {
 
 func (cmd *ShowApp) MetaData() command_registry.CommandMetadata {
 	fs := make(map[string]flags.FlagSet)
-	fs["guid"] = &cliFlags.BoolFlag{Name: "guid", Usage: T("Retrieve and display the given app's guid.  All other health and status output for the app is suppressed.")}
+	fs["guid"] = &cliFlags.BoolFlag{Name: "guid", Usage: i18n.T("Retrieve and display the given app's guid.  All other health and status output for the app is suppressed.")}
 
 	return command_registry.CommandMetadata{
 		Name:        "app",
-		Description: T("Display health and status for app"),
-		Usage:       T("CF_NAME app APP_NAME"),
+		Description: i18n.T("Display health and status for app"),
+		Usage:       i18n.T("CF_NAME app APP_NAME"),
 		Flags:       fs,
 	}
 }
 
 func (cmd *ShowApp) Requirements(requirementsFactory requirements.Factory, fc flags.FlagContext) (reqs []requirements.Requirement, err error) {
 	if len(fc.Args()) != 1 {
-		cmd.ui.Failed(T("Incorrect Usage. Requires an argument\n\n") + command_registry.Commands.CommandUsage("app"))
+		cmd.ui.Failed(i18n.T("Incorrect Usage. Requires an argument\n\n") + command_registry.Commands.CommandUsage("app"))
 	}
 
 	cmd.appReq = requirementsFactory.NewApplicationRequirement(fc.Args()[0])
@@ -93,7 +93,7 @@ func (cmd *ShowApp) Execute(c flags.FlagContext) {
 }
 
 func (cmd *ShowApp) ShowApp(app models.Application, orgName, spaceName string) {
-	cmd.ui.Say(T("Showing health and status for app {{.AppName}} in org {{.OrgName}} / space {{.SpaceName}} as {{.Username}}...",
+	cmd.ui.Say(i18n.T("Showing health and status for app {{.AppName}} in org {{.OrgName}} / space {{.SpaceName}} as {{.Username}}...",
 		map[string]interface{}{
 			"AppName":   terminal.EntityNameColor(app.Name),
 			"OrgName":   terminal.EntityNameColor(orgName),
@@ -127,11 +127,11 @@ func (cmd *ShowApp) ShowApp(app models.Application, orgName, spaceName string) {
 	}
 
 	cmd.ui.Ok()
-	cmd.ui.Say("\n%s %s", terminal.HeaderColor(T("requested state:")), ui_helpers.ColoredAppState(application.ApplicationFields))
-	cmd.ui.Say("%s %s", terminal.HeaderColor(T("instances:")), ui_helpers.ColoredAppInstances(application.ApplicationFields))
-	cmd.ui.Say(T("{{.Usage}} {{.FormattedMemory}} x {{.InstanceCount}} instances",
+	cmd.ui.Say("\n%s %s", terminal.HeaderColor(i18n.T("requested state:")), ui_helpers.ColoredAppState(application.ApplicationFields))
+	cmd.ui.Say("%s %s", terminal.HeaderColor(i18n.T("instances:")), ui_helpers.ColoredAppInstances(application.ApplicationFields))
+	cmd.ui.Say(i18n.T("{{.Usage}} {{.FormattedMemory}} x {{.InstanceCount}} instances",
 		map[string]interface{}{
-			"Usage":           terminal.HeaderColor(T("usage:")),
+			"Usage":           terminal.HeaderColor(i18n.T("usage:")),
 			"FormattedMemory": formatters.ByteSize(application.Memory * formatters.MEGABYTE),
 			"InstanceCount":   application.InstanceCount}))
 
@@ -140,34 +140,34 @@ func (cmd *ShowApp) ShowApp(app models.Application, orgName, spaceName string) {
 		urls = append(urls, route.URL())
 	}
 
-	cmd.ui.Say("%s %s", terminal.HeaderColor(T("urls:")), strings.Join(urls, ", "))
+	cmd.ui.Say("%s %s", terminal.HeaderColor(i18n.T("urls:")), strings.Join(urls, ", "))
 	var lastUpdated string
 	if application.PackageUpdatedAt != nil {
 		lastUpdated = application.PackageUpdatedAt.Format("Mon Jan 2 15:04:05 MST 2006")
 	} else {
 		lastUpdated = "unknown"
 	}
-	cmd.ui.Say("%s %s", terminal.HeaderColor(T("last uploaded:")), lastUpdated)
+	cmd.ui.Say("%s %s", terminal.HeaderColor(i18n.T("last uploaded:")), lastUpdated)
 	if app.Stack != nil {
-		cmd.ui.Say("%s %s", terminal.HeaderColor(T("stack:")), app.Stack.Name)
+		cmd.ui.Say("%s %s", terminal.HeaderColor(i18n.T("stack:")), app.Stack.Name)
 	} else {
-		cmd.ui.Say("%s %s", terminal.HeaderColor(T("stack:")), "unknown")
+		cmd.ui.Say("%s %s", terminal.HeaderColor(i18n.T("stack:")), "unknown")
 	}
 
 	if app.Buildpack != "" {
-		cmd.ui.Say("%s %s\n", terminal.HeaderColor(T("buildpack:")), app.Buildpack)
+		cmd.ui.Say("%s %s\n", terminal.HeaderColor(i18n.T("buildpack:")), app.Buildpack)
 	} else if app.DetectedBuildpack != "" {
-		cmd.ui.Say("%s %s\n", terminal.HeaderColor(T("buildpack:")), app.DetectedBuildpack)
+		cmd.ui.Say("%s %s\n", terminal.HeaderColor(i18n.T("buildpack:")), app.DetectedBuildpack)
 	} else {
-		cmd.ui.Say("%s %s\n", terminal.HeaderColor(T("buildpack:")), "unknown")
+		cmd.ui.Say("%s %s\n", terminal.HeaderColor(i18n.T("buildpack:")), "unknown")
 	}
 
 	if appIsStopped {
-		cmd.ui.Say(T("There are no running instances of this app."))
+		cmd.ui.Say(i18n.T("There are no running instances of this app."))
 		return
 	}
 
-	table := terminal.NewTable(cmd.ui, []string{"", T("state"), T("since"), T("cpu"), T("memory"), T("disk"), T("details")})
+	table := terminal.NewTable(cmd.ui, []string{"", i18n.T("state"), i18n.T("since"), i18n.T("cpu"), i18n.T("memory"), i18n.T("disk"), i18n.T("details")})
 
 	for index, instance := range instances {
 		table.Add(
@@ -175,11 +175,11 @@ func (cmd *ShowApp) ShowApp(app models.Application, orgName, spaceName string) {
 			ui_helpers.ColoredInstanceState(instance),
 			instance.Since.Format("2006-01-02 03:04:05 PM"),
 			fmt.Sprintf("%.1f%%", instance.CpuUsage*100),
-			fmt.Sprintf(T("{{.MemUsage}} of {{.MemQuota}}",
+			fmt.Sprintf(i18n.T("{{.MemUsage}} of {{.MemQuota}}",
 				map[string]interface{}{
 					"MemUsage": formatters.ByteSize(instance.MemUsage),
 					"MemQuota": formatters.ByteSize(instance.MemQuota)})),
-			fmt.Sprintf(T("{{.DiskUsage}} of {{.DiskQuota}}",
+			fmt.Sprintf(i18n.T("{{.DiskUsage}} of {{.DiskQuota}}",
 				map[string]interface{}{
 					"DiskUsage": formatters.ByteSize(instance.DiskUsage),
 					"DiskQuota": formatters.ByteSize(instance.DiskQuota)})),

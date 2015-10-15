@@ -4,7 +4,7 @@ import (
 	"github.com/cloudfoundry/cli/cf/api"
 	"github.com/cloudfoundry/cli/cf/command_registry"
 	"github.com/cloudfoundry/cli/cf/configuration/core_config"
-	. "github.com/cloudfoundry/cli/cf/i18n"
+	"github.com/cloudfoundry/cli/cf/i18n"
 	"github.com/cloudfoundry/cli/cf/requirements"
 	"github.com/cloudfoundry/cli/cf/terminal"
 	"github.com/simonleung8/flags"
@@ -23,14 +23,14 @@ func init() {
 func (cmd *ListServiceAuthTokens) MetaData() command_registry.CommandMetadata {
 	return command_registry.CommandMetadata{
 		Name:        "service-auth-tokens",
-		Description: T("List service auth tokens"),
-		Usage:       T("CF_NAME service-auth-tokens"),
+		Description: i18n.T("List service auth tokens"),
+		Usage:       i18n.T("CF_NAME service-auth-tokens"),
 	}
 }
 
 func (cmd *ListServiceAuthTokens) Requirements(requirementsFactory requirements.Factory, fc flags.FlagContext) (reqs []requirements.Requirement, err error) {
 	if len(fc.Args()) != 0 {
-		cmd.ui.Failed(T("Incorrect Usage. No argument required\n\n") + command_registry.Commands.CommandUsage("service-auth-tokens"))
+		cmd.ui.Failed(i18n.T("Incorrect Usage. No argument required\n\n") + command_registry.Commands.CommandUsage("service-auth-tokens"))
 	}
 
 	reqs = []requirements.Requirement{
@@ -47,7 +47,7 @@ func (cmd *ListServiceAuthTokens) SetDependency(deps command_registry.Dependency
 }
 
 func (cmd *ListServiceAuthTokens) Execute(c flags.FlagContext) {
-	cmd.ui.Say(T("Getting service auth tokens as {{.CurrentUser}}...",
+	cmd.ui.Say(i18n.T("Getting service auth tokens as {{.CurrentUser}}...",
 		map[string]interface{}{
 			"CurrentUser": terminal.EntityNameColor(cmd.config.Username()),
 		}))
@@ -59,7 +59,7 @@ func (cmd *ListServiceAuthTokens) Execute(c flags.FlagContext) {
 	cmd.ui.Ok()
 	cmd.ui.Say("")
 
-	table := terminal.NewTable(cmd.ui, []string{T("label"), T("provider")})
+	table := terminal.NewTable(cmd.ui, []string{i18n.T("label"), i18n.T("provider")})
 
 	for _, authToken := range authTokens {
 		table.Add(authToken.Label, authToken.Provider)

@@ -8,7 +8,7 @@ import (
 	"github.com/cloudfoundry/cli/cf/command_registry"
 	"github.com/cloudfoundry/cli/cf/configuration/core_config"
 	"github.com/cloudfoundry/cli/cf/errors"
-	. "github.com/cloudfoundry/cli/cf/i18n"
+	"github.com/cloudfoundry/cli/cf/i18n"
 	"github.com/cloudfoundry/cli/cf/models"
 	"github.com/cloudfoundry/cli/cf/requirements"
 	"github.com/cloudfoundry/cli/cf/terminal"
@@ -33,19 +33,19 @@ func init() {
 
 func (cmd *Logs) MetaData() command_registry.CommandMetadata {
 	fs := make(map[string]flags.FlagSet)
-	fs["recent"] = &cliFlags.BoolFlag{Name: "recent", Usage: T("Dump recent logs instead of tailing")}
+	fs["recent"] = &cliFlags.BoolFlag{Name: "recent", Usage: i18n.T("Dump recent logs instead of tailing")}
 
 	return command_registry.CommandMetadata{
 		Name:        "logs",
-		Description: T("Tail or show recent logs for an app"),
-		Usage:       T("CF_NAME logs APP_NAME"),
+		Description: i18n.T("Tail or show recent logs for an app"),
+		Usage:       i18n.T("CF_NAME logs APP_NAME"),
 		Flags:       fs,
 	}
 }
 
 func (cmd *Logs) Requirements(requirementsFactory requirements.Factory, fc flags.FlagContext) (reqs []requirements.Requirement, err error) {
 	if len(fc.Args()) != 1 {
-		cmd.ui.Failed(T("Incorrect Usage. Requires an argument\n\n") + command_registry.Commands.CommandUsage("logs"))
+		cmd.ui.Failed(i18n.T("Incorrect Usage. Requires an argument\n\n") + command_registry.Commands.CommandUsage("logs"))
 	}
 
 	cmd.appReq = requirementsFactory.NewApplicationRequirement(fc.Args()[0])
@@ -78,7 +78,7 @@ func (cmd *Logs) Execute(c flags.FlagContext) {
 }
 
 func (cmd *Logs) recentLogsFor(app models.Application) {
-	cmd.ui.Say(T("Connected, dumping recent logs for app {{.AppName}} in org {{.OrgName}} / space {{.SpaceName}} as {{.Username}}...\n",
+	cmd.ui.Say(i18n.T("Connected, dumping recent logs for app {{.AppName}} in org {{.OrgName}} / space {{.SpaceName}} as {{.Username}}...\n",
 		map[string]interface{}{
 			"AppName":   terminal.EntityNameColor(app.Name),
 			"OrgName":   terminal.EntityNameColor(cmd.config.OrganizationFields().Name),
@@ -98,7 +98,7 @@ func (cmd *Logs) recentLogsFor(app models.Application) {
 
 func (cmd *Logs) tailLogsFor(app models.Application) {
 	onConnect := func() {
-		cmd.ui.Say(T("Connected, tailing logs for app {{.AppName}} in org {{.OrgName}} / space {{.SpaceName}} as {{.Username}}...\n",
+		cmd.ui.Say(i18n.T("Connected, tailing logs for app {{.AppName}} in org {{.OrgName}} / space {{.SpaceName}} as {{.Username}}...\n",
 			map[string]interface{}{
 				"AppName":   terminal.EntityNameColor(app.Name),
 				"OrgName":   terminal.EntityNameColor(cmd.config.OrganizationFields().Name),
@@ -119,7 +119,7 @@ func (cmd *Logs) handleError(err error) {
 	switch err.(type) {
 	case nil:
 	case *errors.InvalidSSLCert:
-		cmd.ui.Failed(err.Error() + T("\nTIP: use 'cf login -a API --skip-ssl-validation' or 'cf api API --skip-ssl-validation' to suppress this error"))
+		cmd.ui.Failed(err.Error() + i18n.T("\nTIP: use 'cf login -a API --skip-ssl-validation' or 'cf api API --skip-ssl-validation' to suppress this error"))
 	default:
 		cmd.ui.Failed(err.Error())
 	}

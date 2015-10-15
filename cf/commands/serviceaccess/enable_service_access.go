@@ -5,12 +5,11 @@ import (
 	"github.com/cloudfoundry/cli/cf/api/authentication"
 	"github.com/cloudfoundry/cli/cf/command_registry"
 	"github.com/cloudfoundry/cli/cf/configuration/core_config"
+	"github.com/cloudfoundry/cli/cf/i18n"
 	"github.com/cloudfoundry/cli/cf/requirements"
 	"github.com/cloudfoundry/cli/cf/terminal"
 	"github.com/simonleung8/flags"
 	"github.com/simonleung8/flags/flag"
-
-	. "github.com/cloudfoundry/cli/cf/i18n"
 )
 
 type EnableServiceAccess struct {
@@ -26,12 +25,12 @@ func init() {
 
 func (cmd *EnableServiceAccess) MetaData() command_registry.CommandMetadata {
 	fs := make(map[string]flags.FlagSet)
-	fs["p"] = &cliFlags.StringFlag{Name: "p", Usage: T("Enable access to a specified service plan")}
-	fs["o"] = &cliFlags.StringFlag{Name: "o", Usage: T("Enable access for a specified organization")}
+	fs["p"] = &cliFlags.StringFlag{Name: "p", Usage: i18n.T("Enable access to a specified service plan")}
+	fs["o"] = &cliFlags.StringFlag{Name: "o", Usage: i18n.T("Enable access for a specified organization")}
 
 	return command_registry.CommandMetadata{
 		Name:        "enable-service-access",
-		Description: T("Enable access to a service or service plan for one or all orgs"),
+		Description: i18n.T("Enable access to a service or service plan for one or all orgs"),
 		Usage:       "CF_NAME enable-service-access SERVICE [-p PLAN] [-o ORG]",
 		Flags:       fs,
 	}
@@ -39,7 +38,7 @@ func (cmd *EnableServiceAccess) MetaData() command_registry.CommandMetadata {
 
 func (cmd *EnableServiceAccess) Requirements(requirementsFactory requirements.Factory, fc flags.FlagContext) (reqs []requirements.Requirement, err error) {
 	if len(fc.Args()) != 1 {
-		cmd.ui.Failed(T("Incorrect Usage. Requires an argument\n\n") + command_registry.Commands.CommandUsage("enable-service-access"))
+		cmd.ui.Failed(i18n.T("Incorrect Usage. Requires an argument\n\n") + command_registry.Commands.CommandUsage("enable-service-access"))
 	}
 
 	return []requirements.Requirement{requirementsFactory.NewLoginRequirement()}, nil
@@ -76,49 +75,49 @@ func (cmd *EnableServiceAccess) Execute(c flags.FlagContext) {
 }
 
 func (cmd *EnableServiceAccess) enablePlanAndOrgForService(serviceName string, planName string, orgName string) {
-	cmd.ui.Say(T("Enabling access to plan {{.PlanName}} of service {{.ServiceName}} for org {{.OrgName}} as {{.Username}}...", map[string]interface{}{"PlanName": terminal.EntityNameColor(planName), "ServiceName": terminal.EntityNameColor(serviceName), "OrgName": terminal.EntityNameColor(orgName), "Username": terminal.EntityNameColor(cmd.config.Username())}))
+	cmd.ui.Say(i18n.T("Enabling access to plan {{.PlanName}} of service {{.ServiceName}} for org {{.OrgName}} as {{.Username}}...", map[string]interface{}{"PlanName": terminal.EntityNameColor(planName), "ServiceName": terminal.EntityNameColor(serviceName), "OrgName": terminal.EntityNameColor(orgName), "Username": terminal.EntityNameColor(cmd.config.Username())}))
 	planOriginalAccess, err := cmd.actor.UpdatePlanAndOrgForService(serviceName, planName, orgName, true)
 	if err != nil {
 		cmd.ui.Failed(err.Error())
 	}
 
 	if planOriginalAccess == actors.All {
-		cmd.ui.Say(T("The plan is already accessible for this org"))
+		cmd.ui.Say(i18n.T("The plan is already accessible for this org"))
 	}
 }
 
 func (cmd *EnableServiceAccess) enablePlanForService(serviceName string, planName string) {
-	cmd.ui.Say(T("Enabling access of plan {{.PlanName}} for service {{.ServiceName}} as {{.Username}}...", map[string]interface{}{"PlanName": terminal.EntityNameColor(planName), "ServiceName": terminal.EntityNameColor(serviceName), "Username": terminal.EntityNameColor(cmd.config.Username())}))
+	cmd.ui.Say(i18n.T("Enabling access of plan {{.PlanName}} for service {{.ServiceName}} as {{.Username}}...", map[string]interface{}{"PlanName": terminal.EntityNameColor(planName), "ServiceName": terminal.EntityNameColor(serviceName), "Username": terminal.EntityNameColor(cmd.config.Username())}))
 	planOriginalAccess, err := cmd.actor.UpdateSinglePlanForService(serviceName, planName, true)
 	if err != nil {
 		cmd.ui.Failed(err.Error())
 	}
 
 	if planOriginalAccess == actors.All {
-		cmd.ui.Say(T("The plan is already accessible for all orgs"))
+		cmd.ui.Say(i18n.T("The plan is already accessible for all orgs"))
 	}
 }
 
 func (cmd *EnableServiceAccess) enableAllPlansForService(serviceName string) {
-	cmd.ui.Say(T("Enabling access to all plans of service {{.ServiceName}} for all orgs as {{.Username}}...", map[string]interface{}{"ServiceName": terminal.EntityNameColor(serviceName), "Username": terminal.EntityNameColor(cmd.config.Username())}))
+	cmd.ui.Say(i18n.T("Enabling access to all plans of service {{.ServiceName}} for all orgs as {{.Username}}...", map[string]interface{}{"ServiceName": terminal.EntityNameColor(serviceName), "Username": terminal.EntityNameColor(cmd.config.Username())}))
 	allPlansInServicePublic, err := cmd.actor.UpdateAllPlansForService(serviceName, true)
 	if err != nil {
 		cmd.ui.Failed(err.Error())
 	}
 
 	if allPlansInServicePublic {
-		cmd.ui.Say(T("All plans of the service are already accessible for all orgs"))
+		cmd.ui.Say(i18n.T("All plans of the service are already accessible for all orgs"))
 	}
 }
 
 func (cmd *EnableServiceAccess) enableAllPlansForSingleOrgForService(serviceName string, orgName string) {
-	cmd.ui.Say(T("Enabling access to all plans of service {{.ServiceName}} for the org {{.OrgName}} as {{.Username}}...", map[string]interface{}{"ServiceName": terminal.EntityNameColor(serviceName), "OrgName": terminal.EntityNameColor(orgName), "Username": terminal.EntityNameColor(cmd.config.Username())}))
+	cmd.ui.Say(i18n.T("Enabling access to all plans of service {{.ServiceName}} for the org {{.OrgName}} as {{.Username}}...", map[string]interface{}{"ServiceName": terminal.EntityNameColor(serviceName), "OrgName": terminal.EntityNameColor(orgName), "Username": terminal.EntityNameColor(cmd.config.Username())}))
 	allPlansWereSet, err := cmd.actor.UpdateOrgForService(serviceName, orgName, true)
 	if err != nil {
 		cmd.ui.Failed(err.Error())
 	}
 
 	if allPlansWereSet {
-		cmd.ui.Say(T("All plans of the service are already accessible for this org"))
+		cmd.ui.Say(i18n.T("All plans of the service are already accessible for this org"))
 	}
 }

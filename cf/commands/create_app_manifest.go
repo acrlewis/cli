@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"sort"
 
-	. "github.com/cloudfoundry/cli/cf/i18n"
 	"github.com/simonleung8/flags"
 	"github.com/simonleung8/flags/flag"
 
@@ -12,6 +11,7 @@ import (
 	"github.com/cloudfoundry/cli/cf/api/app_instances"
 	"github.com/cloudfoundry/cli/cf/command_registry"
 	"github.com/cloudfoundry/cli/cf/configuration/core_config"
+	"github.com/cloudfoundry/cli/cf/i18n"
 	"github.com/cloudfoundry/cli/cf/manifest"
 	"github.com/cloudfoundry/cli/cf/models"
 	"github.com/cloudfoundry/cli/cf/requirements"
@@ -33,19 +33,19 @@ func init() {
 
 func (cmd *CreateAppManifest) MetaData() command_registry.CommandMetadata {
 	fs := make(map[string]flags.FlagSet)
-	fs["p"] = &cliFlags.StringFlag{Name: "p", Usage: T("Specify a path for file creation. If path not specified, manifest file is created in current working directory.")}
+	fs["p"] = &cliFlags.StringFlag{Name: "p", Usage: i18n.T("Specify a path for file creation. If path not specified, manifest file is created in current working directory.")}
 
 	return command_registry.CommandMetadata{
 		Name:        "create-app-manifest",
-		Description: T("Create an app manifest for an app that has been pushed successfully."),
-		Usage:       T("CF_NAME create-app-manifest APP_NAME [-p /path/to/<app-name>-manifest.yml ]"),
+		Description: i18n.T("Create an app manifest for an app that has been pushed successfully."),
+		Usage:       i18n.T("CF_NAME create-app-manifest APP_NAME [-p /path/to/<app-name>-manifest.yml ]"),
 		Flags:       fs,
 	}
 }
 
 func (cmd *CreateAppManifest) Requirements(requirementsFactory requirements.Factory, fc flags.FlagContext) (reqs []requirements.Requirement, err error) {
 	if len(fc.Args()) != 1 {
-		cmd.ui.Failed(T("Incorrect Usage. Requires APP_NAME as argument\n\n") + command_registry.Commands.CommandUsage("create-app-manifest"))
+		cmd.ui.Failed(i18n.T("Incorrect Usage. Requires APP_NAME as argument\n\n") + command_registry.Commands.CommandUsage("create-app-manifest"))
 	}
 
 	cmd.appReq = requirementsFactory.NewApplicationRequirement(fc.Args()[0])
@@ -71,10 +71,10 @@ func (cmd *CreateAppManifest) Execute(c flags.FlagContext) {
 
 	application, apiErr := cmd.appSummaryRepo.GetSummary(app.Guid)
 	if apiErr != nil {
-		cmd.ui.Failed(T("Error getting application summary: ") + apiErr.Error())
+		cmd.ui.Failed(i18n.T("Error getting application summary: ") + apiErr.Error())
 	}
 
-	cmd.ui.Say(T("Creating an app manifest from current settings of app ") + application.Name + " ...")
+	cmd.ui.Say(i18n.T("Creating an app manifest from current settings of app ") + application.Name + " ...")
 	cmd.ui.Say("")
 
 	savePath := "./" + application.Name + "_manifest.yml"
@@ -114,7 +114,7 @@ func (cmd *CreateAppManifest) createManifest(app models.Application, savePath st
 		for _, envVarKey := range sorted {
 			switch app.EnvironmentVars[envVarKey].(type) {
 			default:
-				cmd.ui.Failed(T("Failed to create manifest, unable to parse environment variable: ") + envVarKey)
+				cmd.ui.Failed(i18n.T("Failed to create manifest, unable to parse environment variable: ") + envVarKey)
 			case float64:
 				//json.Unmarshal turn all numbers to float64
 				value := int(app.EnvironmentVars[envVarKey].(float64))
@@ -135,11 +135,11 @@ func (cmd *CreateAppManifest) createManifest(app models.Application, savePath st
 
 	err := cmd.manifest.Save()
 	if err != nil {
-		cmd.ui.Failed(T("Error creating manifest file: ") + err.Error())
+		cmd.ui.Failed(i18n.T("Error creating manifest file: ") + err.Error())
 	}
 
 	cmd.ui.Ok()
-	cmd.ui.Say(T("Manifest file created successfully at ") + savePath)
+	cmd.ui.Say(i18n.T("Manifest file created successfully at ") + savePath)
 	cmd.ui.Say("")
 
 	return nil

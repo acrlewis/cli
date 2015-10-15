@@ -4,7 +4,7 @@ import (
 	"github.com/cloudfoundry/cli/cf/api/applications"
 	"github.com/cloudfoundry/cli/cf/command_registry"
 	"github.com/cloudfoundry/cli/cf/configuration/core_config"
-	. "github.com/cloudfoundry/cli/cf/i18n"
+	"github.com/cloudfoundry/cli/cf/i18n"
 	"github.com/cloudfoundry/cli/cf/models"
 	"github.com/cloudfoundry/cli/cf/requirements"
 	"github.com/cloudfoundry/cli/cf/terminal"
@@ -25,14 +25,14 @@ func init() {
 func (cmd *RenameApp) MetaData() command_registry.CommandMetadata {
 	return command_registry.CommandMetadata{
 		Name:        "rename",
-		Description: T("Rename an app"),
-		Usage:       T("CF_NAME rename APP_NAME NEW_APP_NAME"),
+		Description: i18n.T("Rename an app"),
+		Usage:       i18n.T("CF_NAME rename APP_NAME NEW_APP_NAME"),
 	}
 }
 
 func (cmd *RenameApp) Requirements(requirementsFactory requirements.Factory, c flags.FlagContext) (reqs []requirements.Requirement, err error) {
 	if len(c.Args()) != 2 {
-		cmd.ui.Failed(T("Incorrect Usage. Requires old app name and new app name as arguments\n\n") + command_registry.Commands.CommandUsage("rename"))
+		cmd.ui.Failed(i18n.T("Incorrect Usage. Requires old app name and new app name as arguments\n\n") + command_registry.Commands.CommandUsage("rename"))
 	}
 
 	cmd.appReq = requirementsFactory.NewApplicationRequirement(c.Args()[0])
@@ -56,7 +56,7 @@ func (cmd *RenameApp) Execute(c flags.FlagContext) {
 	app := cmd.appReq.GetApplication()
 	newName := c.Args()[1]
 
-	cmd.ui.Say(T("Renaming app {{.AppName}} to {{.NewName}} in org {{.OrgName}} / space {{.SpaceName}} as {{.Username}}...",
+	cmd.ui.Say(i18n.T("Renaming app {{.AppName}} to {{.NewName}} in org {{.OrgName}} / space {{.SpaceName}} as {{.Username}}...",
 		map[string]interface{}{
 			"AppName":   terminal.EntityNameColor(app.Name),
 			"NewName":   terminal.EntityNameColor(newName),

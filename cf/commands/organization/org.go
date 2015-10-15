@@ -7,7 +7,7 @@ import (
 	"github.com/cloudfoundry/cli/cf/command_registry"
 	"github.com/cloudfoundry/cli/cf/configuration/core_config"
 	"github.com/cloudfoundry/cli/cf/formatters"
-	. "github.com/cloudfoundry/cli/cf/i18n"
+	"github.com/cloudfoundry/cli/cf/i18n"
 	"github.com/cloudfoundry/cli/cf/models"
 	"github.com/cloudfoundry/cli/cf/requirements"
 	"github.com/cloudfoundry/cli/cf/terminal"
@@ -30,18 +30,18 @@ func init() {
 
 func (cmd *ShowOrg) MetaData() command_registry.CommandMetadata {
 	fs := make(map[string]flags.FlagSet)
-	fs["guid"] = &cliFlags.BoolFlag{Name: "guid", Usage: T("Retrieve and display the given org's guid.  All other output for the org is suppressed.")}
+	fs["guid"] = &cliFlags.BoolFlag{Name: "guid", Usage: i18n.T("Retrieve and display the given org's guid.  All other output for the org is suppressed.")}
 	return command_registry.CommandMetadata{
 		Name:        "org",
-		Description: T("Show org info"),
-		Usage:       T("CF_NAME org ORG"),
+		Description: i18n.T("Show org info"),
+		Usage:       i18n.T("CF_NAME org ORG"),
 		Flags:       fs,
 	}
 }
 
 func (cmd *ShowOrg) Requirements(requirementsFactory requirements.Factory, fc flags.FlagContext) (reqs []requirements.Requirement, err error) {
 	if len(fc.Args()) != 1 {
-		cmd.ui.Failed(T("Incorrect Usage. Requires an argument\n\n") + command_registry.Commands.CommandUsage("org"))
+		cmd.ui.Failed(i18n.T("Incorrect Usage. Requires an argument\n\n") + command_registry.Commands.CommandUsage("org"))
 	}
 
 	cmd.orgReq = requirementsFactory.NewOrganizationRequirement(fc.Args()[0])
@@ -67,7 +67,7 @@ func (cmd *ShowOrg) Execute(c flags.FlagContext) {
 	if c.Bool("guid") {
 		cmd.ui.Say(org.Guid)
 	} else {
-		cmd.ui.Say(T("Getting info for org {{.OrgName}} as {{.Username}}...",
+		cmd.ui.Say(i18n.T("Getting info for org {{.OrgName}} as {{.Username}}...",
 			map[string]interface{}{
 				"OrgName":  terminal.EntityNameColor(org.Name),
 				"Username": terminal.EntityNameColor(cmd.config.Username())}))
@@ -92,7 +92,7 @@ func (cmd *ShowOrg) Execute(c flags.FlagContext) {
 		}
 
 		quota := org.QuotaDefinition
-		orgQuota := fmt.Sprintf(T("{{.QuotaName}} ({{.MemoryLimit}}M memory limit, {{.InstanceMemoryLimit}} instance memory limit, {{.RoutesLimit}} routes, {{.ServicesLimit}} services, paid services {{.NonBasicServicesAllowed}})",
+		orgQuota := fmt.Sprintf(i18n.T("{{.QuotaName}} ({{.MemoryLimit}}M memory limit, {{.InstanceMemoryLimit}} instance memory limit, {{.RoutesLimit}} routes, {{.ServicesLimit}} services, paid services {{.NonBasicServicesAllowed}})",
 			map[string]interface{}{
 				"QuotaName":               quota.Name,
 				"MemoryLimit":             quota.MemoryLimit,
@@ -104,10 +104,10 @@ func (cmd *ShowOrg) Execute(c flags.FlagContext) {
 		if cmd.pluginCall {
 			cmd.populatePluginModel(org, quota)
 		} else {
-			table.Add("", T("domains:"), terminal.EntityNameColor(strings.Join(domains, ", ")))
-			table.Add("", T("quota:"), terminal.EntityNameColor(orgQuota))
-			table.Add("", T("spaces:"), terminal.EntityNameColor(strings.Join(spaces, ", ")))
-			table.Add("", T("space quotas:"), terminal.EntityNameColor(strings.Join(spaceQuotas, ", ")))
+			table.Add("", i18n.T("domains:"), terminal.EntityNameColor(strings.Join(domains, ", ")))
+			table.Add("", i18n.T("quota:"), terminal.EntityNameColor(orgQuota))
+			table.Add("", i18n.T("spaces:"), terminal.EntityNameColor(strings.Join(spaces, ", ")))
+			table.Add("", i18n.T("space quotas:"), terminal.EntityNameColor(strings.Join(spaceQuotas, ", ")))
 
 			table.Print()
 		}

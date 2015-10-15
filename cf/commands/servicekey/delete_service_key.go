@@ -5,12 +5,11 @@ import (
 	"github.com/cloudfoundry/cli/cf/command_registry"
 	"github.com/cloudfoundry/cli/cf/configuration/core_config"
 	"github.com/cloudfoundry/cli/cf/errors"
+	"github.com/cloudfoundry/cli/cf/i18n"
 	"github.com/cloudfoundry/cli/cf/requirements"
 	"github.com/cloudfoundry/cli/cf/terminal"
 	"github.com/simonleung8/flags"
 	"github.com/simonleung8/flags/flag"
-
-	. "github.com/cloudfoundry/cli/cf/i18n"
 )
 
 type DeleteServiceKey struct {
@@ -26,13 +25,13 @@ func init() {
 
 func (cmd *DeleteServiceKey) MetaData() command_registry.CommandMetadata {
 	fs := make(map[string]flags.FlagSet)
-	fs["f"] = &cliFlags.BoolFlag{Name: "f", Usage: T("Force deletion without confirmation")}
+	fs["f"] = &cliFlags.BoolFlag{Name: "f", Usage: i18n.T("Force deletion without confirmation")}
 
 	return command_registry.CommandMetadata{
 		Name:        "delete-service-key",
 		ShortName:   "dsk",
-		Description: T("Delete a service key"),
-		Usage: T(`CF_NAME delete-service-key SERVICE_INSTANCE SERVICE_KEY [-f]
+		Description: i18n.T("Delete a service key"),
+		Usage: i18n.T(`CF_NAME delete-service-key SERVICE_INSTANCE SERVICE_KEY [-f]
 
 EXAMPLE:
    CF_NAME delete-service-key mydb mykey`),
@@ -42,7 +41,7 @@ EXAMPLE:
 
 func (cmd *DeleteServiceKey) Requirements(requirementsFactory requirements.Factory, fc flags.FlagContext) ([]requirements.Requirement, error) {
 	if len(fc.Args()) != 2 {
-		cmd.ui.Failed(T("Incorrect Usage. Requires SERVICE_INSTANCE SERVICE_KEY as arguments\n\n") + command_registry.Commands.CommandUsage("delete-service-key"))
+		cmd.ui.Failed(i18n.T("Incorrect Usage. Requires SERVICE_INSTANCE SERVICE_KEY as arguments\n\n") + command_registry.Commands.CommandUsage("delete-service-key"))
 	}
 
 	loginRequirement := requirementsFactory.NewLoginRequirement()
@@ -65,12 +64,12 @@ func (cmd *DeleteServiceKey) Execute(c flags.FlagContext) {
 	serviceKeyName := c.Args()[1]
 
 	if !c.Bool("f") {
-		if !cmd.ui.ConfirmDelete(T("service key"), serviceKeyName) {
+		if !cmd.ui.ConfirmDelete(i18n.T("service key"), serviceKeyName) {
 			return
 		}
 	}
 
-	cmd.ui.Say(T("Deleting key {{.ServiceKeyName}} for service instance {{.ServiceInstanceName}} as {{.CurrentUser}}...",
+	cmd.ui.Say(i18n.T("Deleting key {{.ServiceKeyName}} for service instance {{.ServiceInstanceName}} as {{.CurrentUser}}...",
 		map[string]interface{}{
 			"ServiceKeyName":      terminal.EntityNameColor(serviceKeyName),
 			"ServiceInstanceName": terminal.EntityNameColor(serviceInstanceName),
@@ -80,7 +79,7 @@ func (cmd *DeleteServiceKey) Execute(c flags.FlagContext) {
 	serviceInstance, err := cmd.serviceRepo.FindInstanceByName(serviceInstanceName)
 	if err != nil {
 		cmd.ui.Ok()
-		cmd.ui.Warn(T("Service instance {{.ServiceInstanceName}} does not exist.",
+		cmd.ui.Warn(i18n.T("Service instance {{.ServiceInstanceName}} does not exist.",
 			map[string]interface{}{
 				"ServiceInstanceName": serviceInstanceName,
 			}))
@@ -91,14 +90,14 @@ func (cmd *DeleteServiceKey) Execute(c flags.FlagContext) {
 	if err != nil || serviceKey.Fields.Guid == "" {
 		switch err.(type) {
 		case *errors.NotAuthorizedError:
-			cmd.ui.Say(T("No service key {{.ServiceKeyName}} found for service instance {{.ServiceInstanceName}}",
+			cmd.ui.Say(i18n.T("No service key {{.ServiceKeyName}} found for service instance {{.ServiceInstanceName}}",
 				map[string]interface{}{
 					"ServiceKeyName":      terminal.EntityNameColor(serviceKeyName),
 					"ServiceInstanceName": terminal.EntityNameColor(serviceInstanceName)}))
 			return
 		default:
 			cmd.ui.Ok()
-			cmd.ui.Warn(T("Service key {{.ServiceKeyName}} does not exist for service instance {{.ServiceInstanceName}}.",
+			cmd.ui.Warn(i18n.T("Service key {{.ServiceKeyName}} does not exist for service instance {{.ServiceInstanceName}}.",
 				map[string]interface{}{
 					"ServiceKeyName":      serviceKeyName,
 					"ServiceInstanceName": serviceInstanceName,

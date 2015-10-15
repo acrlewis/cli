@@ -9,7 +9,7 @@ import (
 	"github.com/cloudfoundry/cli/cf/api"
 	"github.com/cloudfoundry/cli/cf/command_registry"
 	"github.com/cloudfoundry/cli/cf/configuration/core_config"
-	. "github.com/cloudfoundry/cli/cf/i18n"
+	"github.com/cloudfoundry/cli/cf/i18n"
 	"github.com/cloudfoundry/cli/cf/models"
 	"github.com/cloudfoundry/cli/cf/requirements"
 	"github.com/cloudfoundry/cli/cf/terminal"
@@ -31,8 +31,8 @@ func init() {
 }
 
 func (cmd *UpdateService) MetaData() command_registry.CommandMetadata {
-	baseUsage := T("CF_NAME update-service SERVICE_INSTANCE [-p NEW_PLAN] [-c PARAMETERS_AS_JSON] [-t TAGS]")
-	paramsUsage := T(`   Optionally provide service-specific configuration parameters in a valid JSON object in-line.
+	baseUsage := i18n.T("CF_NAME update-service SERVICE_INSTANCE [-p NEW_PLAN] [-c PARAMETERS_AS_JSON] [-t TAGS]")
+	paramsUsage := i18n.T(`   Optionally provide service-specific configuration parameters in a valid JSON object in-line.
    CF_NAME update-service -c '{"name":"value","name":"value"}'
 
    Optionally provide a file containing service-specific configuration parameters in a valid JSON object. 
@@ -46,29 +46,29 @@ func (cmd *UpdateService) MetaData() command_registry.CommandMetadata {
          "memory_mb": 1024
       }
    }`)
-	tagsUsage := T(`   Optionally provide a list of comma-delimited tags that will be written to the VCAP_SERVICES environment variable for any bound applications.`)
-	exampleUsage := T(`EXAMPLE:
+	tagsUsage := i18n.T(`   Optionally provide a list of comma-delimited tags that will be written to the VCAP_SERVICES environment variable for any bound applications.`)
+	exampleUsage := i18n.T(`EXAMPLE:
    CF_NAME update-service mydb -p gold
    CF_NAME update-service mydb -c '{"ram_gb":4}'
    CF_NAME update-service mydb -c ~/workspace/tmp/instance_config.json
    CF_NAME update-service mydb -t "list,of, tags"`)
 
 	fs := make(map[string]flags.FlagSet)
-	fs["p"] = &cliFlags.StringFlag{Name: "p", Usage: T("Change service plan for a service instance")}
-	fs["c"] = &cliFlags.StringFlag{Name: "c", Usage: T("Valid JSON object containing service-specific configuration parameters, provided either in-line or in a file. For a list of supported configuration parameters, see documentation for the particular service offering.")}
-	fs["t"] = &cliFlags.StringFlag{Name: "t", Usage: T("User provided tags")}
+	fs["p"] = &cliFlags.StringFlag{Name: "p", Usage: i18n.T("Change service plan for a service instance")}
+	fs["c"] = &cliFlags.StringFlag{Name: "c", Usage: i18n.T("Valid JSON object containing service-specific configuration parameters, provided either in-line or in a file. For a list of supported configuration parameters, see documentation for the particular service offering.")}
+	fs["t"] = &cliFlags.StringFlag{Name: "t", Usage: i18n.T("User provided tags")}
 
 	return command_registry.CommandMetadata{
 		Name:        "update-service",
-		Description: T("Update a service instance"),
-		Usage:       T(strings.Join([]string{baseUsage, paramsUsage, tagsUsage, exampleUsage}, "\n\n")),
+		Description: i18n.T("Update a service instance"),
+		Usage:       i18n.T(strings.Join([]string{baseUsage, paramsUsage, tagsUsage, exampleUsage}, "\n\n")),
 		Flags:       fs,
 	}
 }
 
 func (cmd *UpdateService) Requirements(requirementsFactory requirements.Factory, fc flags.FlagContext) (reqs []requirements.Requirement, err error) {
 	if len(fc.Args()) != 1 {
-		cmd.ui.Failed(T("Incorrect Usage. Requires an argument\n\n") + command_registry.Commands.CommandUsage("update-service"))
+		cmd.ui.Failed(i18n.T("Incorrect Usage. Requires an argument\n\n") + command_registry.Commands.CommandUsage("update-service"))
 	}
 
 	reqs = []requirements.Requirement{
@@ -96,7 +96,7 @@ func (cmd *UpdateService) Execute(c flags.FlagContext) {
 
 	if planName == "" && params == "" && tagsSet == false {
 		cmd.ui.Ok()
-		cmd.ui.Say(T("No changes were made"))
+		cmd.ui.Say(i18n.T("No changes were made"))
 		return
 	}
 
@@ -108,7 +108,7 @@ func (cmd *UpdateService) Execute(c flags.FlagContext) {
 
 	paramsMap, err := json.ParseJsonFromFileOrString(params)
 	if err != nil {
-		cmd.ui.Failed(T("Invalid configuration provided for -c flag. Please provide a valid JSON object or path to a file containing a valid JSON object."))
+		cmd.ui.Failed(i18n.T("Invalid configuration provided for -c flag. Please provide a valid JSON object or path to a file containing a valid JSON object."))
 	}
 
 	tags := ui_helpers.ParseTags(tagsList)
@@ -146,14 +146,14 @@ func (cmd *UpdateService) findPlan(serviceInstance models.ServiceInstance, planN
 			return
 		}
 	}
-	err = errors.New(T("Plan does not exist for the {{.ServiceName}} service",
+	err = errors.New(i18n.T("Plan does not exist for the {{.ServiceName}} service",
 		map[string]interface{}{"ServiceName": serviceInstance.ServiceOffering.Label}))
 	return
 }
 
 func (cmd *UpdateService) checkUpdateServicePlanApiVersion() {
 	if !cmd.config.IsMinApiVersion("2.16.0") {
-		cmd.ui.Failed(T("Updating a plan requires API v{{.RequiredCCAPIVersion}} or newer. Your current target is v{{.CurrentCCAPIVersion}}.",
+		cmd.ui.Failed(i18n.T("Updating a plan requires API v{{.RequiredCCAPIVersion}} or newer. Your current target is v{{.CurrentCCAPIVersion}}.",
 			map[string]interface{}{
 				"RequiredCCAPIVersion": "2.16.0",
 				"CurrentCCAPIVersion":  cmd.config.ApiVersion(),
@@ -162,7 +162,7 @@ func (cmd *UpdateService) checkUpdateServicePlanApiVersion() {
 }
 
 func (cmd *UpdateService) printUpdatingServiceInstanceMessage(serviceInstanceName string) {
-	cmd.ui.Say(T("Updating service instance {{.ServiceName}} as {{.UserName}}...",
+	cmd.ui.Say(i18n.T("Updating service instance {{.ServiceName}} as {{.UserName}}...",
 		map[string]interface{}{
 			"ServiceName": terminal.EntityNameColor(serviceInstanceName),
 			"UserName":    terminal.EntityNameColor(cmd.config.Username()),
@@ -178,7 +178,7 @@ func printSuccessMessageForServiceInstance(serviceInstanceName string, serviceRe
 	if instance.ServiceInstanceFields.LastOperation.State == "in progress" {
 		ui.Ok()
 		ui.Say("")
-		ui.Say(T("{{.State}} in progress. Use '{{.ServicesCommand}}' or '{{.ServiceCommand}}' to check operation status.",
+		ui.Say(i18n.T("{{.State}} in progress. Use '{{.ServicesCommand}}' or '{{.ServiceCommand}}' to check operation status.",
 			map[string]interface{}{
 				"State":           strings.Title(instance.ServiceInstanceFields.LastOperation.Type),
 				"ServicesCommand": terminal.CommandColor("cf services"),

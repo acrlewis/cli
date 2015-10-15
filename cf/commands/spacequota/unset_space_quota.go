@@ -5,7 +5,7 @@ import (
 	"github.com/cloudfoundry/cli/cf/api/spaces"
 	"github.com/cloudfoundry/cli/cf/command_registry"
 	"github.com/cloudfoundry/cli/cf/configuration/core_config"
-	. "github.com/cloudfoundry/cli/cf/i18n"
+	"github.com/cloudfoundry/cli/cf/i18n"
 	"github.com/cloudfoundry/cli/cf/requirements"
 	"github.com/cloudfoundry/cli/cf/terminal"
 	"github.com/simonleung8/flags"
@@ -25,14 +25,14 @@ func init() {
 func (cmd *UnsetSpaceQuota) MetaData() command_registry.CommandMetadata {
 	return command_registry.CommandMetadata{
 		Name:        "unset-space-quota",
-		Description: T("Unassign a quota from a space"),
-		Usage:       T("CF_NAME unset-space-quota SPACE QUOTA\n\n"),
+		Description: i18n.T("Unassign a quota from a space"),
+		Usage:       i18n.T("CF_NAME unset-space-quota SPACE QUOTA\n\n"),
 	}
 }
 
 func (cmd *UnsetSpaceQuota) Requirements(requirementsFactory requirements.Factory, fc flags.FlagContext) (reqs []requirements.Requirement, err error) {
 	if len(fc.Args()) != 2 {
-		cmd.ui.Failed(T("Incorrect Usage. Requires SPACE and QUOTA as arguments\n\n") + command_registry.Commands.CommandUsage("unset-space-quota"))
+		cmd.ui.Failed(i18n.T("Incorrect Usage. Requires SPACE and QUOTA as arguments\n\n") + command_registry.Commands.CommandUsage("unset-space-quota"))
 	}
 
 	reqs = []requirements.Requirement{
@@ -66,7 +66,7 @@ func (cmd *UnsetSpaceQuota) Execute(c flags.FlagContext) {
 		return
 	}
 
-	cmd.ui.Say(T("Unassigning space quota {{.QuotaName}} from space {{.SpaceName}} as {{.Username}}...",
+	cmd.ui.Say(i18n.T("Unassigning space quota {{.QuotaName}} from space {{.SpaceName}} as {{.Username}}...",
 		map[string]interface{}{
 			"QuotaName": terminal.EntityNameColor(quota.Name),
 			"SpaceName": terminal.EntityNameColor(space.Name),

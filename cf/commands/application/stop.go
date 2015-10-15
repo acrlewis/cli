@@ -3,12 +3,12 @@ package application
 import (
 	"errors"
 
-	. "github.com/cloudfoundry/cli/cf/i18n"
 	"github.com/simonleung8/flags"
 
 	"github.com/cloudfoundry/cli/cf/api/applications"
 	"github.com/cloudfoundry/cli/cf/command_registry"
 	"github.com/cloudfoundry/cli/cf/configuration/core_config"
+	"github.com/cloudfoundry/cli/cf/i18n"
 	"github.com/cloudfoundry/cli/cf/models"
 	"github.com/cloudfoundry/cli/cf/requirements"
 	"github.com/cloudfoundry/cli/cf/terminal"
@@ -35,14 +35,14 @@ func (cmd *Stop) MetaData() command_registry.CommandMetadata {
 	return command_registry.CommandMetadata{
 		Name:        "stop",
 		ShortName:   "sp",
-		Description: T("Stop an app"),
-		Usage:       T("CF_NAME stop APP_NAME"),
+		Description: i18n.T("Stop an app"),
+		Usage:       i18n.T("CF_NAME stop APP_NAME"),
 	}
 }
 
 func (cmd *Stop) Requirements(requirementsFactory requirements.Factory, fc flags.FlagContext) (reqs []requirements.Requirement, err error) {
 	if len(fc.Args()) != 1 {
-		cmd.ui.Failed(T("Incorrect Usage. Requires an argument\n\n") + command_registry.Commands.CommandUsage("stop"))
+		cmd.ui.Failed(i18n.T("Incorrect Usage. Requires an argument\n\n") + command_registry.Commands.CommandUsage("stop"))
 	}
 
 	cmd.appReq = requirementsFactory.NewApplicationRequirement(fc.Args()[0])
@@ -66,7 +66,7 @@ func (cmd *Stop) ApplicationStop(app models.Application, orgName, spaceName stri
 		return
 	}
 
-	cmd.ui.Say(T("Stopping app {{.AppName}} in org {{.OrgName}} / space {{.SpaceName}} as {{.CurrentUser}}...",
+	cmd.ui.Say(i18n.T("Stopping app {{.AppName}} in org {{.OrgName}} / space {{.SpaceName}} as {{.CurrentUser}}...",
 		map[string]interface{}{
 			"AppName":     terminal.EntityNameColor(app.Name),
 			"OrgName":     terminal.EntityNameColor(orgName),
@@ -88,7 +88,7 @@ func (cmd *Stop) ApplicationStop(app models.Application, orgName, spaceName stri
 func (cmd *Stop) Execute(c flags.FlagContext) {
 	app := cmd.appReq.GetApplication()
 	if app.State == "stopped" {
-		cmd.ui.Say(terminal.WarningColor(T("App ") + app.Name + T(" is already stopped")))
+		cmd.ui.Say(terminal.WarningColor(i18n.T("App ") + app.Name + i18n.T(" is already stopped")))
 	} else {
 		cmd.ApplicationStop(app, cmd.config.OrganizationFields().Name, cmd.config.SpaceFields().Name)
 	}

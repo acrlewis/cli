@@ -4,7 +4,7 @@ import (
 	"github.com/cloudfoundry/cli/cf/api"
 	"github.com/cloudfoundry/cli/cf/command_registry"
 	"github.com/cloudfoundry/cli/cf/configuration/core_config"
-	. "github.com/cloudfoundry/cli/cf/i18n"
+	"github.com/cloudfoundry/cli/cf/i18n"
 	"github.com/cloudfoundry/cli/cf/requirements"
 	"github.com/cloudfoundry/cli/cf/terminal"
 	"github.com/simonleung8/flags"
@@ -23,14 +23,14 @@ func init() {
 func (cmd *RenameServiceBroker) MetaData() command_registry.CommandMetadata {
 	return command_registry.CommandMetadata{
 		Name:        "rename-service-broker",
-		Description: T("Rename a service broker"),
-		Usage:       T("CF_NAME rename-service-broker SERVICE_BROKER NEW_SERVICE_BROKER"),
+		Description: i18n.T("Rename a service broker"),
+		Usage:       i18n.T("CF_NAME rename-service-broker SERVICE_BROKER NEW_SERVICE_BROKER"),
 	}
 }
 
 func (cmd *RenameServiceBroker) Requirements(requirementsFactory requirements.Factory, fc flags.FlagContext) (reqs []requirements.Requirement, err error) {
 	if len(fc.Args()) != 2 {
-		cmd.ui.Failed(T("Incorrect Usage. Requires SERVICE_BROKER, NEW_SERVICE_BROKER as arguments\n\n") + command_registry.Commands.CommandUsage("rename-service-broker"))
+		cmd.ui.Failed(i18n.T("Incorrect Usage. Requires SERVICE_BROKER, NEW_SERVICE_BROKER as arguments\n\n") + command_registry.Commands.CommandUsage("rename-service-broker"))
 	}
 
 	reqs = append(reqs, requirementsFactory.NewLoginRequirement())
@@ -51,7 +51,7 @@ func (cmd *RenameServiceBroker) Execute(c flags.FlagContext) {
 		return
 	}
 
-	cmd.ui.Say(T("Renaming service broker {{.OldName}} to {{.NewName}} as {{.Username}}",
+	cmd.ui.Say(i18n.T("Renaming service broker {{.OldName}} to {{.NewName}} as {{.Username}}",
 		map[string]interface{}{
 			"OldName":  terminal.EntityNameColor(serviceBroker.Name),
 			"NewName":  terminal.EntityNameColor(c.Args()[1]),

@@ -7,17 +7,16 @@ import (
 	"strings"
 	"time"
 
-	. "github.com/cloudfoundry/cli/cf/i18n"
-
 	"github.com/cloudfoundry/cli/cf"
 	"github.com/cloudfoundry/cli/cf/configuration/core_config"
+	"github.com/cloudfoundry/cli/cf/i18n"
 	"github.com/cloudfoundry/cli/cf/trace"
 )
 
 type ColoringFunction func(value string, row int, col int) string
 
 func NotLoggedInText() string {
-	return fmt.Sprintf(T("Not logged in. Use '{{.CFLoginCommand}}' to log in.", map[string]interface{}{"CFLoginCommand": CommandColor(cf.Name() + " " + "login")}))
+	return fmt.Sprintf(i18n.T("Not logged in. Use '{{.CFLoginCommand}}' to log in.", map[string]interface{}{"CFLoginCommand": CommandColor(cf.Name() + " " + "login")}))
 }
 
 type UI interface {
@@ -86,7 +85,7 @@ func (ui *terminalUI) Warn(message string, args ...interface{}) {
 }
 
 func (ui *terminalUI) ConfirmDeleteWithAssociations(modelType, modelName string) bool {
-	return ui.confirmDelete(T("Really delete the {{.ModelType}} {{.ModelName}} and everything associated with it?",
+	return ui.confirmDelete(i18n.T("Really delete the {{.ModelType}} {{.ModelName}} and everything associated with it?",
 		map[string]interface{}{
 			"ModelType": modelType,
 			"ModelName": EntityNameColor(modelName),
@@ -94,7 +93,7 @@ func (ui *terminalUI) ConfirmDeleteWithAssociations(modelType, modelName string)
 }
 
 func (ui *terminalUI) ConfirmDelete(modelType, modelName string) bool {
-	return ui.confirmDelete(T("Really delete the {{.ModelType}} {{.ModelName}}?",
+	return ui.confirmDelete(i18n.T("Really delete the {{.ModelType}} {{.ModelName}}?",
 		map[string]interface{}{
 			"ModelType": modelType,
 			"ModelName": EntityNameColor(modelName),
@@ -105,7 +104,7 @@ func (ui *terminalUI) confirmDelete(message string) bool {
 	result := ui.Confirm(message)
 
 	if !result {
-		ui.Warn(T("Delete cancelled"))
+		ui.Warn(i18n.T("Delete cancelled"))
 	}
 
 	return result
@@ -114,7 +113,7 @@ func (ui *terminalUI) confirmDelete(message string) bool {
 func (ui *terminalUI) Confirm(message string, args ...interface{}) bool {
 	response := ui.Ask(message, args...)
 	switch strings.ToLower(response) {
-	case "y", "yes", T("yes"):
+	case "y", "yes", i18n.T("yes"):
 		return true
 	}
 	return false
@@ -133,7 +132,7 @@ func (ui *terminalUI) Ask(prompt string, args ...interface{}) (answer string) {
 }
 
 func (ui *terminalUI) Ok() {
-	ui.Say(SuccessColor(T("OK")))
+	ui.Say(SuccessColor(i18n.T("OK")))
 }
 
 const QuietPanic = "This shouldn't print anything"
@@ -141,7 +140,7 @@ const QuietPanic = "This shouldn't print anything"
 func (ui *terminalUI) Failed(message string, args ...interface{}) {
 	message = fmt.Sprintf(message, args...)
 
-	if T == nil {
+	if i18n.T == nil {
 		ui.Say(FailureColor("FAILED"))
 		ui.Say(message)
 
@@ -149,10 +148,10 @@ func (ui *terminalUI) Failed(message string, args ...interface{}) {
 		trace.Logger.Print(message)
 		ui.PanicQuietly()
 	} else {
-		ui.Say(FailureColor(T("FAILED")))
+		ui.Say(FailureColor(i18n.T("FAILED")))
 		ui.Say(message)
 
-		trace.Logger.Print(T("FAILED"))
+		trace.Logger.Print(i18n.T("FAILED"))
 		trace.Logger.Print(message)
 		ui.PanicQuietly()
 	}
@@ -167,8 +166,8 @@ func (ui *terminalUI) ShowConfiguration(config core_config.Reader) {
 
 	if config.HasAPIEndpoint() {
 		table.Add(
-			T("API endpoint:"),
-			T("{{.ApiEndpoint}} (API version: {{.ApiVersionString}})",
+			i18n.T("API endpoint:"),
+			i18n.T("{{.ApiEndpoint}} (API version: {{.ApiVersionString}})",
 				map[string]interface{}{
 					"ApiEndpoint":      EntityNameColor(config.ApiEndpoint()),
 					"ApiVersionString": EntityNameColor(config.ApiVersion()),
@@ -182,7 +181,7 @@ func (ui *terminalUI) ShowConfiguration(config core_config.Reader) {
 		return
 	} else {
 		table.Add(
-			T("User:"),
+			i18n.T("User:"),
 			EntityNameColor(config.UserEmail()),
 		)
 	}
@@ -190,7 +189,7 @@ func (ui *terminalUI) ShowConfiguration(config core_config.Reader) {
 	if !config.HasOrganization() && !config.HasSpace() {
 		table.Print()
 		command := fmt.Sprintf("%s target -o ORG -s SPACE", cf.Name())
-		ui.Say(T("No org or space targeted, use '{{.CFTargetCommand}}'",
+		ui.Say(i18n.T("No org or space targeted, use '{{.CFTargetCommand}}'",
 			map[string]interface{}{
 				"CFTargetCommand": CommandColor(command),
 			}))
@@ -199,14 +198,14 @@ func (ui *terminalUI) ShowConfiguration(config core_config.Reader) {
 
 	if config.HasOrganization() {
 		table.Add(
-			T("Org:"),
+			i18n.T("Org:"),
 			EntityNameColor(config.OrganizationFields().Name),
 		)
 	} else {
 		command := fmt.Sprintf("%s target -o Org", cf.Name())
 		table.Add(
-			T("Org:"),
-			T("No org targeted, use '{{.CFTargetCommand}}'",
+			i18n.T("Org:"),
+			i18n.T("No org targeted, use '{{.CFTargetCommand}}'",
 				map[string]interface{}{
 					"CFTargetCommand": CommandColor(command),
 				}),
@@ -215,14 +214,14 @@ func (ui *terminalUI) ShowConfiguration(config core_config.Reader) {
 
 	if config.HasSpace() {
 		table.Add(
-			T("Space:"),
+			i18n.T("Space:"),
 			EntityNameColor(config.SpaceFields().Name),
 		)
 	} else {
 		command := fmt.Sprintf("%s target -s SPACE", cf.Name())
 		table.Add(
-			T("Space:"),
-			T("No space targeted, use '{{.CFTargetCommand}}'", map[string]interface{}{"CFTargetCommand": CommandColor(command)}),
+			i18n.T("Space:"),
+			i18n.T("No space targeted, use '{{.CFTargetCommand}}'", map[string]interface{}{"CFTargetCommand": CommandColor(command)}),
 		)
 	}
 
@@ -244,7 +243,7 @@ func (ui *terminalUI) Table(headers []string) Table {
 func (ui *terminalUI) NotifyUpdateIfNeeded(config core_config.Reader) {
 	if !config.IsMinCliVersion(cf.Version) {
 		ui.Say("")
-		ui.Say(T("Cloud Foundry API version {{.ApiVer}} requires CLI version {{.CliMin}}.  You are currently on version {{.CliVer}}. To upgrade your CLI, please visit: https://github.com/cloudfoundry/cli#downloads",
+		ui.Say(i18n.T("Cloud Foundry API version {{.ApiVer}} requires CLI version {{.CliMin}}.  You are currently on version {{.CliVer}}. To upgrade your CLI, please visit: https://github.com/cloudfoundry/cli#downloads",
 			map[string]interface{}{
 				"ApiVer": config.ApiVersion(),
 				"CliMin": config.MinCliVersion(),

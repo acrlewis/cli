@@ -5,7 +5,7 @@ import (
 	"github.com/cloudfoundry/cli/cf/api/spaces"
 	"github.com/cloudfoundry/cli/cf/command_registry"
 	"github.com/cloudfoundry/cli/cf/configuration/core_config"
-	. "github.com/cloudfoundry/cli/cf/i18n"
+	"github.com/cloudfoundry/cli/cf/i18n"
 	"github.com/cloudfoundry/cli/cf/models"
 	"github.com/cloudfoundry/cli/cf/requirements"
 	"github.com/cloudfoundry/cli/cf/terminal"
@@ -28,18 +28,18 @@ func init() {
 func (cmd *UnsetSpaceRole) MetaData() command_registry.CommandMetadata {
 	return command_registry.CommandMetadata{
 		Name:        "unset-space-role",
-		Description: T("Remove a space role from a user"),
-		Usage: T("CF_NAME unset-space-role USERNAME ORG SPACE ROLE\n\n") +
-			T("ROLES:\n") +
-			T("   SpaceManager - Invite and manage users, and enable features for a given space\n") +
-			T("   SpaceDeveloper - Create and manage apps and services, and see logs and reports\n") +
-			T("   SpaceAuditor - View logs, reports, and settings on this space\n"),
+		Description: i18n.T("Remove a space role from a user"),
+		Usage: i18n.T("CF_NAME unset-space-role USERNAME ORG SPACE ROLE\n\n") +
+			i18n.T("ROLES:\n") +
+			i18n.T("   SpaceManager - Invite and manage users, and enable features for a given space\n") +
+			i18n.T("   SpaceDeveloper - Create and manage apps and services, and see logs and reports\n") +
+			i18n.T("   SpaceAuditor - View logs, reports, and settings on this space\n"),
 	}
 }
 
 func (cmd *UnsetSpaceRole) Requirements(requirementsFactory requirements.Factory, fc flags.FlagContext) (reqs []requirements.Requirement, err error) {
 	if len(fc.Args()) != 4 {
-		cmd.ui.Failed(T("Incorrect Usage. Requires USERNAME, ORG, SPACE, ROLE as arguments\n\n") + command_registry.Commands.CommandUsage("unset-space-role"))
+		cmd.ui.Failed(i18n.T("Incorrect Usage. Requires USERNAME, ORG, SPACE, ROLE as arguments\n\n") + command_registry.Commands.CommandUsage("unset-space-role"))
 	}
 
 	cmd.userReq = requirementsFactory.NewUserRequirement(fc.Args()[0])
@@ -74,7 +74,7 @@ func (cmd *UnsetSpaceRole) Execute(c flags.FlagContext) {
 		return
 	}
 
-	cmd.ui.Say(T("Removing role {{.Role}} from user {{.TargetUser}} in org {{.TargetOrg}} / space {{.TargetSpace}} as {{.CurrentUser}}...",
+	cmd.ui.Say(i18n.T("Removing role {{.Role}} from user {{.TargetUser}} in org {{.TargetOrg}} / space {{.TargetSpace}} as {{.CurrentUser}}...",
 		map[string]interface{}{
 			"Role":        terminal.EntityNameColor(role),
 			"TargetUser":  terminal.EntityNameColor(user.Username),

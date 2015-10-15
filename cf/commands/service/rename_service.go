@@ -6,7 +6,7 @@ import (
 	"github.com/cloudfoundry/cli/cf/command_registry"
 	"github.com/cloudfoundry/cli/cf/configuration/core_config"
 	"github.com/cloudfoundry/cli/cf/errors"
-	. "github.com/cloudfoundry/cli/cf/i18n"
+	"github.com/cloudfoundry/cli/cf/i18n"
 	"github.com/cloudfoundry/cli/cf/requirements"
 	"github.com/cloudfoundry/cli/cf/terminal"
 	"github.com/simonleung8/flags"
@@ -26,14 +26,14 @@ func init() {
 func (cmd *RenameService) MetaData() command_registry.CommandMetadata {
 	return command_registry.CommandMetadata{
 		Name:        "rename-service",
-		Description: T("Rename a service instance"),
-		Usage:       T("CF_NAME rename-service SERVICE_INSTANCE NEW_SERVICE_INSTANCE"),
+		Description: i18n.T("Rename a service instance"),
+		Usage:       i18n.T("CF_NAME rename-service SERVICE_INSTANCE NEW_SERVICE_INSTANCE"),
 	}
 }
 
 func (cmd *RenameService) Requirements(requirementsFactory requirements.Factory, fc flags.FlagContext) (reqs []requirements.Requirement, err error) {
 	if len(fc.Args()) != 2 {
-		cmd.ui.Failed(T("Incorrect Usage. Requires SERVICE_INSTANCE and NEW_SERVICE_INSTANCE as arguments\n\n") + command_registry.Commands.CommandUsage("rename-service"))
+		cmd.ui.Failed(i18n.T("Incorrect Usage. Requires SERVICE_INSTANCE and NEW_SERVICE_INSTANCE as arguments\n\n") + command_registry.Commands.CommandUsage("rename-service"))
 	}
 
 	cmd.serviceInstanceReq = requirementsFactory.NewServiceInstanceRequirement(fc.Args()[0])
@@ -58,7 +58,7 @@ func (cmd *RenameService) Execute(c flags.FlagContext) {
 	newName := c.Args()[1]
 	serviceInstance := cmd.serviceInstanceReq.GetServiceInstance()
 
-	cmd.ui.Say(T("Renaming service {{.ServiceName}} to {{.NewServiceName}} in org {{.OrgName}} / space {{.SpaceName}} as {{.CurrentUser}}...",
+	cmd.ui.Say(i18n.T("Renaming service {{.ServiceName}} to {{.NewServiceName}} in org {{.OrgName}} / space {{.SpaceName}} as {{.CurrentUser}}...",
 		map[string]interface{}{
 			"ServiceName":    terminal.EntityNameColor(serviceInstance.Name),
 			"NewServiceName": terminal.EntityNameColor(newName),
@@ -70,7 +70,7 @@ func (cmd *RenameService) Execute(c flags.FlagContext) {
 
 	if err != nil {
 		if httpError, ok := err.(errors.HttpError); ok && httpError.ErrorCode() == errors.SERVICE_INSTANCE_NAME_TAKEN {
-			cmd.ui.Failed(T("{{.ErrorDescription}}\nTIP: Use '{{.CFServicesCommand}}' to view all services in this org and space.",
+			cmd.ui.Failed(i18n.T("{{.ErrorDescription}}\nTIP: Use '{{.CFServicesCommand}}' to view all services in this org and space.",
 				map[string]interface{}{
 					"ErrorDescription":  httpError.Error(),
 					"CFServicesCommand": cf.Name() + " " + "services",

@@ -4,7 +4,7 @@ import (
 	"github.com/cloudfoundry/cli/cf/api/feature_flags"
 	"github.com/cloudfoundry/cli/cf/command_registry"
 	"github.com/cloudfoundry/cli/cf/configuration/core_config"
-	. "github.com/cloudfoundry/cli/cf/i18n"
+	"github.com/cloudfoundry/cli/cf/i18n"
 	"github.com/cloudfoundry/cli/cf/requirements"
 	"github.com/cloudfoundry/cli/cf/terminal"
 	"github.com/simonleung8/flags"
@@ -23,14 +23,14 @@ func init() {
 func (cmd *ShowFeatureFlag) MetaData() command_registry.CommandMetadata {
 	return command_registry.CommandMetadata{
 		Name:        "feature-flag",
-		Description: T("Retrieve an individual feature flag with status"),
-		Usage:       T("CF_NAME feature-flag FEATURE_NAME"),
+		Description: i18n.T("Retrieve an individual feature flag with status"),
+		Usage:       i18n.T("CF_NAME feature-flag FEATURE_NAME"),
 	}
 }
 
 func (cmd *ShowFeatureFlag) Requirements(requirementsFactory requirements.Factory, fc flags.FlagContext) (reqs []requirements.Requirement, err error) {
 	if len(fc.Args()) != 1 {
-		cmd.ui.Failed(T("Incorrect Usage. Requires an argument\n\n") + command_registry.Commands.CommandUsage("feature-flag"))
+		cmd.ui.Failed(i18n.T("Incorrect Usage. Requires an argument\n\n") + command_registry.Commands.CommandUsage("feature-flag"))
 	}
 
 	reqs = []requirements.Requirement{
@@ -49,7 +49,7 @@ func (cmd *ShowFeatureFlag) SetDependency(deps command_registry.Dependency, plug
 func (cmd *ShowFeatureFlag) Execute(c flags.FlagContext) {
 	flagName := c.Args()[0]
 
-	cmd.ui.Say(T("Retrieving status of {{.FeatureFlag}} as {{.Username}}...", map[string]interface{}{
+	cmd.ui.Say(i18n.T("Retrieving status of {{.FeatureFlag}} as {{.Username}}...", map[string]interface{}{
 		"FeatureFlag": terminal.EntityNameColor(flagName),
 		"Username":    terminal.EntityNameColor(cmd.config.Username())}))
 
@@ -62,7 +62,7 @@ func (cmd *ShowFeatureFlag) Execute(c flags.FlagContext) {
 	cmd.ui.Ok()
 	cmd.ui.Say("")
 
-	table := terminal.NewTable(cmd.ui, []string{T("Features"), T("State")})
+	table := terminal.NewTable(cmd.ui, []string{i18n.T("Features"), i18n.T("State")})
 	table.Add(flag.Name, cmd.flagBoolToString(flag.Enabled))
 
 	table.Print()

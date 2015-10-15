@@ -5,7 +5,7 @@ import (
 	"github.com/cloudfoundry/cli/cf/api"
 	"github.com/cloudfoundry/cli/cf/command_registry"
 	"github.com/cloudfoundry/cli/cf/configuration/core_config"
-	. "github.com/cloudfoundry/cli/cf/i18n"
+	"github.com/cloudfoundry/cli/cf/i18n"
 	"github.com/cloudfoundry/cli/cf/models"
 	"github.com/cloudfoundry/cli/cf/requirements"
 	"github.com/cloudfoundry/cli/cf/terminal"
@@ -29,19 +29,19 @@ func init() {
 
 func (cmd *OrgUsers) MetaData() command_registry.CommandMetadata {
 	fs := make(map[string]flags.FlagSet)
-	fs["a"] = &cliFlags.BoolFlag{Name: "a", Usage: T("List all users in the org")}
+	fs["a"] = &cliFlags.BoolFlag{Name: "a", Usage: i18n.T("List all users in the org")}
 
 	return command_registry.CommandMetadata{
 		Name:        "org-users",
-		Description: T("Show org users by role"),
-		Usage:       T("CF_NAME org-users ORG"),
+		Description: i18n.T("Show org users by role"),
+		Usage:       i18n.T("CF_NAME org-users ORG"),
 		Flags:       fs,
 	}
 }
 
 func (cmd *OrgUsers) Requirements(requirementsFactory requirements.Factory, fc flags.FlagContext) (reqs []requirements.Requirement, err error) {
 	if len(fc.Args()) != 1 {
-		cmd.ui.Failed(T("Incorrect Usage. Requires an argument\n\n") + command_registry.Commands.CommandUsage("org-users"))
+		cmd.ui.Failed(i18n.T("Incorrect Usage. Requires an argument\n\n") + command_registry.Commands.CommandUsage("org-users"))
 	}
 
 	cmd.orgReq = requirementsFactory.NewOrganizationRequirement(fc.Args()[0])
@@ -65,7 +65,7 @@ func (cmd *OrgUsers) SetDependency(deps command_registry.Dependency, pluginCall 
 func (cmd *OrgUsers) Execute(c flags.FlagContext) {
 	org := cmd.orgReq.GetOrganization()
 
-	cmd.ui.Say(T("Getting users in org {{.TargetOrg}} as {{.CurrentUser}}...",
+	cmd.ui.Say(i18n.T("Getting users in org {{.TargetOrg}} as {{.CurrentUser}}...",
 		map[string]interface{}{
 			"TargetOrg":   terminal.EntityNameColor(org.Name),
 			"CurrentUser": terminal.EntityNameColor(cmd.config.Username()),
@@ -95,10 +95,10 @@ func (cmd *OrgUsers) printer(c flags.FlagContext) userprint.UserPrinter {
 		UserLister: cmd.userLister(),
 		Roles:      roles,
 		RoleDisplayNames: map[string]string{
-			models.ORG_USER:        T("USERS"),
-			models.ORG_MANAGER:     T("ORG MANAGER"),
-			models.BILLING_MANAGER: T("BILLING MANAGER"),
-			models.ORG_AUDITOR:     T("ORG AUDITOR"),
+			models.ORG_USER:        i18n.T("USERS"),
+			models.ORG_MANAGER:     i18n.T("ORG MANAGER"),
+			models.BILLING_MANAGER: i18n.T("BILLING MANAGER"),
+			models.ORG_AUDITOR:     i18n.T("ORG AUDITOR"),
 		},
 	}
 }

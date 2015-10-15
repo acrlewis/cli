@@ -5,7 +5,7 @@ import (
 	"github.com/cloudfoundry/cli/cf/command_registry"
 	"github.com/cloudfoundry/cli/cf/configuration/core_config"
 	"github.com/cloudfoundry/cli/cf/errors"
-	. "github.com/cloudfoundry/cli/cf/i18n"
+	"github.com/cloudfoundry/cli/cf/i18n"
 	"github.com/cloudfoundry/cli/cf/requirements"
 	"github.com/cloudfoundry/cli/cf/terminal"
 	"github.com/simonleung8/flags"
@@ -25,8 +25,8 @@ func (cmd *Password) MetaData() command_registry.CommandMetadata {
 	return command_registry.CommandMetadata{
 		Name:        "passwd",
 		ShortName:   "pw",
-		Description: T("Change user password"),
-		Usage:       T("CF_NAME passwd"),
+		Description: i18n.T("Change user password"),
+		Usage:       i18n.T("CF_NAME passwd"),
 	}
 }
 
@@ -43,23 +43,23 @@ func (cmd *Password) SetDependency(deps command_registry.Dependency, pluginCall 
 }
 
 func (cmd *Password) Execute(c flags.FlagContext) {
-	oldPassword := cmd.ui.AskForPassword(T("Current Password"))
-	newPassword := cmd.ui.AskForPassword(T("New Password"))
-	verifiedPassword := cmd.ui.AskForPassword(T("Verify Password"))
+	oldPassword := cmd.ui.AskForPassword(i18n.T("Current Password"))
+	newPassword := cmd.ui.AskForPassword(i18n.T("New Password"))
+	verifiedPassword := cmd.ui.AskForPassword(i18n.T("Verify Password"))
 
 	if verifiedPassword != newPassword {
-		cmd.ui.Failed(T("Password verification does not match"))
+		cmd.ui.Failed(i18n.T("Password verification does not match"))
 		return
 	}
 
-	cmd.ui.Say(T("Changing password..."))
+	cmd.ui.Say(i18n.T("Changing password..."))
 	apiErr := cmd.pwdRepo.UpdatePassword(oldPassword, newPassword)
 
 	switch typedErr := apiErr.(type) {
 	case nil:
 	case errors.HttpError:
 		if typedErr.StatusCode() == 401 {
-			cmd.ui.Failed(T("Current password did not match"))
+			cmd.ui.Failed(i18n.T("Current password did not match"))
 		} else {
 			cmd.ui.Failed(apiErr.Error())
 		}
@@ -69,5 +69,5 @@ func (cmd *Password) Execute(c flags.FlagContext) {
 
 	cmd.ui.Ok()
 	cmd.config.ClearSession()
-	cmd.ui.Say(T("Please log in again"))
+	cmd.ui.Say(i18n.T("Please log in again"))
 }

@@ -8,7 +8,7 @@ import (
 	"github.com/cloudfoundry/cli/cf/api/authentication"
 	"github.com/cloudfoundry/cli/cf/command_registry"
 	"github.com/cloudfoundry/cli/cf/configuration/core_config"
-	. "github.com/cloudfoundry/cli/cf/i18n"
+	"github.com/cloudfoundry/cli/cf/i18n"
 	"github.com/cloudfoundry/cli/cf/models"
 	"github.com/cloudfoundry/cli/cf/requirements"
 	"github.com/cloudfoundry/cli/cf/terminal"
@@ -29,13 +29,13 @@ func init() {
 
 func (cmd *ServiceAccess) MetaData() command_registry.CommandMetadata {
 	fs := make(map[string]flags.FlagSet)
-	fs["b"] = &cliFlags.StringFlag{Name: "b", Usage: T("access for plans of a particular broker")}
-	fs["e"] = &cliFlags.StringFlag{Name: "e", Usage: T("access for plans of a particular service offering")}
-	fs["o"] = &cliFlags.StringFlag{Name: "o", Usage: T("plans accessible by a particular organization")}
+	fs["b"] = &cliFlags.StringFlag{Name: "b", Usage: i18n.T("access for plans of a particular broker")}
+	fs["e"] = &cliFlags.StringFlag{Name: "e", Usage: i18n.T("access for plans of a particular service offering")}
+	fs["o"] = &cliFlags.StringFlag{Name: "o", Usage: i18n.T("plans accessible by a particular organization")}
 
 	return command_registry.CommandMetadata{
 		Name:        "service-access",
-		Description: T("List service access settings"),
+		Description: i18n.T("List service access settings"),
 		Usage:       "CF_NAME service-access [-b BROKER] [-e SERVICE] [-o ORG]",
 		Flags:       fs,
 	}
@@ -43,7 +43,7 @@ func (cmd *ServiceAccess) MetaData() command_registry.CommandMetadata {
 
 func (cmd *ServiceAccess) Requirements(requirementsFactory requirements.Factory, fc flags.FlagContext) (reqs []requirements.Requirement, err error) {
 	if len(fc.Args()) != 0 {
-		cmd.ui.Failed(T("Incorrect Usage. No argument required\n\n") + command_registry.Commands.CommandUsage("service-access"))
+		cmd.ui.Failed(i18n.T("Incorrect Usage. No argument required\n\n") + command_registry.Commands.CommandUsage("service-access"))
 	}
 
 	reqs = []requirements.Requirement{
@@ -71,40 +71,40 @@ func (cmd *ServiceAccess) Execute(c flags.FlagContext) {
 	orgName := c.String("o")
 
 	if brokerName != "" && serviceName != "" && orgName != "" {
-		cmd.ui.Say(T("Getting service access for broker {{.Broker}} and service {{.Service}} and organization {{.Organization}} as {{.Username}}...", map[string]interface{}{
+		cmd.ui.Say(i18n.T("Getting service access for broker {{.Broker}} and service {{.Service}} and organization {{.Organization}} as {{.Username}}...", map[string]interface{}{
 			"Broker":       terminal.EntityNameColor(brokerName),
 			"Service":      terminal.EntityNameColor(serviceName),
 			"Organization": terminal.EntityNameColor(orgName),
 			"Username":     terminal.EntityNameColor(cmd.config.Username())}))
 	} else if serviceName != "" && orgName != "" {
-		cmd.ui.Say(T("Getting service access for service {{.Service}} and organization {{.Organization}} as {{.Username}}...", map[string]interface{}{
+		cmd.ui.Say(i18n.T("Getting service access for service {{.Service}} and organization {{.Organization}} as {{.Username}}...", map[string]interface{}{
 			"Service":      terminal.EntityNameColor(serviceName),
 			"Organization": terminal.EntityNameColor(orgName),
 			"Username":     terminal.EntityNameColor(cmd.config.Username())}))
 	} else if brokerName != "" && orgName != "" {
-		cmd.ui.Say(T("Getting service access for broker {{.Broker}} and organization {{.Organization}} as {{.Username}}...", map[string]interface{}{
+		cmd.ui.Say(i18n.T("Getting service access for broker {{.Broker}} and organization {{.Organization}} as {{.Username}}...", map[string]interface{}{
 			"Broker":       terminal.EntityNameColor(brokerName),
 			"Organization": terminal.EntityNameColor(orgName),
 			"Username":     terminal.EntityNameColor(cmd.config.Username())}))
 	} else if brokerName != "" && serviceName != "" {
-		cmd.ui.Say(T("Getting service access for broker {{.Broker}} and service {{.Service}} as {{.Username}}...", map[string]interface{}{
+		cmd.ui.Say(i18n.T("Getting service access for broker {{.Broker}} and service {{.Service}} as {{.Username}}...", map[string]interface{}{
 			"Broker":   terminal.EntityNameColor(brokerName),
 			"Service":  terminal.EntityNameColor(serviceName),
 			"Username": terminal.EntityNameColor(cmd.config.Username())}))
 	} else if brokerName != "" {
-		cmd.ui.Say(T("Getting service access for broker {{.Broker}} as {{.Username}}...", map[string]interface{}{
+		cmd.ui.Say(i18n.T("Getting service access for broker {{.Broker}} as {{.Username}}...", map[string]interface{}{
 			"Broker":   terminal.EntityNameColor(brokerName),
 			"Username": terminal.EntityNameColor(cmd.config.Username())}))
 	} else if serviceName != "" {
-		cmd.ui.Say(T("Getting service access for service {{.Service}} as {{.Username}}...", map[string]interface{}{
+		cmd.ui.Say(i18n.T("Getting service access for service {{.Service}} as {{.Username}}...", map[string]interface{}{
 			"Service":  terminal.EntityNameColor(serviceName),
 			"Username": terminal.EntityNameColor(cmd.config.Username())}))
 	} else if orgName != "" {
-		cmd.ui.Say(T("Getting service access for organization {{.Organization}} as {{.Username}}...", map[string]interface{}{
+		cmd.ui.Say(i18n.T("Getting service access for organization {{.Organization}} as {{.Username}}...", map[string]interface{}{
 			"Organization": terminal.EntityNameColor(orgName),
 			"Username":     terminal.EntityNameColor(cmd.config.Username())}))
 	} else {
-		cmd.ui.Say(T("Getting service access as {{.Username}}...", map[string]interface{}{
+		cmd.ui.Say(i18n.T("Getting service access as {{.Username}}...", map[string]interface{}{
 			"Username": terminal.EntityNameColor(cmd.config.Username())}))
 	}
 
@@ -118,9 +118,9 @@ func (cmd *ServiceAccess) Execute(c flags.FlagContext) {
 
 func (cmd ServiceAccess) printTable(brokers []models.ServiceBroker) {
 	for _, serviceBroker := range brokers {
-		cmd.ui.Say(fmt.Sprintf(T("broker: {{.Name}}", map[string]interface{}{"Name": serviceBroker.Name})))
+		cmd.ui.Say(fmt.Sprintf(i18n.T("broker: {{.Name}}", map[string]interface{}{"Name": serviceBroker.Name})))
 
-		table := terminal.NewTable(cmd.ui, []string{"", T("service"), T("plan"), T("access"), T("orgs")})
+		table := terminal.NewTable(cmd.ui, []string{"", i18n.T("service"), i18n.T("plan"), i18n.T("access"), i18n.T("orgs")})
 		for _, service := range serviceBroker.Services {
 			if len(service.Plans) > 0 {
 				for _, plan := range service.Plans {
@@ -139,10 +139,10 @@ func (cmd ServiceAccess) printTable(brokers []models.ServiceBroker) {
 
 func (cmd ServiceAccess) formatAccess(public bool, orgNames []string) string {
 	if public {
-		return T("all")
+		return i18n.T("all")
 	}
 	if len(orgNames) > 0 {
-		return T("limited")
+		return i18n.T("limited")
 	}
-	return T("none")
+	return i18n.T("none")
 }

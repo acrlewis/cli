@@ -4,7 +4,7 @@ import (
 	"github.com/cloudfoundry/cli/cf/api/organizations"
 	"github.com/cloudfoundry/cli/cf/command_registry"
 	"github.com/cloudfoundry/cli/cf/configuration/core_config"
-	. "github.com/cloudfoundry/cli/cf/i18n"
+	"github.com/cloudfoundry/cli/cf/i18n"
 	"github.com/cloudfoundry/cli/cf/models"
 	"github.com/cloudfoundry/cli/cf/requirements"
 	"github.com/cloudfoundry/cli/cf/terminal"
@@ -28,14 +28,14 @@ func (cmd *ListOrgs) MetaData() command_registry.CommandMetadata {
 	return command_registry.CommandMetadata{
 		Name:        "orgs",
 		ShortName:   "o",
-		Description: T("List all orgs"),
+		Description: i18n.T("List all orgs"),
 		Usage:       "CF_NAME orgs",
 	}
 }
 
 func (cmd *ListOrgs) Requirements(requirementsFactory requirements.Factory, fc flags.FlagContext) (reqs []requirements.Requirement, err error) {
 	if len(fc.Args()) != 0 {
-		cmd.ui.Failed(T("Incorrect Usage. No argument required\n\n") + command_registry.Commands.CommandUsage("orgs"))
+		cmd.ui.Failed(i18n.T("Incorrect Usage. No argument required\n\n") + command_registry.Commands.CommandUsage("orgs"))
 	}
 
 	reqs = []requirements.Requirement{
@@ -54,11 +54,11 @@ func (cmd *ListOrgs) SetDependency(deps command_registry.Dependency, pluginCall 
 }
 
 func (cmd ListOrgs) Execute(fc flags.FlagContext) {
-	cmd.ui.Say(T("Getting orgs as {{.Username}}...\n",
+	cmd.ui.Say(i18n.T("Getting orgs as {{.Username}}...\n",
 		map[string]interface{}{"Username": terminal.EntityNameColor(cmd.config.Username())}))
 
 	noOrgs := true
-	table := cmd.ui.Table([]string{T("name")})
+	table := cmd.ui.Table([]string{i18n.T("name")})
 
 	orgs, apiErr := cmd.orgRepo.ListOrgs()
 	if apiErr != nil {
@@ -72,13 +72,13 @@ func (cmd ListOrgs) Execute(fc flags.FlagContext) {
 	table.Print()
 
 	if apiErr != nil {
-		cmd.ui.Failed(T("Failed fetching orgs.\n{{.ApiErr}}",
+		cmd.ui.Failed(i18n.T("Failed fetching orgs.\n{{.ApiErr}}",
 			map[string]interface{}{"ApiErr": apiErr}))
 		return
 	}
 
 	if noOrgs {
-		cmd.ui.Say(T("No orgs found"))
+		cmd.ui.Say(i18n.T("No orgs found"))
 	}
 
 	if cmd.pluginCall {

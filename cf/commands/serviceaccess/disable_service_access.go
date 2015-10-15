@@ -5,7 +5,7 @@ import (
 	"github.com/cloudfoundry/cli/cf/api/authentication"
 	"github.com/cloudfoundry/cli/cf/command_registry"
 	"github.com/cloudfoundry/cli/cf/configuration/core_config"
-	. "github.com/cloudfoundry/cli/cf/i18n"
+	"github.com/cloudfoundry/cli/cf/i18n"
 	"github.com/cloudfoundry/cli/cf/requirements"
 	"github.com/cloudfoundry/cli/cf/terminal"
 	"github.com/simonleung8/flags"
@@ -25,12 +25,12 @@ func init() {
 
 func (cmd *DisableServiceAccess) MetaData() command_registry.CommandMetadata {
 	fs := make(map[string]flags.FlagSet)
-	fs["p"] = &cliFlags.StringFlag{Name: "p", Usage: T("Disable access to a specified service plan")}
-	fs["o"] = &cliFlags.StringFlag{Name: "o", Usage: T("Disable access for a specified organization")}
+	fs["p"] = &cliFlags.StringFlag{Name: "p", Usage: i18n.T("Disable access to a specified service plan")}
+	fs["o"] = &cliFlags.StringFlag{Name: "o", Usage: i18n.T("Disable access for a specified organization")}
 
 	return command_registry.CommandMetadata{
 		Name:        "disable-service-access",
-		Description: T("Disable access to a service or service plan for one or all orgs"),
+		Description: i18n.T("Disable access to a service or service plan for one or all orgs"),
 		Usage:       "CF_NAME disable-service-access SERVICE [-p PLAN] [-o ORG]",
 		Flags:       fs,
 	}
@@ -38,7 +38,7 @@ func (cmd *DisableServiceAccess) MetaData() command_registry.CommandMetadata {
 
 func (cmd *DisableServiceAccess) Requirements(requirementsFactory requirements.Factory, fc flags.FlagContext) (reqs []requirements.Requirement, err error) {
 	if len(fc.Args()) != 1 {
-		cmd.ui.Failed(T("Incorrect Usage. Requires an argument\n\n") + command_registry.Commands.CommandUsage("disable-service-access"))
+		cmd.ui.Failed(i18n.T("Incorrect Usage. Requires an argument\n\n") + command_registry.Commands.CommandUsage("disable-service-access"))
 	}
 
 	return []requirements.Requirement{requirementsFactory.NewLoginRequirement()}, nil
@@ -72,32 +72,32 @@ func (cmd *DisableServiceAccess) Execute(c flags.FlagContext) {
 		cmd.disableServiceForAll(serviceName)
 	}
 
-	cmd.ui.Say(T("OK"))
+	cmd.ui.Say(i18n.T("OK"))
 }
 
 func (cmd *DisableServiceAccess) disableServiceForAll(serviceName string) {
-	cmd.ui.Say(T("Disabling access to all plans of service {{.ServiceName}} for all orgs as {{.UserName}}...", map[string]interface{}{"ServiceName": terminal.EntityNameColor(serviceName), "UserName": terminal.EntityNameColor(cmd.config.Username())}))
+	cmd.ui.Say(i18n.T("Disabling access to all plans of service {{.ServiceName}} for all orgs as {{.UserName}}...", map[string]interface{}{"ServiceName": terminal.EntityNameColor(serviceName), "UserName": terminal.EntityNameColor(cmd.config.Username())}))
 	allPlansAlreadySet, err := cmd.actor.UpdateAllPlansForService(serviceName, false)
 	if err != nil {
 		cmd.ui.Failed(err.Error())
 	}
 
 	if allPlansAlreadySet {
-		cmd.ui.Say(T("All plans of the service are already inaccessible for all orgs"))
+		cmd.ui.Say(i18n.T("All plans of the service are already inaccessible for all orgs"))
 	}
 }
 
 func (cmd *DisableServiceAccess) disablePlanAndOrgForService(serviceName string, planName string, orgName string) {
-	cmd.ui.Say(T("Disabling access to plan {{.PlanName}} of service {{.ServiceName}} for org {{.OrgName}} as {{.Username}}...", map[string]interface{}{"PlanName": terminal.EntityNameColor(planName), "ServiceName": terminal.EntityNameColor(serviceName), "OrgName": terminal.EntityNameColor(orgName), "Username": terminal.EntityNameColor(cmd.config.Username())}))
+	cmd.ui.Say(i18n.T("Disabling access to plan {{.PlanName}} of service {{.ServiceName}} for org {{.OrgName}} as {{.Username}}...", map[string]interface{}{"PlanName": terminal.EntityNameColor(planName), "ServiceName": terminal.EntityNameColor(serviceName), "OrgName": terminal.EntityNameColor(orgName), "Username": terminal.EntityNameColor(cmd.config.Username())}))
 	planOriginalAccess, err := cmd.actor.UpdatePlanAndOrgForService(serviceName, planName, orgName, false)
 	if err != nil {
 		cmd.ui.Failed(err.Error())
 	}
 
 	if planOriginalAccess == actors.None {
-		cmd.ui.Say(T("The plan is already inaccessible for this org"))
+		cmd.ui.Say(i18n.T("The plan is already inaccessible for this org"))
 	} else if planOriginalAccess != actors.Limited {
-		cmd.ui.Say(T("No action taken.  You must disable access to the {{.PlanName}} plan of {{.ServiceName}} service for all orgs and then grant access for all orgs except the {{.OrgName}} org.",
+		cmd.ui.Say(i18n.T("No action taken.  You must disable access to the {{.PlanName}} plan of {{.ServiceName}} service for all orgs and then grant access for all orgs except the {{.OrgName}} org.",
 			map[string]interface{}{
 				"PlanName":    terminal.EntityNameColor(planName),
 				"ServiceName": terminal.EntityNameColor(serviceName),
@@ -108,26 +108,26 @@ func (cmd *DisableServiceAccess) disablePlanAndOrgForService(serviceName string,
 }
 
 func (cmd *DisableServiceAccess) disableSinglePlanForService(serviceName string, planName string) {
-	cmd.ui.Say(T("Disabling access of plan {{.PlanName}} for service {{.ServiceName}} as {{.Username}}...", map[string]interface{}{"PlanName": terminal.EntityNameColor(planName), "ServiceName": terminal.EntityNameColor(serviceName), "Username": terminal.EntityNameColor(cmd.config.Username())}))
+	cmd.ui.Say(i18n.T("Disabling access of plan {{.PlanName}} for service {{.ServiceName}} as {{.Username}}...", map[string]interface{}{"PlanName": terminal.EntityNameColor(planName), "ServiceName": terminal.EntityNameColor(serviceName), "Username": terminal.EntityNameColor(cmd.config.Username())}))
 	planOriginalAccess, err := cmd.actor.UpdateSinglePlanForService(serviceName, planName, false)
 	if err != nil {
 		cmd.ui.Failed(err.Error())
 	}
 
 	if planOriginalAccess == actors.None {
-		cmd.ui.Say(T("The plan is already inaccessible for all orgs"))
+		cmd.ui.Say(i18n.T("The plan is already inaccessible for all orgs"))
 	}
 	return
 }
 
 func (cmd *DisableServiceAccess) disablePlansForSingleOrgForService(serviceName string, orgName string) {
-	cmd.ui.Say(T("Disabling access to all plans of service {{.ServiceName}} for the org {{.OrgName}} as {{.Username}}...", map[string]interface{}{"ServiceName": terminal.EntityNameColor(serviceName), "OrgName": terminal.EntityNameColor(orgName), "Username": terminal.EntityNameColor(cmd.config.Username())}))
+	cmd.ui.Say(i18n.T("Disabling access to all plans of service {{.ServiceName}} for the org {{.OrgName}} as {{.Username}}...", map[string]interface{}{"ServiceName": terminal.EntityNameColor(serviceName), "OrgName": terminal.EntityNameColor(orgName), "Username": terminal.EntityNameColor(cmd.config.Username())}))
 	serviceAccess, err := cmd.actor.FindServiceAccess(serviceName, orgName)
 	if err != nil {
 		cmd.ui.Failed(err.Error())
 	}
 	if serviceAccess == actors.AllPlansArePublic {
-		cmd.ui.Say(T("No action taken.  You must disable access to all plans of {{.ServiceName}} service for all orgs and then grant access for all orgs except the {{.OrgName}} org.",
+		cmd.ui.Say(i18n.T("No action taken.  You must disable access to all plans of {{.ServiceName}} service for all orgs and then grant access for all orgs except the {{.OrgName}} org.",
 			map[string]interface{}{
 				"ServiceName": terminal.EntityNameColor(serviceName),
 				"OrgName":     terminal.EntityNameColor(orgName),
@@ -141,6 +141,6 @@ func (cmd *DisableServiceAccess) disablePlansForSingleOrgForService(serviceName 
 	}
 
 	if allPlansWereSet {
-		cmd.ui.Say(T("All plans of the service are already inaccessible for this org"))
+		cmd.ui.Say(i18n.T("All plans of the service are already inaccessible for this org"))
 	}
 }

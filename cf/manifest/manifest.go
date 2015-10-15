@@ -7,10 +7,9 @@ import (
 	"strconv"
 	"strings"
 
-	. "github.com/cloudfoundry/cli/cf/i18n"
-
 	"github.com/cloudfoundry/cli/cf/errors"
 	"github.com/cloudfoundry/cli/cf/formatters"
+	"github.com/cloudfoundry/cli/cf/i18n"
 	"github.com/cloudfoundry/cli/cf/models"
 	"github.com/cloudfoundry/cli/generic"
 	"github.com/cloudfoundry/cli/words/generator"
@@ -58,13 +57,13 @@ func (m Manifest) getAppMaps(data generic.Map) (apps []generic.Map, errs []error
 	if data.Has("applications") {
 		appMaps, ok := data.Get("applications").([]interface{})
 		if !ok {
-			errs = append(errs, errors.New(T("Expected applications to be a list")))
+			errs = append(errs, errors.New(i18n.T("Expected applications to be a list")))
 			return
 		}
 
 		for _, appData := range appMaps {
 			if !generic.IsMappable(appData) {
-				errs = append(errs, errors.NewWithFmt(T("Expected application to be a list of key/value pairs\nError occurred in manifest near:\n'{{.YmlSnippet}}'",
+				errs = append(errs, errors.NewWithFmt(i18n.T("Expected application to be a list of key/value pairs\nError occurred in manifest near:\n'{{.YmlSnippet}}'",
 					map[string]interface{}{"YmlSnippet": appData})))
 				continue
 			}
@@ -89,7 +88,7 @@ func expandProperties(input interface{}, babbler generator.WordGenerator) (outpu
 			if match[0] == "${random-word}" {
 				output = strings.Replace(input, "${random-word}", strings.ToLower(babbler.Babble()), -1)
 			} else {
-				err := errors.NewWithFmt(T("Property '{{.PropertyName}}' found in manifest. This feature is no longer supported. Please remove it and try again.",
+				err := errors.NewWithFmt(i18n.T("Property '{{.PropertyName}}' found in manifest. This feature is no longer supported. Please remove it and try again.",
 					map[string]interface{}{"PropertyName": match[0]}))
 				errs = append(errs, err)
 			}
@@ -198,7 +197,7 @@ func checkForNulls(yamlMap generic.Map) (errs []error) {
 			return
 		}
 		if value == nil {
-			errs = append(errs, errors.NewWithFmt(T("{{.PropertyName}} should not be null", map[string]interface{}{"PropertyName": key})))
+			errs = append(errs, errors.NewWithFmt(i18n.T("{{.PropertyName}} should not be null", map[string]interface{}{"PropertyName": key})))
 		}
 	})
 
@@ -212,7 +211,7 @@ func stringVal(yamlMap generic.Map, key string, errs *[]error) *string {
 	}
 	result, ok := val.(string)
 	if !ok {
-		*errs = append(*errs, errors.NewWithFmt(T("{{.PropertyName}} must be a string value", map[string]interface{}{"PropertyName": key})))
+		*errs = append(*errs, errors.NewWithFmt(i18n.T("{{.PropertyName}} must be a string value", map[string]interface{}{"PropertyName": key})))
 		return nil
 	}
 	return &result
@@ -233,7 +232,7 @@ func stringValOrDefault(yamlMap generic.Map, key string, errs *[]error) *string 
 	case nil:
 		return &empty
 	default:
-		*errs = append(*errs, errors.NewWithFmt(T("{{.PropertyName}} must be a string or null value", map[string]interface{}{"PropertyName": key})))
+		*errs = append(*errs, errors.NewWithFmt(i18n.T("{{.PropertyName}} must be a string or null value", map[string]interface{}{"PropertyName": key})))
 		return nil
 	}
 }
@@ -247,7 +246,7 @@ func bytesVal(yamlMap generic.Map, key string, errs *[]error) *int64 {
 	stringVal := coerceToString(yamlVal)
 	value, err := formatters.ToMegabytes(stringVal)
 	if err != nil {
-		*errs = append(*errs, errors.NewWithFmt(T("Invalid value for '{{.PropertyName}}': {{.StringVal}}\n{{.Error}}",
+		*errs = append(*errs, errors.NewWithFmt(i18n.T("Invalid value for '{{.PropertyName}}': {{.StringVal}}\n{{.Error}}",
 			map[string]interface{}{
 				"PropertyName": key,
 				"Error":        err.Error(),
@@ -274,7 +273,7 @@ func intVal(yamlMap generic.Map, key string, errs *[]error) *int {
 	case nil:
 		return nil
 	default:
-		err = errors.NewWithFmt(T("Expected {{.PropertyName}} to be a number, but it was a {{.PropertyType}}.",
+		err = errors.NewWithFmt(i18n.T("Expected {{.PropertyName}} to be a number, but it was a {{.PropertyType}}.",
 			map[string]interface{}{"PropertyName": key, "PropertyType": val}))
 	}
 
@@ -299,7 +298,7 @@ func boolVal(yamlMap generic.Map, key string, errs *[]error) bool {
 	case string:
 		return val == "true"
 	default:
-		*errs = append(*errs, errors.NewWithFmt(T("Expected {{.PropertyName}} to be a boolean.", map[string]interface{}{"PropertyName": key})))
+		*errs = append(*errs, errors.NewWithFmt(i18n.T("Expected {{.PropertyName}} to be a boolean.", map[string]interface{}{"PropertyName": key})))
 		return false
 	}
 }
@@ -314,7 +313,7 @@ func sliceOrEmptyVal(yamlMap generic.Map, key string, errs *[]error) *[]string {
 		err         error
 	)
 
-	sliceErr := errors.NewWithFmt(T("Expected {{.PropertyName}} to be a list of strings.", map[string]interface{}{"PropertyName": key}))
+	sliceErr := errors.NewWithFmt(i18n.T("Expected {{.PropertyName}} to be a list of strings.", map[string]interface{}{"PropertyName": key}))
 
 	switch input := yamlMap.Get(key).(type) {
 	case []interface{}:
@@ -364,7 +363,7 @@ func envVarOrEmptyMap(yamlMap generic.Map, errs *[]error) *map[string]interface{
 
 		return &result
 	default:
-		*errs = append(*errs, errors.NewWithFmt(T("Expected {{.Name}} to be a set of key => value, but it was a {{.Type}}.",
+		*errs = append(*errs, errors.NewWithFmt(i18n.T("Expected {{.Name}} to be a set of key => value, but it was a {{.Type}}.",
 			map[string]interface{}{"Name": key, "Type": envVars})))
 		return nil
 	}
@@ -373,7 +372,7 @@ func envVarOrEmptyMap(yamlMap generic.Map, errs *[]error) *map[string]interface{
 func validateEnvVars(input generic.Map) (errs []error) {
 	generic.Each(input, func(key, value interface{}) {
 		if value == nil {
-			errs = append(errs, errors.New(fmt.Sprintf(T("env var '{{.PropertyName}}' should not be null",
+			errs = append(errs, errors.New(fmt.Sprintf(i18n.T("env var '{{.PropertyName}}' should not be null",
 				map[string]interface{}{"PropertyName": key}))))
 		}
 	})

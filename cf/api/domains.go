@@ -4,12 +4,11 @@ import (
 	"encoding/json"
 	"strings"
 
-	. "github.com/cloudfoundry/cli/cf/i18n"
-
 	"github.com/cloudfoundry/cli/cf/api/resources"
 	"github.com/cloudfoundry/cli/cf/api/strategy"
 	"github.com/cloudfoundry/cli/cf/configuration/core_config"
 	"github.com/cloudfoundry/cli/cf/errors"
+	"github.com/cloudfoundry/cli/cf/i18n"
 	"github.com/cloudfoundry/cli/cf/models"
 	"github.com/cloudfoundry/cli/cf/net"
 )
@@ -173,7 +172,7 @@ func (repo CloudControllerDomainRepository) defaultDomain(orgGuid string) (model
 	})
 
 	if foundDomain == nil {
-		return models.DomainFields{}, errors.New(T("Could not find a default domain"))
+		return models.DomainFields{}, errors.New(i18n.T("Could not find a default domain"))
 	}
 
 	return *foundDomain, nil

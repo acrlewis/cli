@@ -4,7 +4,7 @@ import (
 	"github.com/cloudfoundry/cli/cf/api"
 	"github.com/cloudfoundry/cli/cf/command_registry"
 	"github.com/cloudfoundry/cli/cf/configuration/core_config"
-	. "github.com/cloudfoundry/cli/cf/i18n"
+	"github.com/cloudfoundry/cli/cf/i18n"
 	"github.com/cloudfoundry/cli/cf/models"
 	"github.com/cloudfoundry/cli/cf/requirements"
 	"github.com/cloudfoundry/cli/cf/terminal"
@@ -24,14 +24,14 @@ func init() {
 func (cmd *RouterGroups) MetaData() command_registry.CommandMetadata {
 	return command_registry.CommandMetadata{
 		Name:        "router-groups",
-		Description: T("List router-groups"),
+		Description: i18n.T("List router-groups"),
 		Usage:       "CF_NAME router-groups",
 	}
 }
 
 func (cmd *RouterGroups) Requirements(requirementsFactory requirements.Factory, fc flags.FlagContext) ([]requirements.Requirement, error) {
 	if len(fc.Args()) != 0 {
-		cmd.ui.Failed(T("Incorrect Usage. No argument required\n\n") + command_registry.Commands.CommandUsage("router-groups"))
+		cmd.ui.Failed(i18n.T("Incorrect Usage. No argument required\n\n") + command_registry.Commands.CommandUsage("router-groups"))
 	}
 
 	return []requirements.Requirement{
@@ -47,10 +47,10 @@ func (cmd *RouterGroups) SetDependency(deps command_registry.Dependency, pluginC
 }
 
 func (cmd *RouterGroups) Execute(c flags.FlagContext) {
-	cmd.ui.Say(T("Getting router groups as {{.Username}} ...\n",
+	cmd.ui.Say(i18n.T("Getting router groups as {{.Username}} ...\n",
 		map[string]interface{}{"Username": terminal.EntityNameColor(cmd.config.Username())}))
 
-	table := cmd.ui.Table([]string{T("name"), T("type")})
+	table := cmd.ui.Table([]string{i18n.T("name"), i18n.T("type")})
 
 	noRouterGroups := true
 	cb := func(group models.RouterGroup) bool {
@@ -61,12 +61,12 @@ func (cmd *RouterGroups) Execute(c flags.FlagContext) {
 
 	apiErr := cmd.routingApiRepo.ListRouterGroups(cb)
 	if apiErr != nil {
-		cmd.ui.Failed(T("Failed fetching router groups.\n{{.Err}}", map[string]interface{}{"Err": apiErr.Error()}))
+		cmd.ui.Failed(i18n.T("Failed fetching router groups.\n{{.Err}}", map[string]interface{}{"Err": apiErr.Error()}))
 		return
 	}
 
 	if noRouterGroups {
-		cmd.ui.Say(T("No router groups found"))
+		cmd.ui.Say(i18n.T("No router groups found"))
 	}
 
 	table.Print()

@@ -5,7 +5,7 @@ import (
 
 	"github.com/cloudfoundry/cli/cf/api"
 	"github.com/cloudfoundry/cli/cf/command_registry"
-	. "github.com/cloudfoundry/cli/cf/i18n"
+	"github.com/cloudfoundry/cli/cf/i18n"
 	"github.com/cloudfoundry/cli/cf/requirements"
 	"github.com/cloudfoundry/cli/cf/terminal"
 	"github.com/simonleung8/flags"
@@ -25,25 +25,25 @@ func init() {
 
 func (cmd *UpdateBuildpack) MetaData() command_registry.CommandMetadata {
 	fs := make(map[string]flags.FlagSet)
-	fs["i"] = &cliFlags.IntFlag{Name: "i", Usage: T("The order in which the buildpacks are checked during buildpack auto-detection")}
-	fs["p"] = &cliFlags.StringFlag{Name: "p", Usage: T("Path to directory or zip file")}
-	fs["enable"] = &cliFlags.BoolFlag{Name: "enable", Usage: T("Enable the buildpack to be used for staging")}
-	fs["disable"] = &cliFlags.BoolFlag{Name: "disable", Usage: T("Disable the buildpack from being used for staging")}
-	fs["lock"] = &cliFlags.BoolFlag{Name: "lock", Usage: T("Lock the buildpack to prevent updates")}
-	fs["unlock"] = &cliFlags.BoolFlag{Name: "disable", Usage: T("Unlock the buildpack to enable updates")}
+	fs["i"] = &cliFlags.IntFlag{Name: "i", Usage: i18n.T("The order in which the buildpacks are checked during buildpack auto-detection")}
+	fs["p"] = &cliFlags.StringFlag{Name: "p", Usage: i18n.T("Path to directory or zip file")}
+	fs["enable"] = &cliFlags.BoolFlag{Name: "enable", Usage: i18n.T("Enable the buildpack to be used for staging")}
+	fs["disable"] = &cliFlags.BoolFlag{Name: "disable", Usage: i18n.T("Disable the buildpack from being used for staging")}
+	fs["lock"] = &cliFlags.BoolFlag{Name: "lock", Usage: i18n.T("Lock the buildpack to prevent updates")}
+	fs["unlock"] = &cliFlags.BoolFlag{Name: "disable", Usage: i18n.T("Unlock the buildpack to enable updates")}
 
 	return command_registry.CommandMetadata{
 		Name:        "update-buildpack",
-		Description: T("Update a buildpack"),
-		Usage: T("CF_NAME update-buildpack BUILDPACK [-p PATH] [-i POSITION] [--enable|--disable] [--lock|--unlock]") +
-			T("\n\nTIP:\n") + T("   Path should be a zip file, a url to a zip file, or a local directory. Position is a positive integer, sets priority, and is sorted from lowest to highest."),
+		Description: i18n.T("Update a buildpack"),
+		Usage: i18n.T("CF_NAME update-buildpack BUILDPACK [-p PATH] [-i POSITION] [--enable|--disable] [--lock|--unlock]") +
+			i18n.T("\n\nTIP:\n") + i18n.T("   Path should be a zip file, a url to a zip file, or a local directory. Position is a positive integer, sets priority, and is sorted from lowest to highest."),
 		Flags: fs,
 	}
 }
 
 func (cmd *UpdateBuildpack) Requirements(requirementsFactory requirements.Factory, fc flags.FlagContext) (reqs []requirements.Requirement, err error) {
 	if len(fc.Args()) != 1 {
-		cmd.ui.Failed(T("Incorrect Usage. Requires an argument\n\n") + command_registry.Commands.CommandUsage("update-buildpack"))
+		cmd.ui.Failed(i18n.T("Incorrect Usage. Requires an argument\n\n") + command_registry.Commands.CommandUsage("update-buildpack"))
 	}
 
 	loginReq := requirementsFactory.NewLoginRequirement()
@@ -66,7 +66,7 @@ func (cmd *UpdateBuildpack) SetDependency(deps command_registry.Dependency, plug
 func (cmd *UpdateBuildpack) Execute(c flags.FlagContext) {
 	buildpack := cmd.buildpackReq.GetBuildpack()
 
-	cmd.ui.Say(T("Updating buildpack {{.BuildpackName}}...", map[string]interface{}{"BuildpackName": terminal.EntityNameColor(buildpack.Name)}))
+	cmd.ui.Say(i18n.T("Updating buildpack {{.BuildpackName}}...", map[string]interface{}{"BuildpackName": terminal.EntityNameColor(buildpack.Name)}))
 
 	updateBuildpack := false
 
@@ -80,7 +80,7 @@ func (cmd *UpdateBuildpack) Execute(c flags.FlagContext) {
 	enabled := c.Bool("enable")
 	disabled := c.Bool("disable")
 	if enabled && disabled {
-		cmd.ui.Failed(T("Cannot specify both {{.Enabled}} and {{.Disabled}}.", map[string]interface{}{
+		cmd.ui.Failed(i18n.T("Cannot specify both {{.Enabled}} and {{.Disabled}}.", map[string]interface{}{
 			"Enabled":  "enabled",
 			"Disabled": "disabled",
 		}))
@@ -99,7 +99,7 @@ func (cmd *UpdateBuildpack) Execute(c flags.FlagContext) {
 	lock := c.Bool("lock")
 	unlock := c.Bool("unlock")
 	if lock && unlock {
-		cmd.ui.Failed(T("Cannot specify both lock and unlock options."))
+		cmd.ui.Failed(i18n.T("Cannot specify both lock and unlock options."))
 		return
 	}
 
@@ -115,7 +115,7 @@ func (cmd *UpdateBuildpack) Execute(c flags.FlagContext) {
 	}
 
 	if dir != "" && (lock || unlock) {
-		cmd.ui.Failed(T("Cannot specify buildpack bits and lock/unlock."))
+		cmd.ui.Failed(i18n.T("Cannot specify buildpack bits and lock/unlock."))
 	}
 
 	if lock {
@@ -131,7 +131,7 @@ func (cmd *UpdateBuildpack) Execute(c flags.FlagContext) {
 	if updateBuildpack {
 		newBuildpack, apiErr := cmd.buildpackRepo.Update(buildpack)
 		if apiErr != nil {
-			cmd.ui.Failed(T("Error updating buildpack {{.Name}}\n{{.Error}}", map[string]interface{}{
+			cmd.ui.Failed(i18n.T("Error updating buildpack {{.Name}}\n{{.Error}}", map[string]interface{}{
 				"Name":  terminal.EntityNameColor(buildpack.Name),
 				"Error": apiErr.Error(),
 			}))
@@ -142,7 +142,7 @@ func (cmd *UpdateBuildpack) Execute(c flags.FlagContext) {
 	if dir != "" {
 		apiErr := cmd.buildpackBitsRepo.UploadBuildpack(buildpack, dir)
 		if apiErr != nil {
-			cmd.ui.Failed(T("Error uploading buildpack {{.Name}}\n{{.Error}}", map[string]interface{}{
+			cmd.ui.Failed(i18n.T("Error uploading buildpack {{.Name}}\n{{.Error}}", map[string]interface{}{
 				"Name":  terminal.EntityNameColor(buildpack.Name),
 				"Error": apiErr.Error(),
 			}))

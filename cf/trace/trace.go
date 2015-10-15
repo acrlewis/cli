@@ -7,7 +7,7 @@ import (
 	"os"
 	"regexp"
 
-	. "github.com/cloudfoundry/cli/cf/i18n"
+	"github.com/cloudfoundry/cli/cf/i18n"
 	"github.com/cloudfoundry/gofileutils/fileutils"
 )
 
@@ -63,7 +63,7 @@ func newFileLogger(path string) Printer {
 	file, err := fileutils.Open(path)
 	if err != nil {
 		logger := newStdoutLogger()
-		logger.Printf(T("CF_TRACE ERROR CREATING LOG FILE {{.Path}}:\n{{.Err}}",
+		logger.Printf(i18n.T("CF_TRACE ERROR CREATING LOG FILE {{.Path}}:\n{{.Err}}",
 			map[string]interface{}{"Path": path, "Err": err}))
 		return logger
 	}
@@ -92,5 +92,5 @@ func Sanitize(input string) (sanitized string) {
 }
 
 func PRIVATE_DATA_PLACEHOLDER() string {
-	return T("[PRIVATE DATA HIDDEN]")
+	return i18n.T("[PRIVATE DATA HIDDEN]")
 }

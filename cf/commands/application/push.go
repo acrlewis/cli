@@ -7,7 +7,6 @@ import (
 	"strconv"
 	"strings"
 
-	. "github.com/cloudfoundry/cli/cf/i18n"
 	"github.com/cloudfoundry/cli/fileutils"
 	"github.com/simonleung8/flags"
 	"github.com/simonleung8/flags/flag"
@@ -23,6 +22,7 @@ import (
 	"github.com/cloudfoundry/cli/cf/configuration/core_config"
 	"github.com/cloudfoundry/cli/cf/errors"
 	"github.com/cloudfoundry/cli/cf/formatters"
+	"github.com/cloudfoundry/cli/cf/i18n"
 	"github.com/cloudfoundry/cli/cf/manifest"
 	"github.com/cloudfoundry/cli/cf/models"
 	"github.com/cloudfoundry/cli/cf/requirements"
@@ -55,39 +55,39 @@ func init() {
 
 func (cmd *Push) MetaData() command_registry.CommandMetadata {
 	fs := make(map[string]flags.FlagSet)
-	fs["b"] = &cliFlags.StringFlag{Name: "b", Usage: T("Custom buildpack by name (e.g. my-buildpack) or GIT URL (e.g. 'https://github.com/heroku/heroku-buildpack-play.git') or GIT BRANCH URL (e.g. 'https://github.com/heroku/heroku-buildpack-play.git#develop' for 'develop' branch). Use built-in buildpacks only by setting value to 'null' or 'default'")}
-	fs["c"] = &cliFlags.StringFlag{Name: "c", Usage: T("Startup command, set to null to reset to default start command")}
-	fs["d"] = &cliFlags.StringFlag{Name: "d", Usage: T("Domain (e.g. example.com)")}
-	fs["f"] = &cliFlags.StringFlag{Name: "f", Usage: T("Path to manifest")}
-	fs["i"] = &cliFlags.IntFlag{Name: "i", Usage: T("Number of instances")}
-	fs["k"] = &cliFlags.StringFlag{Name: "k", Usage: T("Disk limit (e.g. 256M, 1024M, 1G)")}
-	fs["m"] = &cliFlags.StringFlag{Name: "m", Usage: T("Memory limit (e.g. 256M, 1024M, 1G)")}
-	fs["n"] = &cliFlags.StringFlag{Name: "n", Usage: T("Hostname (e.g. my-subdomain)")}
-	fs["p"] = &cliFlags.StringFlag{Name: "p", Usage: T("Path to app directory or to a zip file of the contents of the app directory")}
-	fs["s"] = &cliFlags.StringFlag{Name: "s", Usage: T("Stack to use (a stack is a pre-built file system, including an operating system, that can run apps)")}
-	fs["t"] = &cliFlags.StringFlag{Name: "t", Usage: T("Maximum time (in seconds) for CLI to wait for application start, other server side timeouts may apply")}
-	fs["docker-image"] = &cliFlags.StringFlag{Name: "docker-image", ShortName: "o", Usage: T("docker-image to be used (e.g. user/docker-image-name)")}
-	fs["health-check-type"] = &cliFlags.StringFlag{Name: "health-check-type", ShortName: "u", Usage: T("Application health check type (e.g. port or none)")}
-	fs["no-hostname"] = &cliFlags.BoolFlag{Name: "no-hostname", Usage: T("Map the root domain to this app")}
-	fs["no-manifest"] = &cliFlags.BoolFlag{Name: "no-manifest", Usage: T("Ignore manifest file")}
-	fs["no-route"] = &cliFlags.BoolFlag{Name: "no-route", Usage: T("Do not map a route to this app and remove routes from previous pushes of this app.")}
-	fs["no-start"] = &cliFlags.BoolFlag{Name: "no-start", Usage: T("Do not start an app after pushing")}
-	fs["random-route"] = &cliFlags.BoolFlag{Name: "random-route", Usage: T("Create a random route for this app")}
+	fs["b"] = &cliFlags.StringFlag{Name: "b", Usage: i18n.T("Custom buildpack by name (e.g. my-buildpack) or GIT URL (e.g. 'https://github.com/heroku/heroku-buildpack-play.git') or GIT BRANCH URL (e.g. 'https://github.com/heroku/heroku-buildpack-play.git#develop' for 'develop' branch). Use built-in buildpacks only by setting value to 'null' or 'default'")}
+	fs["c"] = &cliFlags.StringFlag{Name: "c", Usage: i18n.T("Startup command, set to null to reset to default start command")}
+	fs["d"] = &cliFlags.StringFlag{Name: "d", Usage: i18n.T("Domain (e.g. example.com)")}
+	fs["f"] = &cliFlags.StringFlag{Name: "f", Usage: i18n.T("Path to manifest")}
+	fs["i"] = &cliFlags.IntFlag{Name: "i", Usage: i18n.T("Number of instances")}
+	fs["k"] = &cliFlags.StringFlag{Name: "k", Usage: i18n.T("Disk limit (e.g. 256M, 1024M, 1G)")}
+	fs["m"] = &cliFlags.StringFlag{Name: "m", Usage: i18n.T("Memory limit (e.g. 256M, 1024M, 1G)")}
+	fs["n"] = &cliFlags.StringFlag{Name: "n", Usage: i18n.T("Hostname (e.g. my-subdomain)")}
+	fs["p"] = &cliFlags.StringFlag{Name: "p", Usage: i18n.T("Path to app directory or to a zip file of the contents of the app directory")}
+	fs["s"] = &cliFlags.StringFlag{Name: "s", Usage: i18n.T("Stack to use (a stack is a pre-built file system, including an operating system, that can run apps)")}
+	fs["t"] = &cliFlags.StringFlag{Name: "t", Usage: i18n.T("Maximum time (in seconds) for CLI to wait for application start, other server side timeouts may apply")}
+	fs["docker-image"] = &cliFlags.StringFlag{Name: "docker-image", ShortName: "o", Usage: i18n.T("docker-image to be used (e.g. user/docker-image-name)")}
+	fs["health-check-type"] = &cliFlags.StringFlag{Name: "health-check-type", ShortName: "u", Usage: i18n.T("Application health check type (e.g. port or none)")}
+	fs["no-hostname"] = &cliFlags.BoolFlag{Name: "no-hostname", Usage: i18n.T("Map the root domain to this app")}
+	fs["no-manifest"] = &cliFlags.BoolFlag{Name: "no-manifest", Usage: i18n.T("Ignore manifest file")}
+	fs["no-route"] = &cliFlags.BoolFlag{Name: "no-route", Usage: i18n.T("Do not map a route to this app and remove routes from previous pushes of this app.")}
+	fs["no-start"] = &cliFlags.BoolFlag{Name: "no-start", Usage: i18n.T("Do not start an app after pushing")}
+	fs["random-route"] = &cliFlags.BoolFlag{Name: "random-route", Usage: i18n.T("Create a random route for this app")}
 
 	return command_registry.CommandMetadata{
 		Name:        "push",
 		ShortName:   "p",
-		Description: T("Push a new app or sync changes to an existing app"),
-		Usage: T("Push a single app (with or without a manifest):\n") + T("   CF_NAME push APP_NAME [-b BUILDPACK_NAME] [-c COMMAND] [-d DOMAIN] [-f MANIFEST_PATH] [--docker-image DOCKER_IMAGE]\n") + T("   [-i NUM_INSTANCES] [-k DISK] [-m MEMORY] [-n HOST] [-p PATH] [-s STACK] [-t TIMEOUT] [-u HEALTH_CHECK_TYPE] \n") +
+		Description: i18n.T("Push a new app or sync changes to an existing app"),
+		Usage: i18n.T("Push a single app (with or without a manifest):\n") + i18n.T("   CF_NAME push APP_NAME [-b BUILDPACK_NAME] [-c COMMAND] [-d DOMAIN] [-f MANIFEST_PATH] [--docker-image DOCKER_IMAGE]\n") + i18n.T("   [-i NUM_INSTANCES] [-k DISK] [-m MEMORY] [-n HOST] [-p PATH] [-s STACK] [-t TIMEOUT] [-u HEALTH_CHECK_TYPE] \n") +
 			"   [--no-hostname] [--no-manifest] [--no-route] [--no-start]\n" +
-			"\n" + T("   Push multiple apps with a manifest:\n") + T("   CF_NAME push [-f MANIFEST_PATH]\n"),
+			"\n" + i18n.T("   Push multiple apps with a manifest:\n") + i18n.T("   CF_NAME push [-f MANIFEST_PATH]\n"),
 		Flags: fs,
 	}
 }
 
 func (cmd *Push) Requirements(requirementsFactory requirements.Factory, fc flags.FlagContext) (reqs []requirements.Requirement, err error) {
 	if len(fc.Args()) > 1 {
-		cmd.ui.Failed(T("Incorrect Usage.\n\n") + command_registry.Commands.CommandUsage("push"))
+		cmd.ui.Failed(i18n.T("Incorrect Usage.\n\n") + command_registry.Commands.CommandUsage("push"))
 	}
 
 	reqs = []requirements.Requirement{
@@ -154,12 +154,12 @@ func (cmd *Push) Execute(c flags.FlagContext) {
 		cmd.updateRoutes(routeActor, app, appParams)
 
 		if c.String("docker-image") == "" {
-			cmd.ui.Say(T("Uploading {{.AppName}}...",
+			cmd.ui.Say(i18n.T("Uploading {{.AppName}}...",
 				map[string]interface{}{"AppName": terminal.EntityNameColor(app.Name)}))
 
 			apiErr := cmd.uploadApp(app.Guid, *appParams.Path)
 			if apiErr != nil {
-				cmd.ui.Failed(fmt.Sprintf(T("Error uploading application.\n{{.ApiErr}}",
+				cmd.ui.Failed(fmt.Sprintf(i18n.T("Error uploading application.\n{{.ApiErr}}",
 					map[string]interface{}{"ApiErr": apiErr.Error()})))
 				return
 			}
@@ -212,7 +212,7 @@ func (cmd *Push) createAndBindRoute(host *string, UseRandomHostname bool, routeA
 
 func (cmd *Push) removeRoutes(app models.Application, routeActor actors.RouteActor) {
 	if len(app.Routes) == 0 {
-		cmd.ui.Say(T("App {{.AppName}} is a worker, skipping route creation",
+		cmd.ui.Say(i18n.T("App {{.AppName}} is a worker, skipping route creation",
 			map[string]interface{}{"AppName": terminal.EntityNameColor(app.Name)}))
 	} else {
 		routeActor.UnbindAll(app)
@@ -257,12 +257,12 @@ func (cmd *Push) bindAppToServices(services []string, app models.Application) {
 		serviceInstance, err := cmd.serviceRepo.FindInstanceByName(serviceName)
 
 		if err != nil {
-			cmd.ui.Failed(T("Could not find service {{.ServiceName}} to bind to {{.AppName}}",
+			cmd.ui.Failed(i18n.T("Could not find service {{.ServiceName}} to bind to {{.AppName}}",
 				map[string]interface{}{"ServiceName": serviceName, "AppName": app.Name}))
 			return
 		}
 
-		cmd.ui.Say(T("Binding service {{.ServiceName}} to app {{.AppName}} in org {{.OrgName}} / space {{.SpaceName}} as {{.Username}}...",
+		cmd.ui.Say(i18n.T("Binding service {{.ServiceName}} to app {{.AppName}} in org {{.OrgName}} / space {{.SpaceName}} as {{.Username}}...",
 			map[string]interface{}{
 				"ServiceName": terminal.EntityNameColor(serviceInstance.Name),
 				"AppName":     terminal.EntityNameColor(app.Name),
@@ -280,7 +280,7 @@ func (cmd *Push) bindAppToServices(services []string, app models.Application) {
 		}
 
 		if err != nil {
-			cmd.ui.Failed(T("Could not bind to service {{.ServiceName}}\nError: {{.Err}}",
+			cmd.ui.Failed(i18n.T("Could not bind to service {{.ServiceName}}\nError: {{.Err}}",
 				map[string]interface{}{"ServiceName": serviceName, "Err": err.Error()}))
 		}
 
@@ -294,7 +294,7 @@ func (cmd *Push) fetchStackGuid(appParams *models.AppParams) {
 	}
 
 	stackName := *appParams.StackName
-	cmd.ui.Say(T("Using stack {{.StackName}}...",
+	cmd.ui.Say(i18n.T("Using stack {{.StackName}}...",
 		map[string]interface{}{"StackName": terminal.EntityNameColor(stackName)}))
 
 	stack, apiErr := cmd.stackRepo.FindByName(stackName)
@@ -308,7 +308,7 @@ func (cmd *Push) fetchStackGuid(appParams *models.AppParams) {
 }
 
 func (cmd *Push) restart(app models.Application, params models.AppParams, c flags.FlagContext) {
-	if app.State != T("stopped") {
+	if app.State != i18n.T("stopped") {
 		cmd.ui.Say("")
 		app, _ = cmd.appStopper.ApplicationStop(app, cmd.config.OrganizationFields().Name, cmd.config.SpaceFields().Name)
 	}
@@ -328,7 +328,7 @@ func (cmd *Push) restart(app models.Application, params models.AppParams, c flag
 
 func (cmd *Push) createOrUpdateApp(appParams models.AppParams) (app models.Application) {
 	if appParams.Name == nil {
-		cmd.ui.Failed(T("Error: No name found for app"))
+		cmd.ui.Failed(i18n.T("Error: No name found for app"))
 	}
 
 	app, apiErr := cmd.appRepo.Read(*appParams.Name)
@@ -349,7 +349,7 @@ func (cmd *Push) createApp(appParams models.AppParams) (app models.Application) 
 	spaceGuid := cmd.config.SpaceFields().Guid
 	appParams.SpaceGuid = &spaceGuid
 
-	cmd.ui.Say(T("Creating app {{.AppName}} in org {{.OrgName}} / space {{.SpaceName}} as {{.Username}}...",
+	cmd.ui.Say(i18n.T("Creating app {{.AppName}} in org {{.OrgName}} / space {{.SpaceName}} as {{.Username}}...",
 		map[string]interface{}{
 			"AppName":   terminal.EntityNameColor(*appParams.Name),
 			"OrgName":   terminal.EntityNameColor(cmd.config.OrganizationFields().Name),
@@ -368,7 +368,7 @@ func (cmd *Push) createApp(appParams models.AppParams) (app models.Application) 
 }
 
 func (cmd *Push) updateApp(app models.Application, appParams models.AppParams) (updatedApp models.Application) {
-	cmd.ui.Say(T("Updating app {{.AppName}} in org {{.OrgName}} / space {{.SpaceName}} as {{.Username}}...",
+	cmd.ui.Say(i18n.T("Updating app {{.AppName}} in org {{.OrgName}} / space {{.SpaceName}} as {{.Username}}...",
 		map[string]interface{}{
 			"AppName":   terminal.EntityNameColor(app.Name),
 			"OrgName":   terminal.EntityNameColor(cmd.config.OrganizationFields().Name),
@@ -413,7 +413,7 @@ func (cmd *Push) getAppParamsFromManifest(c flags.FlagContext) []models.AppParam
 		var err error
 		path, err = os.Getwd()
 		if err != nil {
-			cmd.ui.Failed(T("Could not determine the current working directory!"), err)
+			cmd.ui.Failed(i18n.T("Could not determine the current working directory!"), err)
 		}
 	}
 
@@ -423,7 +423,7 @@ func (cmd *Push) getAppParamsFromManifest(c flags.FlagContext) []models.AppParam
 		if m.Path == "" && c.String("f") == "" {
 			return []models.AppParams{}
 		} else {
-			cmd.ui.Failed(T("Error reading manifest file:\n{{.Err}}", map[string]interface{}{"Err": err.Error()}))
+			cmd.ui.Failed(i18n.T("Error reading manifest file:\n{{.Err}}", map[string]interface{}{"Err": err.Error()}))
 		}
 	}
 
@@ -432,7 +432,7 @@ func (cmd *Push) getAppParamsFromManifest(c flags.FlagContext) []models.AppParam
 		cmd.ui.Failed("Error reading manifest file:\n%s", err)
 	}
 
-	cmd.ui.Say(T("Using manifest file {{.Path}}\n",
+	cmd.ui.Say(i18n.T("Using manifest file {{.Path}}\n",
 		map[string]interface{}{"Path": terminal.EntityNameColor(m.Path)}))
 	return apps
 }
@@ -444,7 +444,7 @@ func (cmd *Push) createAppSetFromContextAndManifest(contextApp models.AppParams,
 	case 0:
 		if contextApp.Name == nil {
 			cmd.ui.Failed(
-				T("Manifest file is not found in the current directory, please provide either an app name or manifest") +
+				i18n.T("Manifest file is not found in the current directory, please provide either an app name or manifest") +
 					"\n\n" +
 					command_registry.Commands.CommandUsage("push"),
 			)
@@ -459,7 +459,7 @@ func (cmd *Push) createAppSetFromContextAndManifest(contextApp models.AppParams,
 		contextApp.Name = nil
 
 		if !contextApp.IsEmpty() {
-			cmd.ui.Failed("%s", T("Incorrect Usage. Command line flags (except -f) cannot be applied when pushing multiple apps from a manifest file."))
+			cmd.ui.Failed("%s", i18n.T("Incorrect Usage. Command line flags (except -f) cannot be applied when pushing multiple apps from a manifest file."))
 		}
 
 		if selectedAppName != nil {
@@ -476,7 +476,7 @@ func (cmd *Push) createAppSetFromContextAndManifest(contextApp models.AppParams,
 	}
 
 	if err != nil {
-		cmd.ui.Failed(T("Error: {{.Err}}", map[string]interface{}{"Err": err.Error()}))
+		cmd.ui.Failed(i18n.T("Error: {{.Err}}", map[string]interface{}{"Err": err.Error()}))
 	}
 
 	return
@@ -484,7 +484,7 @@ func (cmd *Push) createAppSetFromContextAndManifest(contextApp models.AppParams,
 
 func addApp(apps *[]models.AppParams, app models.AppParams) (err error) {
 	if app.Name == nil {
-		err = errors.New(T("App name is a required field"))
+		err = errors.New(i18n.T("App name is a required field"))
 	}
 	if app.Path == nil {
 		cwd, _ := os.Getwd()
@@ -502,7 +502,7 @@ func findAppWithNameInManifest(name string, manifestApps []models.AppParams) (ap
 		}
 	}
 
-	err = errors.New(T("Could not find app named '{{.AppName}}' in manifest",
+	err = errors.New(i18n.T("Could not find app named '{{.AppName}}' in manifest",
 		map[string]interface{}{"AppName": name}))
 	return
 }
@@ -543,7 +543,7 @@ func (cmd *Push) getAppParamsFromContext(c flags.FlagContext) (appParams models.
 	if c.IsSet("i") {
 		instances := c.Int("i")
 		if instances < 1 {
-			cmd.ui.Failed(T("Invalid instance count: {{.InstancesCount}}\nInstance count must be a positive integer",
+			cmd.ui.Failed(i18n.T("Invalid instance count: {{.InstancesCount}}\nInstance count must be a positive integer",
 				map[string]interface{}{"InstancesCount": instances}))
 		}
 		appParams.InstanceCount = &instances
@@ -552,7 +552,7 @@ func (cmd *Push) getAppParamsFromContext(c flags.FlagContext) (appParams models.
 	if c.String("k") != "" {
 		diskQuota, err := formatters.ToMegabytes(c.String("k"))
 		if err != nil {
-			cmd.ui.Failed(T("Invalid disk quota: {{.DiskQuota}}\n{{.Err}}",
+			cmd.ui.Failed(i18n.T("Invalid disk quota: {{.DiskQuota}}\n{{.Err}}",
 				map[string]interface{}{"DiskQuota": c.String("k"), "Err": err.Error()}))
 		}
 		appParams.DiskQuota = &diskQuota
@@ -561,7 +561,7 @@ func (cmd *Push) getAppParamsFromContext(c flags.FlagContext) (appParams models.
 	if c.String("m") != "" {
 		memory, err := formatters.ToMegabytes(c.String("m"))
 		if err != nil {
-			cmd.ui.Failed(T("Invalid memory limit: {{.MemLimit}}\n{{.Err}}",
+			cmd.ui.Failed(i18n.T("Invalid memory limit: {{.MemLimit}}\n{{.Err}}",
 				map[string]interface{}{"MemLimit": c.String("m"), "Err": err.Error()}))
 		}
 		appParams.Memory = &memory
@@ -585,7 +585,7 @@ func (cmd *Push) getAppParamsFromContext(c flags.FlagContext) (appParams models.
 	if c.String("t") != "" {
 		timeout, err := strconv.Atoi(c.String("t"))
 		if err != nil {
-			cmd.ui.Failed("Error: %s", errors.NewWithFmt(T("Invalid timeout param: {{.Timeout}}\n{{.Err}}",
+			cmd.ui.Failed("Error: %s", errors.NewWithFmt(i18n.T("Invalid timeout param: {{.Timeout}}\n{{.Err}}",
 				map[string]interface{}{"Timeout": c.String("t"), "Err": err.Error()})))
 		}
 
@@ -594,7 +594,7 @@ func (cmd *Push) getAppParamsFromContext(c flags.FlagContext) (appParams models.
 
 	if healthCheckType := c.String("u"); healthCheckType != "" {
 		if healthCheckType != "port" && healthCheckType != "none" {
-			cmd.ui.Failed("Error: %s", errors.NewWithFmt(T("Invalid health-check-type param: {{.healthCheckType}}",
+			cmd.ui.Failed("Error: %s", errors.NewWithFmt(i18n.T("Invalid health-check-type param: {{.healthCheckType}}",
 				map[string]interface{}{"healthCheckType": healthCheckType})))
 		}
 
@@ -662,14 +662,14 @@ func (cmd *Push) zipWithBetterErrors(uploadDir string, zipFile *os.File) error {
 	case *errors.EmptyDirError:
 		return zipError
 	default:
-		return errors.NewWithError(T("Error zipping application"), err)
+		return errors.NewWithError(i18n.T("Error zipping application"), err)
 	}
 }
 
 func (cmd *Push) describeUploadOperation(path string, zipFileBytes, fileCount int64) {
 	if fileCount > 0 {
-		cmd.ui.Say(T("Uploading app files from: {{.Path}}", map[string]interface{}{"Path": path}))
-		cmd.ui.Say(T("Uploading {{.ZipFileBytes}}, {{.FileCount}} files",
+		cmd.ui.Say(i18n.T("Uploading app files from: {{.Path}}", map[string]interface{}{"Path": path}))
+		cmd.ui.Say(i18n.T("Uploading {{.ZipFileBytes}}, {{.FileCount}} files",
 			map[string]interface{}{
 				"ZipFileBytes": formatters.ByteSize(zipFileBytes),
 				"FileCount":    fileCount}))

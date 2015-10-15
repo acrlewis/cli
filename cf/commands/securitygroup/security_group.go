@@ -4,12 +4,12 @@ import (
 	"encoding/json"
 	"fmt"
 
-	. "github.com/cloudfoundry/cli/cf/i18n"
 	"github.com/simonleung8/flags"
 
 	"github.com/cloudfoundry/cli/cf/api/security_groups"
 	"github.com/cloudfoundry/cli/cf/command_registry"
 	"github.com/cloudfoundry/cli/cf/configuration/core_config"
+	"github.com/cloudfoundry/cli/cf/i18n"
 	"github.com/cloudfoundry/cli/cf/requirements"
 	"github.com/cloudfoundry/cli/cf/terminal"
 )
@@ -27,14 +27,14 @@ func init() {
 func (cmd *ShowSecurityGroup) MetaData() command_registry.CommandMetadata {
 	return command_registry.CommandMetadata{
 		Name:        "security-group",
-		Description: T("Show a single security group"),
-		Usage:       T("CF_NAME security-group SECURITY_GROUP"),
+		Description: i18n.T("Show a single security group"),
+		Usage:       i18n.T("CF_NAME security-group SECURITY_GROUP"),
 	}
 }
 
 func (cmd *ShowSecurityGroup) Requirements(requirementsFactory requirements.Factory, fc flags.FlagContext) (reqs []requirements.Requirement, err error) {
 	if len(fc.Args()) != 1 {
-		cmd.ui.Failed(T("Incorrect Usage. Requires an argument\n\n") + command_registry.Commands.CommandUsage("security-group"))
+		cmd.ui.Failed(i18n.T("Incorrect Usage. Requires an argument\n\n") + command_registry.Commands.CommandUsage("security-group"))
 	}
 
 	return []requirements.Requirement{requirementsFactory.NewLoginRequirement()}, nil
@@ -50,7 +50,7 @@ func (cmd *ShowSecurityGroup) SetDependency(deps command_registry.Dependency, pl
 func (cmd *ShowSecurityGroup) Execute(c flags.FlagContext) {
 	name := c.Args()[0]
 
-	cmd.ui.Say(T("Getting info for security group {{.security_group}} as {{.username}}",
+	cmd.ui.Say(i18n.T("Getting info for security group {{.security_group}} as {{.username}}",
 		map[string]interface{}{
 			"security_group": terminal.EntityNameColor(name),
 			"username":       terminal.EntityNameColor(cmd.configRepo.Username()),
@@ -68,21 +68,21 @@ func (cmd *ShowSecurityGroup) Execute(c flags.FlagContext) {
 
 	cmd.ui.Ok()
 	table := terminal.NewTable(cmd.ui, []string{"", ""})
-	table.Add(T("Name"), securityGroup.Name)
-	table.Add(T("Rules"), "")
+	table.Add(i18n.T("Name"), securityGroup.Name)
+	table.Add(i18n.T("Rules"), "")
 	table.Print()
 	cmd.ui.Say("\t" + string(jsonEncodedBytes))
 
 	cmd.ui.Say("")
 
 	if len(securityGroup.Spaces) > 0 {
-		table = terminal.NewTable(cmd.ui, []string{"", T("Organization"), T("Space")})
+		table = terminal.NewTable(cmd.ui, []string{"", i18n.T("Organization"), i18n.T("Space")})
 
 		for index, space := range securityGroup.Spaces {
 			table.Add(fmt.Sprintf("#%d", index), space.Organization.Name, space.Name)
 		}
 		table.Print()
 	} else {
-		cmd.ui.Say(T("No spaces assigned"))
+		cmd.ui.Say(i18n.T("No spaces assigned"))
 	}
 }

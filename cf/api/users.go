@@ -11,7 +11,7 @@ import (
 	"github.com/cloudfoundry/cli/cf/api/resources"
 	"github.com/cloudfoundry/cli/cf/configuration/core_config"
 	"github.com/cloudfoundry/cli/cf/errors"
-	. "github.com/cloudfoundry/cli/cf/i18n"
+	"github.com/cloudfoundry/cli/cf/i18n"
 	"github.com/cloudfoundry/cli/cf/models"
 	"github.com/cloudfoundry/cli/cf/net"
 )
@@ -245,7 +245,7 @@ func (repo CloudControllerUserRepository) setOrUnsetOrgRole(verb, userGuid, orgG
 	rolePath, found := orgRoleToPathMap[role]
 
 	if !found {
-		apiErr = errors.NewWithFmt(T("Invalid Role {{.Role}}",
+		apiErr = errors.NewWithFmt(i18n.T("Invalid Role {{.Role}}",
 			map[string]interface{}{"Role": role}))
 		return
 	}
@@ -291,7 +291,7 @@ func (repo CloudControllerUserRepository) checkSpaceRole(userGuid, spaceGuid, ro
 	rolePath, found := spaceRoleToPathMap[role]
 
 	if !found {
-		apiErr = errors.NewWithFmt(T("Invalid Role {{.Role}}",
+		apiErr = errors.NewWithFmt(i18n.T("Invalid Role {{.Role}}",
 			map[string]interface{}{"Role": role}))
 	}
 
@@ -307,7 +307,7 @@ func (repo CloudControllerUserRepository) addOrgUserRole(userGuid, orgGuid strin
 func (repo CloudControllerUserRepository) getAuthEndpoint() (string, error) {
 	uaaEndpoint := repo.config.UaaEndpoint()
 	if uaaEndpoint == "" {
-		return "", errors.New(T("UAA endpoint missing from config file"))
+		return "", errors.New(i18n.T("UAA endpoint missing from config file"))
 	}
 	return uaaEndpoint, nil
 }

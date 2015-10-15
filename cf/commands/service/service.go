@@ -2,7 +2,7 @@ package service
 
 import (
 	"github.com/cloudfoundry/cli/cf/command_registry"
-	. "github.com/cloudfoundry/cli/cf/i18n"
+	"github.com/cloudfoundry/cli/cf/i18n"
 	"github.com/cloudfoundry/cli/cf/models"
 	"github.com/cloudfoundry/cli/cf/requirements"
 	"github.com/cloudfoundry/cli/cf/terminal"
@@ -24,19 +24,19 @@ func init() {
 
 func (cmd *ShowService) MetaData() command_registry.CommandMetadata {
 	fs := make(map[string]flags.FlagSet)
-	fs["guid"] = &cliFlags.BoolFlag{Name: "guid", Usage: T("Retrieve and display the given service's guid.  All other output for the service is suppressed.")}
+	fs["guid"] = &cliFlags.BoolFlag{Name: "guid", Usage: i18n.T("Retrieve and display the given service's guid.  All other output for the service is suppressed.")}
 
 	return command_registry.CommandMetadata{
 		Name:        "service",
-		Description: T("Show service instance info"),
-		Usage:       T("CF_NAME service SERVICE_INSTANCE"),
+		Description: i18n.T("Show service instance info"),
+		Usage:       i18n.T("CF_NAME service SERVICE_INSTANCE"),
 		Flags:       fs,
 	}
 }
 
 func (cmd *ShowService) Requirements(requirementsFactory requirements.Factory, fc flags.FlagContext) (reqs []requirements.Requirement, err error) {
 	if len(fc.Args()) != 1 {
-		cmd.ui.Failed(T("Incorrect Usage. Requires an argument\n\n") + command_registry.Commands.CommandUsage("service"))
+		cmd.ui.Failed(i18n.T("Incorrect Usage. Requires an argument\n\n") + command_registry.Commands.CommandUsage("service"))
 	}
 
 	cmd.serviceInstanceReq = requirementsFactory.NewServiceInstanceRequirement(fc.Args()[0])
@@ -71,48 +71,48 @@ func (cmd *ShowService) Execute(c flags.FlagContext) {
 		cmd.ui.Say(serviceInstance.Guid)
 	} else {
 		cmd.ui.Say("")
-		cmd.ui.Say(T("Service instance: {{.ServiceName}}", map[string]interface{}{"ServiceName": terminal.EntityNameColor(serviceInstance.Name)}))
+		cmd.ui.Say(i18n.T("Service instance: {{.ServiceName}}", map[string]interface{}{"ServiceName": terminal.EntityNameColor(serviceInstance.Name)}))
 
 		if serviceInstance.IsUserProvided() {
-			cmd.ui.Say(T("Service: {{.ServiceDescription}}",
+			cmd.ui.Say(i18n.T("Service: {{.ServiceDescription}}",
 				map[string]interface{}{
-					"ServiceDescription": terminal.EntityNameColor(T("user-provided")),
+					"ServiceDescription": terminal.EntityNameColor(i18n.T("user-provided")),
 				}))
 		} else {
-			cmd.ui.Say(T("Service: {{.ServiceDescription}}",
+			cmd.ui.Say(i18n.T("Service: {{.ServiceDescription}}",
 				map[string]interface{}{
 					"ServiceDescription": terminal.EntityNameColor(serviceInstance.ServiceOffering.Label),
 				}))
-			cmd.ui.Say(T("Plan: {{.ServicePlanName}}",
+			cmd.ui.Say(i18n.T("Plan: {{.ServicePlanName}}",
 				map[string]interface{}{
 					"ServicePlanName": terminal.EntityNameColor(serviceInstance.ServicePlan.Name),
 				}))
-			cmd.ui.Say(T("Description: {{.ServiceDescription}}", map[string]interface{}{"ServiceDescription": terminal.EntityNameColor(serviceInstance.ServiceOffering.Description)}))
-			cmd.ui.Say(T("Documentation url: {{.URL}}",
+			cmd.ui.Say(i18n.T("Description: {{.ServiceDescription}}", map[string]interface{}{"ServiceDescription": terminal.EntityNameColor(serviceInstance.ServiceOffering.Description)}))
+			cmd.ui.Say(i18n.T("Documentation url: {{.URL}}",
 				map[string]interface{}{
 					"URL": terminal.EntityNameColor(serviceInstance.ServiceOffering.DocumentationUrl),
 				}))
-			cmd.ui.Say(T("Dashboard: {{.URL}}",
+			cmd.ui.Say(i18n.T("Dashboard: {{.URL}}",
 				map[string]interface{}{
 					"URL": terminal.EntityNameColor(serviceInstance.DashboardUrl),
 				}))
 			cmd.ui.Say("")
-			cmd.ui.Say(T("Last Operation"))
-			cmd.ui.Say(T("Status: {{.State}}",
+			cmd.ui.Say(i18n.T("Last Operation"))
+			cmd.ui.Say(i18n.T("Status: {{.State}}",
 				map[string]interface{}{
 					"State": terminal.EntityNameColor(ServiceInstanceStateToStatus(serviceInstance.LastOperation.Type, serviceInstance.LastOperation.State, serviceInstance.IsUserProvided())),
 				}))
-			cmd.ui.Say(T("Message: {{.Message}}",
+			cmd.ui.Say(i18n.T("Message: {{.Message}}",
 				map[string]interface{}{
 					"Message": terminal.EntityNameColor(serviceInstance.LastOperation.Description),
 				}))
 			if "" != serviceInstance.LastOperation.CreatedAt {
-				cmd.ui.Say(T("Started: {{.Started}}",
+				cmd.ui.Say(i18n.T("Started: {{.Started}}",
 					map[string]interface{}{
 						"Started": terminal.EntityNameColor(serviceInstance.LastOperation.CreatedAt),
 					}))
 			}
-			cmd.ui.Say(T("Updated: {{.Updated}}",
+			cmd.ui.Say(i18n.T("Updated: {{.Updated}}",
 				map[string]interface{}{
 					"Updated": terminal.EntityNameColor(serviceInstance.LastOperation.UpdatedAt),
 				}))
@@ -127,11 +127,11 @@ func ServiceInstanceStateToStatus(operationType string, state string, isUserProv
 
 	switch state {
 	case "in progress":
-		return T("{{.OperationType}} in progress", map[string]interface{}{"OperationType": operationType})
+		return i18n.T("{{.OperationType}} in progress", map[string]interface{}{"OperationType": operationType})
 	case "failed":
-		return T("{{.OperationType}} failed", map[string]interface{}{"OperationType": operationType})
+		return i18n.T("{{.OperationType}} failed", map[string]interface{}{"OperationType": operationType})
 	case "succeeded":
-		return T("{{.OperationType}} succeeded", map[string]interface{}{"OperationType": operationType})
+		return i18n.T("{{.OperationType}} succeeded", map[string]interface{}{"OperationType": operationType})
 	default:
 		return ""
 	}

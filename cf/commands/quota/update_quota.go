@@ -5,7 +5,7 @@ import (
 	"github.com/cloudfoundry/cli/cf/command_registry"
 	"github.com/cloudfoundry/cli/cf/configuration/core_config"
 	"github.com/cloudfoundry/cli/cf/formatters"
-	. "github.com/cloudfoundry/cli/cf/i18n"
+	"github.com/cloudfoundry/cli/cf/i18n"
 	"github.com/cloudfoundry/cli/cf/requirements"
 	"github.com/cloudfoundry/cli/cf/terminal"
 	"github.com/simonleung8/flags"
@@ -24,25 +24,25 @@ func init() {
 
 func (cmd *updateQuota) MetaData() command_registry.CommandMetadata {
 	fs := make(map[string]flags.FlagSet)
-	fs["allow-paid-service-plans"] = &cliFlags.BoolFlag{Name: "allow-paid-service-plans", Usage: T("Can provision instances of paid service plans")}
-	fs["disallow-paid-service-plans"] = &cliFlags.BoolFlag{Name: "disallow-paid-service-plans", Usage: T("Cannot provision instances of paid service plans")}
-	fs["i"] = &cliFlags.StringFlag{Name: "i", Usage: T("Maximum amount of memory an application instance can have (e.g. 1024M, 1G, 10G)")}
-	fs["m"] = &cliFlags.StringFlag{Name: "m", Usage: T("Total amount of memory (e.g. 1024M, 1G, 10G)")}
-	fs["n"] = &cliFlags.StringFlag{Name: "n", Usage: T("New name")}
-	fs["r"] = &cliFlags.IntFlag{Name: "r", Usage: T("Total number of routes")}
-	fs["s"] = &cliFlags.IntFlag{Name: "s", Usage: T("Total number of service instances")}
+	fs["allow-paid-service-plans"] = &cliFlags.BoolFlag{Name: "allow-paid-service-plans", Usage: i18n.T("Can provision instances of paid service plans")}
+	fs["disallow-paid-service-plans"] = &cliFlags.BoolFlag{Name: "disallow-paid-service-plans", Usage: i18n.T("Cannot provision instances of paid service plans")}
+	fs["i"] = &cliFlags.StringFlag{Name: "i", Usage: i18n.T("Maximum amount of memory an application instance can have (e.g. 1024M, 1G, 10G)")}
+	fs["m"] = &cliFlags.StringFlag{Name: "m", Usage: i18n.T("Total amount of memory (e.g. 1024M, 1G, 10G)")}
+	fs["n"] = &cliFlags.StringFlag{Name: "n", Usage: i18n.T("New name")}
+	fs["r"] = &cliFlags.IntFlag{Name: "r", Usage: i18n.T("Total number of routes")}
+	fs["s"] = &cliFlags.IntFlag{Name: "s", Usage: i18n.T("Total number of service instances")}
 
 	return command_registry.CommandMetadata{
 		Name:        "update-quota",
-		Description: T("Update an existing resource quota"),
-		Usage:       T("CF_NAME update-quota QUOTA [-m TOTAL_MEMORY] [-i INSTANCE_MEMORY][-n NEW_NAME] [-r ROUTES] [-s SERVICE_INSTANCES] [--allow-paid-service-plans | --disallow-paid-service-plans]"),
+		Description: i18n.T("Update an existing resource quota"),
+		Usage:       i18n.T("CF_NAME update-quota QUOTA [-m TOTAL_MEMORY] [-i INSTANCE_MEMORY][-n NEW_NAME] [-r ROUTES] [-s SERVICE_INSTANCES] [--allow-paid-service-plans | --disallow-paid-service-plans]"),
 		Flags:       fs,
 	}
 }
 
 func (cmd *updateQuota) Requirements(requirementsFactory requirements.Factory, fc flags.FlagContext) (reqs []requirements.Requirement, err error) {
 	if len(fc.Args()) != 1 {
-		cmd.ui.Failed(T("Incorrect Usage. Requires an argument\n\n") + command_registry.Commands.CommandUsage("update-quota"))
+		cmd.ui.Failed(i18n.T("Incorrect Usage. Requires an argument\n\n") + command_registry.Commands.CommandUsage("update-quota"))
 	}
 
 	return []requirements.Requirement{
@@ -68,7 +68,7 @@ func (cmd *updateQuota) Execute(c flags.FlagContext) {
 	allowPaidServices := c.Bool("allow-paid-service-plans")
 	disallowPaidServices := c.Bool("disallow-paid-service-plans")
 	if allowPaidServices && disallowPaidServices {
-		cmd.ui.Failed(T("Please choose either allow or disallow. Both flags are not permitted to be passed in the same command."))
+		cmd.ui.Failed(i18n.T("Please choose either allow or disallow. Both flags are not permitted to be passed in the same command."))
 	}
 
 	if allowPaidServices {
@@ -90,7 +90,7 @@ func (cmd *updateQuota) Execute(c flags.FlagContext) {
 			memory, formatError = formatters.ToMegabytes(c.String("i"))
 
 			if formatError != nil {
-				cmd.ui.Failed(T("Incorrect Usage.\n\n") + command_registry.Commands.CommandUsage("update-quota"))
+				cmd.ui.Failed(i18n.T("Incorrect Usage.\n\n") + command_registry.Commands.CommandUsage("update-quota"))
 			}
 		}
 
@@ -101,7 +101,7 @@ func (cmd *updateQuota) Execute(c flags.FlagContext) {
 		memory, formatError := formatters.ToMegabytes(c.String("m"))
 
 		if formatError != nil {
-			cmd.ui.Failed(T("Incorrect Usage.\n\n") + command_registry.Commands.CommandUsage("update-quota"))
+			cmd.ui.Failed(i18n.T("Incorrect Usage.\n\n") + command_registry.Commands.CommandUsage("update-quota"))
 		}
 
 		quota.MemoryLimit = memory
@@ -119,7 +119,7 @@ func (cmd *updateQuota) Execute(c flags.FlagContext) {
 		quota.RoutesLimit = c.Int("r")
 	}
 
-	cmd.ui.Say(T("Updating quota {{.QuotaName}} as {{.Username}}...", map[string]interface{}{
+	cmd.ui.Say(i18n.T("Updating quota {{.QuotaName}} as {{.Username}}...", map[string]interface{}{
 		"QuotaName": terminal.EntityNameColor(oldQuotaName),
 		"Username":  terminal.EntityNameColor(cmd.config.Username()),
 	}))

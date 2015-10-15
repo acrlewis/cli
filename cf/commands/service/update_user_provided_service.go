@@ -3,7 +3,6 @@ package service
 import (
 	"encoding/json"
 
-	. "github.com/cloudfoundry/cli/cf/i18n"
 	"github.com/simonleung8/flags"
 	"github.com/simonleung8/flags/flag"
 
@@ -11,6 +10,7 @@ import (
 	"github.com/cloudfoundry/cli/cf/api"
 	"github.com/cloudfoundry/cli/cf/command_registry"
 	"github.com/cloudfoundry/cli/cf/configuration/core_config"
+	"github.com/cloudfoundry/cli/cf/i18n"
 	"github.com/cloudfoundry/cli/cf/requirements"
 	"github.com/cloudfoundry/cli/cf/terminal"
 )
@@ -28,14 +28,14 @@ func init() {
 
 func (cmd *UpdateUserProvidedService) MetaData() command_registry.CommandMetadata {
 	fs := make(map[string]flags.FlagSet)
-	fs["p"] = &cliFlags.StringFlag{Name: "p", Usage: T("Credentials")}
-	fs["l"] = &cliFlags.StringFlag{Name: "l", Usage: T("Syslog Drain Url")}
+	fs["p"] = &cliFlags.StringFlag{Name: "p", Usage: i18n.T("Credentials")}
+	fs["l"] = &cliFlags.StringFlag{Name: "l", Usage: i18n.T("Syslog Drain Url")}
 
 	return command_registry.CommandMetadata{
 		Name:        "update-user-provided-service",
 		ShortName:   "uups",
-		Description: T("Update user-provided service instance name value pairs"),
-		Usage: T(`CF_NAME update-user-provided-service SERVICE_INSTANCE [-p CREDENTIALS] [-l SYSLOG-DRAIN-URL]'
+		Description: i18n.T("Update user-provided service instance name value pairs"),
+		Usage: i18n.T(`CF_NAME update-user-provided-service SERVICE_INSTANCE [-p CREDENTIALS] [-l SYSLOG-DRAIN-URL]'
 
 EXAMPLE:
    CF_NAME update-user-provided-service my-db-mine -p '{"username":"admin","password":"pa55woRD"}'
@@ -46,7 +46,7 @@ EXAMPLE:
 
 func (cmd *UpdateUserProvidedService) Requirements(requirementsFactory requirements.Factory, fc flags.FlagContext) ([]requirements.Requirement, error) {
 	if len(fc.Args()) != 1 {
-		cmd.ui.Failed(T("Incorrect Usage. Requires an argument\n\n") + command_registry.Commands.CommandUsage("update-user-provided-service"))
+		cmd.ui.Failed(i18n.T("Incorrect Usage. Requires an argument\n\n") + command_registry.Commands.CommandUsage("update-user-provided-service"))
 	}
 
 	cmd.serviceInstanceReq = requirementsFactory.NewServiceInstanceRequirement(fc.Args()[0])
@@ -68,7 +68,7 @@ func (cmd *UpdateUserProvidedService) SetDependency(deps command_registry.Depend
 func (cmd *UpdateUserProvidedService) Execute(c flags.FlagContext) {
 	serviceInstance := cmd.serviceInstanceReq.GetServiceInstance()
 	if !serviceInstance.IsUserProvided() {
-		cmd.ui.Failed(T("Service Instance is not user provided"))
+		cmd.ui.Failed(i18n.T("Service Instance is not user provided"))
 		return
 	}
 
@@ -80,12 +80,12 @@ func (cmd *UpdateUserProvidedService) Execute(c flags.FlagContext) {
 
 		err := json.Unmarshal([]byte(params), &paramsMap)
 		if err != nil {
-			cmd.ui.Failed(T("JSON is invalid: {{.ErrorDescription}}", map[string]interface{}{"ErrorDescription": err.Error()}))
+			cmd.ui.Failed(i18n.T("JSON is invalid: {{.ErrorDescription}}", map[string]interface{}{"ErrorDescription": err.Error()}))
 			return
 		}
 	}
 
-	cmd.ui.Say(T("Updating user provided service {{.ServiceName}} in org {{.OrgName}} / space {{.SpaceName}} as {{.CurrentUser}}...",
+	cmd.ui.Say(i18n.T("Updating user provided service {{.ServiceName}} in org {{.OrgName}} / space {{.SpaceName}} as {{.CurrentUser}}...",
 		map[string]interface{}{
 			"ServiceName": terminal.EntityNameColor(serviceInstance.Name),
 			"OrgName":     terminal.EntityNameColor(cmd.config.OrganizationFields().Name),
@@ -103,12 +103,12 @@ func (cmd *UpdateUserProvidedService) Execute(c flags.FlagContext) {
 	}
 
 	cmd.ui.Ok()
-	cmd.ui.Say(T("TIP: Use '{{.CFRestageCommand}}' for any bound apps to ensure your env variable changes take effect",
+	cmd.ui.Say(i18n.T("TIP: Use '{{.CFRestageCommand}}' for any bound apps to ensure your env variable changes take effect",
 		map[string]interface{}{
 			"CFRestageCommand": terminal.CommandColor(cf.Name() + " restage"),
 		}))
 
 	if params == "" && drainUrl == "" {
-		cmd.ui.Warn(T("No flags specified. No changes were made."))
+		cmd.ui.Warn(i18n.T("No flags specified. No changes were made."))
 	}
 }

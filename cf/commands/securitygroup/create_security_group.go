@@ -3,13 +3,13 @@ package securitygroup
 import (
 	"strings"
 
-	. "github.com/cloudfoundry/cli/cf/i18n"
 	"github.com/simonleung8/flags"
 
 	"github.com/cloudfoundry/cli/cf/api/security_groups"
 	"github.com/cloudfoundry/cli/cf/command_registry"
 	"github.com/cloudfoundry/cli/cf/configuration/core_config"
 	"github.com/cloudfoundry/cli/cf/errors"
+	"github.com/cloudfoundry/cli/cf/i18n"
 	"github.com/cloudfoundry/cli/cf/requirements"
 	"github.com/cloudfoundry/cli/cf/terminal"
 	"github.com/cloudfoundry/cli/json"
@@ -26,8 +26,8 @@ func init() {
 }
 
 func (cmd *CreateSecurityGroup) MetaData() command_registry.CommandMetadata {
-	primaryUsage := T("CF_NAME create-security-group SECURITY_GROUP PATH_TO_JSON_RULES_FILE")
-	secondaryUsage := T(`   The provided path can be an absolute or relative path to a file.  The file should have
+	primaryUsage := i18n.T("CF_NAME create-security-group SECURITY_GROUP PATH_TO_JSON_RULES_FILE")
+	secondaryUsage := i18n.T(`   The provided path can be an absolute or relative path to a file.  The file should have
    a single array with JSON objects inside describing the rules.  The JSON Base Object is 
    omitted and only the square brackets and associated child object are required in the file.  
 
@@ -42,14 +42,14 @@ func (cmd *CreateSecurityGroup) MetaData() command_registry.CommandMetadata {
 
 	return command_registry.CommandMetadata{
 		Name:        "create-security-group",
-		Description: T("Create a security group"),
+		Description: i18n.T("Create a security group"),
 		Usage:       strings.Join([]string{primaryUsage, secondaryUsage}, "\n\n"),
 	}
 }
 
 func (cmd *CreateSecurityGroup) Requirements(requirementsFactory requirements.Factory, fc flags.FlagContext) ([]requirements.Requirement, error) {
 	if len(fc.Args()) != 2 {
-		cmd.ui.Failed(T("Incorrect Usage. Requires SECURITY_GROUP and PATH_TO_JSON_RULES_FILE as arguments\n\n") + command_registry.Commands.CommandUsage("create-security-group"))
+		cmd.ui.Failed(i18n.T("Incorrect Usage. Requires SECURITY_GROUP and PATH_TO_JSON_RULES_FILE as arguments\n\n") + command_registry.Commands.CommandUsage("create-security-group"))
 	}
 
 	requirements := []requirements.Requirement{requirementsFactory.NewLoginRequirement()}
@@ -68,7 +68,7 @@ func (cmd *CreateSecurityGroup) Execute(context flags.FlagContext) {
 	pathToJSONFile := context.Args()[1]
 	rules, err := json.ParseJsonArray(pathToJSONFile)
 	if err != nil {
-		cmd.ui.Failed(T(`Incorrect json format: file: {{.JSONFile}}
+		cmd.ui.Failed(i18n.T(`Incorrect json format: file: {{.JSONFile}}
 		
 Valid json file example:
 [
@@ -80,7 +80,7 @@ Valid json file example:
 ]`, map[string]interface{}{"JSONFile": pathToJSONFile}))
 	}
 
-	cmd.ui.Say(T("Creating security group {{.security_group}} as {{.username}}",
+	cmd.ui.Say(i18n.T("Creating security group {{.security_group}} as {{.username}}",
 		map[string]interface{}{
 			"security_group": terminal.EntityNameColor(name),
 			"username":       terminal.EntityNameColor(cmd.configRepo.Username()),
@@ -91,10 +91,10 @@ Valid json file example:
 	httpErr, ok := err.(errors.HttpError)
 	if ok && httpErr.ErrorCode() == errors.SECURITY_GROUP_EXISTS {
 		cmd.ui.Ok()
-		cmd.ui.Warn(T("Security group {{.security_group}} {{.error_message}}",
+		cmd.ui.Warn(i18n.T("Security group {{.security_group}} {{.error_message}}",
 			map[string]interface{}{
 				"security_group": terminal.EntityNameColor(name),
-				"error_message":  terminal.WarningColor(T("already exists")),
+				"error_message":  terminal.WarningColor(i18n.T("already exists")),
 			}))
 		return
 	}

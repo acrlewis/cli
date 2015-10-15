@@ -4,7 +4,7 @@ import (
 	"github.com/cloudfoundry/cli/cf/api/feature_flags"
 	"github.com/cloudfoundry/cli/cf/command_registry"
 	"github.com/cloudfoundry/cli/cf/configuration/core_config"
-	. "github.com/cloudfoundry/cli/cf/i18n"
+	"github.com/cloudfoundry/cli/cf/i18n"
 	"github.com/cloudfoundry/cli/cf/requirements"
 	"github.com/cloudfoundry/cli/cf/terminal"
 	"github.com/simonleung8/flags"
@@ -23,14 +23,14 @@ func init() {
 func (cmd *ListFeatureFlags) MetaData() command_registry.CommandMetadata {
 	return command_registry.CommandMetadata{
 		Name:        "feature-flags",
-		Description: T("Retrieve list of feature flags with status of each flag-able feature"),
-		Usage:       T("CF_NAME feature-flags"),
+		Description: i18n.T("Retrieve list of feature flags with status of each flag-able feature"),
+		Usage:       i18n.T("CF_NAME feature-flags"),
 	}
 }
 
 func (cmd *ListFeatureFlags) Requirements(requirementsFactory requirements.Factory, fc flags.FlagContext) (reqs []requirements.Requirement, err error) {
 	if len(fc.Args()) != 0 {
-		cmd.ui.Failed(T("Incorrect Usage. No argument required\n\n") + command_registry.Commands.CommandUsage("feature-flags"))
+		cmd.ui.Failed(i18n.T("Incorrect Usage. No argument required\n\n") + command_registry.Commands.CommandUsage("feature-flags"))
 	}
 
 	reqs = []requirements.Requirement{
@@ -47,7 +47,7 @@ func (cmd *ListFeatureFlags) SetDependency(deps command_registry.Dependency, plu
 }
 
 func (cmd *ListFeatureFlags) Execute(c flags.FlagContext) {
-	cmd.ui.Say(T("Retrieving status of all flagged features as {{.Username}}...", map[string]interface{}{
+	cmd.ui.Say(i18n.T("Retrieving status of all flagged features as {{.Username}}...", map[string]interface{}{
 		"Username": terminal.EntityNameColor(cmd.config.Username())}))
 
 	flags, err := cmd.flagRepo.List()
@@ -59,7 +59,7 @@ func (cmd *ListFeatureFlags) Execute(c flags.FlagContext) {
 	cmd.ui.Ok()
 	cmd.ui.Say("")
 
-	table := terminal.NewTable(cmd.ui, []string{T("Features"), T("State")})
+	table := terminal.NewTable(cmd.ui, []string{i18n.T("Features"), i18n.T("State")})
 
 	for _, flag := range flags {
 		table.Add(

@@ -8,13 +8,13 @@ import (
 	"path/filepath"
 	"strings"
 
-	. "github.com/cloudfoundry/cli/cf/i18n"
 	"github.com/simonleung8/flags"
 	"github.com/simonleung8/flags/flag"
 
 	"github.com/cloudfoundry/cli/cf/api"
 	"github.com/cloudfoundry/cli/cf/command_registry"
 	"github.com/cloudfoundry/cli/cf/configuration/core_config"
+	"github.com/cloudfoundry/cli/cf/i18n"
 	"github.com/cloudfoundry/cli/cf/requirements"
 	"github.com/cloudfoundry/cli/cf/terminal"
 	"github.com/cloudfoundry/cli/cf/trace"
@@ -32,24 +32,24 @@ func init() {
 
 func (cmd *Curl) MetaData() command_registry.CommandMetadata {
 	fs := make(map[string]flags.FlagSet)
-	fs["i"] = &cliFlags.BoolFlag{Name: "i", Usage: T("Include response headers in the output")}
-	fs["v"] = &cliFlags.BoolFlag{Name: "v", Usage: T("Enable CF_TRACE output for all requests and responses")}
-	fs["X"] = &cliFlags.StringFlag{Name: "X", Value: "GET", Usage: T("HTTP method (GET,POST,PUT,DELETE,etc)")}
-	fs["H"] = &cliFlags.StringSliceFlag{Name: "H", Usage: T("Custom headers to include in the request, flag can be specified multiple times")}
-	fs["d"] = &cliFlags.StringFlag{Name: "d", Usage: T("HTTP data to include in the request body")}
-	fs["output"] = &cliFlags.StringFlag{Name: "output", Usage: T("Write curl body to FILE instead of stdout")}
+	fs["i"] = &cliFlags.BoolFlag{Name: "i", Usage: i18n.T("Include response headers in the output")}
+	fs["v"] = &cliFlags.BoolFlag{Name: "v", Usage: i18n.T("Enable CF_TRACE output for all requests and responses")}
+	fs["X"] = &cliFlags.StringFlag{Name: "X", Value: "GET", Usage: i18n.T("HTTP method (GET,POST,PUT,DELETE,etc)")}
+	fs["H"] = &cliFlags.StringSliceFlag{Name: "H", Usage: i18n.T("Custom headers to include in the request, flag can be specified multiple times")}
+	fs["d"] = &cliFlags.StringFlag{Name: "d", Usage: i18n.T("HTTP data to include in the request body")}
+	fs["output"] = &cliFlags.StringFlag{Name: "output", Usage: i18n.T("Write curl body to FILE instead of stdout")}
 
 	return command_registry.CommandMetadata{
 		Name:        "curl",
-		Description: T("Executes a raw request, content-type set to application/json by default"),
-		Usage:       T("CF_NAME curl PATH [-iv] [-X METHOD] [-H HEADER] [-d DATA] [--output FILE]") + "\n   " + T("For API documentation, please visit http://apidocs.cloudfoundry.org"),
+		Description: i18n.T("Executes a raw request, content-type set to application/json by default"),
+		Usage:       i18n.T("CF_NAME curl PATH [-iv] [-X METHOD] [-H HEADER] [-d DATA] [--output FILE]") + "\n   " + i18n.T("For API documentation, please visit http://apidocs.cloudfoundry.org"),
 		Flags:       fs,
 	}
 }
 
 func (cmd *Curl) Requirements(requirementsFactory requirements.Factory, fc flags.FlagContext) (reqs []requirements.Requirement, err error) {
 	if len(fc.Args()) != 1 {
-		cmd.ui.Failed(T("Incorrect Usage. An argument is missing or not correctly enclosed.\n\n") + command_registry.Commands.CommandUsage("curl"))
+		cmd.ui.Failed(i18n.T("Incorrect Usage. An argument is missing or not correctly enclosed.\n\n") + command_registry.Commands.CommandUsage("curl"))
 	}
 
 	reqs = []requirements.Requirement{
@@ -80,7 +80,7 @@ func (cmd *Curl) Execute(c flags.FlagContext) {
 
 	responseHeader, responseBody, apiErr := cmd.curlRepo.Request(method, path, reqHeader, body)
 	if apiErr != nil {
-		cmd.ui.Failed(T("Error creating request:\n{{.Err}}", map[string]interface{}{"Err": apiErr.Error()}))
+		cmd.ui.Failed(i18n.T("Error creating request:\n{{.Err}}", map[string]interface{}{"Err": apiErr.Error()}))
 	}
 
 	if verbose {
@@ -94,7 +94,7 @@ func (cmd *Curl) Execute(c flags.FlagContext) {
 	if c.String("output") != "" {
 		err := cmd.writeToFile(responseBody, c.String("output"))
 		if err != nil {
-			cmd.ui.Failed(T("Error creating request:\n{{.Err}}", map[string]interface{}{"Err": err}))
+			cmd.ui.Failed(i18n.T("Error creating request:\n{{.Err}}", map[string]interface{}{"Err": err}))
 		}
 	} else {
 		if strings.Contains(responseHeader, "application/json") {

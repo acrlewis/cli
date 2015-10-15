@@ -4,7 +4,7 @@ import (
 	"github.com/cloudfoundry/cli/cf/api"
 	"github.com/cloudfoundry/cli/cf/command_registry"
 	"github.com/cloudfoundry/cli/cf/configuration/core_config"
-	. "github.com/cloudfoundry/cli/cf/i18n"
+	"github.com/cloudfoundry/cli/cf/i18n"
 	"github.com/cloudfoundry/cli/cf/requirements"
 	"github.com/cloudfoundry/cli/cf/terminal"
 	"github.com/simonleung8/flags"
@@ -24,14 +24,14 @@ func init() {
 func (cmd *CreateDomain) MetaData() command_registry.CommandMetadata {
 	return command_registry.CommandMetadata{
 		Name:        "create-domain",
-		Description: T("Create a domain in an org for later use"),
-		Usage:       T("CF_NAME create-domain ORG DOMAIN"),
+		Description: i18n.T("Create a domain in an org for later use"),
+		Usage:       i18n.T("CF_NAME create-domain ORG DOMAIN"),
 	}
 }
 
 func (cmd *CreateDomain) Requirements(requirementsFactory requirements.Factory, fc flags.FlagContext) (reqs []requirements.Requirement, err error) {
 	if len(fc.Args()) != 2 {
-		cmd.ui.Failed(T("Incorrect Usage. Requires org_name, domain_name as arguments\n\n") + command_registry.Commands.CommandUsage("create-domain"))
+		cmd.ui.Failed(i18n.T("Incorrect Usage. Requires org_name, domain_name as arguments\n\n") + command_registry.Commands.CommandUsage("create-domain"))
 	}
 
 	cmd.orgReq = requirementsFactory.NewOrganizationRequirement(fc.Args()[0])
@@ -53,7 +53,7 @@ func (cmd *CreateDomain) Execute(c flags.FlagContext) {
 	domainName := c.Args()[1]
 	owningOrg := cmd.orgReq.GetOrganization()
 
-	cmd.ui.Say(T("Creating domain {{.DomainName}} for org {{.OrgName}} as {{.Username}}...",
+	cmd.ui.Say(i18n.T("Creating domain {{.DomainName}} for org {{.OrgName}} as {{.Username}}...",
 		map[string]interface{}{
 			"DomainName": terminal.EntityNameColor(domainName),
 			"OrgName":    terminal.EntityNameColor(owningOrg.Name),

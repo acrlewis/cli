@@ -6,7 +6,7 @@ import (
 	"github.com/cloudfoundry/cli/cf/configuration/core_config"
 	"github.com/cloudfoundry/cli/cf/errors"
 	"github.com/cloudfoundry/cli/cf/formatters"
-	. "github.com/cloudfoundry/cli/cf/i18n"
+	"github.com/cloudfoundry/cli/cf/i18n"
 	"github.com/cloudfoundry/cli/cf/models"
 	"github.com/cloudfoundry/cli/cf/requirements"
 	"github.com/cloudfoundry/cli/cf/terminal"
@@ -26,23 +26,23 @@ func init() {
 
 func (cmd *CreateQuota) MetaData() command_registry.CommandMetadata {
 	fs := make(map[string]flags.FlagSet)
-	fs["allow-paid-service-plans"] = &cliFlags.BoolFlag{Name: "allow-paid-service-plans", Usage: T("Can provision instances of paid service plans")}
-	fs["i"] = &cliFlags.StringFlag{Name: "i", Usage: T("Maximum amount of memory an application instance can have (e.g. 1024M, 1G, 10G). -1 represents an unlimited amount.")}
-	fs["m"] = &cliFlags.StringFlag{Name: "m", Usage: T("Total amount of memory (e.g. 1024M, 1G, 10G)")}
-	fs["r"] = &cliFlags.IntFlag{Name: "r", Usage: T("Total number of routes")}
-	fs["s"] = &cliFlags.IntFlag{Name: "s", Usage: T("Total number of service instances")}
+	fs["allow-paid-service-plans"] = &cliFlags.BoolFlag{Name: "allow-paid-service-plans", Usage: i18n.T("Can provision instances of paid service plans")}
+	fs["i"] = &cliFlags.StringFlag{Name: "i", Usage: i18n.T("Maximum amount of memory an application instance can have (e.g. 1024M, 1G, 10G). -1 represents an unlimited amount.")}
+	fs["m"] = &cliFlags.StringFlag{Name: "m", Usage: i18n.T("Total amount of memory (e.g. 1024M, 1G, 10G)")}
+	fs["r"] = &cliFlags.IntFlag{Name: "r", Usage: i18n.T("Total number of routes")}
+	fs["s"] = &cliFlags.IntFlag{Name: "s", Usage: i18n.T("Total number of service instances")}
 
 	return command_registry.CommandMetadata{
 		Name:        "create-quota",
-		Description: T("Define a new resource quota"),
-		Usage:       T("CF_NAME create-quota QUOTA [-m TOTAL_MEMORY] [-i INSTANCE_MEMORY] [-r ROUTES] [-s SERVICE_INSTANCES] [--allow-paid-service-plans]"),
+		Description: i18n.T("Define a new resource quota"),
+		Usage:       i18n.T("CF_NAME create-quota QUOTA [-m TOTAL_MEMORY] [-i INSTANCE_MEMORY] [-r ROUTES] [-s SERVICE_INSTANCES] [--allow-paid-service-plans]"),
 		Flags:       fs,
 	}
 }
 
 func (cmd *CreateQuota) Requirements(requirementsFactory requirements.Factory, fc flags.FlagContext) (reqs []requirements.Requirement, err error) {
 	if len(fc.Args()) != 1 {
-		cmd.ui.Failed(T("Incorrect Usage. Requires an argument\n\n") + command_registry.Commands.CommandUsage("create-quota"))
+		cmd.ui.Failed(i18n.T("Incorrect Usage. Requires an argument\n\n") + command_registry.Commands.CommandUsage("create-quota"))
 	}
 
 	return []requirements.Requirement{
@@ -60,7 +60,7 @@ func (cmd *CreateQuota) SetDependency(deps command_registry.Dependency, pluginCa
 func (cmd *CreateQuota) Execute(context flags.FlagContext) {
 	name := context.Args()[0]
 
-	cmd.ui.Say(T("Creating quota {{.QuotaName}} as {{.Username}}...", map[string]interface{}{
+	cmd.ui.Say(i18n.T("Creating quota {{.QuotaName}} as {{.Username}}...", map[string]interface{}{
 		"QuotaName": terminal.EntityNameColor(name),
 		"Username":  terminal.EntityNameColor(cmd.config.Username()),
 	}))
@@ -73,7 +73,7 @@ func (cmd *CreateQuota) Execute(context flags.FlagContext) {
 	if memoryLimit != "" {
 		parsedMemory, err := formatters.ToMegabytes(memoryLimit)
 		if err != nil {
-			cmd.ui.Failed(T("Invalid memory limit: {{.MemoryLimit}}\n{{.Err}}", map[string]interface{}{"MemoryLimit": memoryLimit, "Err": err}))
+			cmd.ui.Failed(i18n.T("Invalid memory limit: {{.MemoryLimit}}\n{{.Err}}", map[string]interface{}{"MemoryLimit": memoryLimit, "Err": err}))
 		}
 
 		quota.MemoryLimit = parsedMemory
@@ -85,7 +85,7 @@ func (cmd *CreateQuota) Execute(context flags.FlagContext) {
 	} else {
 		parsedMemory, errr := formatters.ToMegabytes(instanceMemoryLimit)
 		if errr != nil {
-			cmd.ui.Failed(T("Invalid instance memory limit: {{.MemoryLimit}}\n{{.Err}}", map[string]interface{}{"MemoryLimit": instanceMemoryLimit, "Err": errr}))
+			cmd.ui.Failed(i18n.T("Invalid instance memory limit: {{.MemoryLimit}}\n{{.Err}}", map[string]interface{}{"MemoryLimit": instanceMemoryLimit, "Err": errr}))
 		}
 		quota.InstanceMemoryLimit = parsedMemory
 	}
@@ -107,7 +107,7 @@ func (cmd *CreateQuota) Execute(context flags.FlagContext) {
 	httpErr, ok := err.(errors.HttpError)
 	if ok && httpErr.ErrorCode() == errors.QUOTA_EXISTS {
 		cmd.ui.Ok()
-		cmd.ui.Warn(T("Quota Definition {{.QuotaName}} already exists", map[string]interface{}{"QuotaName": quota.Name}))
+		cmd.ui.Warn(i18n.T("Quota Definition {{.QuotaName}} already exists", map[string]interface{}{"QuotaName": quota.Name}))
 		return
 	}
 

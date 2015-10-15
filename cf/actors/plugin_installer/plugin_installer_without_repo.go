@@ -5,7 +5,7 @@ import (
 	"path/filepath"
 	"strings"
 
-	. "github.com/cloudfoundry/cli/cf/i18n"
+	"github.com/cloudfoundry/cli/cf/i18n"
 	"github.com/cloudfoundry/cli/cf/terminal"
 )
 
@@ -26,10 +26,10 @@ func (installer *PluginInstallerWithoutRepo) Install(inputSourceFilepath string)
 	installer.Ui.Say("")
 	if strings.HasPrefix(outputSourceFilepath, "https://") || strings.HasPrefix(outputSourceFilepath, "http://") ||
 		strings.HasPrefix(outputSourceFilepath, "ftp://") || strings.HasPrefix(outputSourceFilepath, "ftps://") {
-		installer.Ui.Say(T("Attempting to download binary file from internet address..."))
+		installer.Ui.Say(i18n.T("Attempting to download binary file from internet address..."))
 		return installer.PluginDownloader.downloadFromPath(outputSourceFilepath)
 	} else if !installer.ensureCandidatePluginBinaryExistsAtGivenPath(outputSourceFilepath) {
-		installer.Ui.Failed(T("File not found locally, make sure the file exists at given path {{.filepath}}", map[string]interface{}{"filepath": outputSourceFilepath}))
+		installer.Ui.Failed(i18n.T("File not found locally, make sure the file exists at given path {{.filepath}}", map[string]interface{}{"filepath": outputSourceFilepath}))
 	}
 
 	return outputSourceFilepath

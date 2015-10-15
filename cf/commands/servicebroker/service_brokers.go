@@ -6,7 +6,7 @@ import (
 	"github.com/cloudfoundry/cli/cf/api"
 	"github.com/cloudfoundry/cli/cf/command_registry"
 	"github.com/cloudfoundry/cli/cf/configuration/core_config"
-	. "github.com/cloudfoundry/cli/cf/i18n"
+	"github.com/cloudfoundry/cli/cf/i18n"
 	"github.com/cloudfoundry/cli/cf/models"
 	"github.com/cloudfoundry/cli/cf/requirements"
 	"github.com/cloudfoundry/cli/cf/terminal"
@@ -33,14 +33,14 @@ func init() {
 func (cmd *ListServiceBrokers) MetaData() command_registry.CommandMetadata {
 	return command_registry.CommandMetadata{
 		Name:        "service-brokers",
-		Description: T("List service brokers"),
+		Description: i18n.T("List service brokers"),
 		Usage:       "CF_NAME service-brokers",
 	}
 }
 
 func (cmd *ListServiceBrokers) Requirements(requirementsFactory requirements.Factory, fc flags.FlagContext) (reqs []requirements.Requirement, err error) {
 	if len(fc.Args()) != 0 {
-		cmd.ui.Failed(T("Incorrect Usage. No argument required\n\n") + command_registry.Commands.CommandUsage("service-brokers"))
+		cmd.ui.Failed(i18n.T("Incorrect Usage. No argument required\n\n") + command_registry.Commands.CommandUsage("service-brokers"))
 	}
 
 	reqs = append(reqs, requirementsFactory.NewLoginRequirement())
@@ -57,12 +57,12 @@ func (cmd *ListServiceBrokers) SetDependency(deps command_registry.Dependency, p
 func (cmd *ListServiceBrokers) Execute(c flags.FlagContext) {
 	sbTable := serviceBrokerTable{}
 
-	cmd.ui.Say(T("Getting service brokers as {{.Username}}...\n",
+	cmd.ui.Say(i18n.T("Getting service brokers as {{.Username}}...\n",
 		map[string]interface{}{
 			"Username": terminal.EntityNameColor(cmd.config.Username()),
 		}))
 
-	table := cmd.ui.Table([]string{T("name"), T("url")})
+	table := cmd.ui.Table([]string{i18n.T("name"), i18n.T("url")})
 	foundBrokers := false
 	apiErr := cmd.repo.ListServiceBrokers(func(serviceBroker models.ServiceBroker) bool {
 		sbTable = append(sbTable, serviceBrokerRow{
@@ -87,7 +87,7 @@ func (cmd *ListServiceBrokers) Execute(c flags.FlagContext) {
 	}
 
 	if !foundBrokers {
-		cmd.ui.Say(T("No service brokers found"))
+		cmd.ui.Say(i18n.T("No service brokers found"))
 	}
 }
 

@@ -3,11 +3,10 @@ package plugin_repo
 import (
 	"github.com/cloudfoundry/cli/cf/command_registry"
 	"github.com/cloudfoundry/cli/cf/configuration/core_config"
+	"github.com/cloudfoundry/cli/cf/i18n"
 	"github.com/cloudfoundry/cli/cf/requirements"
 	"github.com/cloudfoundry/cli/cf/terminal"
 	"github.com/simonleung8/flags"
-
-	. "github.com/cloudfoundry/cli/cf/i18n"
 )
 
 type ListPluginRepos struct {
@@ -22,14 +21,14 @@ func init() {
 func (cmd *ListPluginRepos) MetaData() command_registry.CommandMetadata {
 	return command_registry.CommandMetadata{
 		Name:        "list-plugin-repos",
-		Description: T("list all the added plugin repository"),
-		Usage:       T("CF_NAME list-plugin-repos"),
+		Description: i18n.T("list all the added plugin repository"),
+		Usage:       i18n.T("CF_NAME list-plugin-repos"),
 	}
 }
 
 func (cmd *ListPluginRepos) Requirements(requirementsFactory requirements.Factory, fc flags.FlagContext) (reqs []requirements.Requirement, err error) {
 	if len(fc.Args()) != 0 {
-		cmd.ui.Failed(T("Incorrect Usage. No argument required\n\n") + command_registry.Commands.CommandUsage("list-plugin-repos"))
+		cmd.ui.Failed(i18n.T("Incorrect Usage. No argument required\n\n") + command_registry.Commands.CommandUsage("list-plugin-repos"))
 	}
 
 	return
@@ -44,7 +43,7 @@ func (cmd *ListPluginRepos) SetDependency(deps command_registry.Dependency, plug
 func (cmd *ListPluginRepos) Execute(c flags.FlagContext) {
 	repos := cmd.config.PluginRepos()
 
-	table := terminal.NewTable(cmd.ui, []string{T("Repo Name"), T("Url")})
+	table := terminal.NewTable(cmd.ui, []string{i18n.T("Repo Name"), i18n.T("Url")})
 
 	for _, repo := range repos {
 		table.Add(repo.Name, repo.Url)

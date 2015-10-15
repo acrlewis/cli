@@ -6,6 +6,7 @@ import (
 	"github.com/cloudfoundry/cli/cf/actors/plugin_repo"
 	"github.com/cloudfoundry/cli/cf/command_registry"
 	"github.com/cloudfoundry/cli/cf/configuration/core_config"
+	"github.com/cloudfoundry/cli/cf/i18n"
 	"github.com/cloudfoundry/cli/cf/models"
 	"github.com/cloudfoundry/cli/cf/requirements"
 	"github.com/cloudfoundry/cli/cf/terminal"
@@ -13,8 +14,6 @@ import (
 	"github.com/simonleung8/flags/flag"
 
 	clipr "github.com/cloudfoundry-incubator/cli-plugin-repo/models"
-
-	. "github.com/cloudfoundry/cli/cf/i18n"
 )
 
 type RepoPlugins struct {
@@ -29,12 +28,12 @@ func init() {
 
 func (cmd *RepoPlugins) MetaData() command_registry.CommandMetadata {
 	fs := make(map[string]flags.FlagSet)
-	fs["r"] = &cliFlags.StringFlag{Name: "r", Usage: T("Repo Name - List plugins from just this repository")}
+	fs["r"] = &cliFlags.StringFlag{Name: "r", Usage: i18n.T("Repo Name - List plugins from just this repository")}
 
 	return command_registry.CommandMetadata{
-		Name:        T("repo-plugins"),
-		Description: T("List all available plugins in all added repositories"),
-		Usage: T(`CF_NAME repo-plugins
+		Name:        i18n.T("repo-plugins"),
+		Description: i18n.T("List all available plugins in all added repositories"),
+		Usage: i18n.T(`CF_NAME repo-plugins
 
 EXAMPLE:
    cf repo-plugins [-r REPO_NAME]
@@ -61,14 +60,14 @@ func (cmd *RepoPlugins) Execute(c flags.FlagContext) {
 	repos = cmd.config.PluginRepos()
 
 	if repoName == "" {
-		cmd.ui.Say(T("Getting plugins from all repositories ... "))
+		cmd.ui.Say(i18n.T("Getting plugins from all repositories ... "))
 	} else {
 		index := cmd.findRepoIndex(repoName)
 		if index != -1 {
-			cmd.ui.Say(T("Getting plugins from repository '") + repoName + "' ...")
+			cmd.ui.Say(i18n.T("Getting plugins from repository '") + repoName + "' ...")
 			repos = []models.PluginRepo{repos[index]}
 		} else {
-			cmd.ui.Failed(repoName + T(" does not exist as an available plugin repo."+"\nTip: use `add-plugin-repo` command to add repos."))
+			cmd.ui.Failed(repoName + i18n.T(" does not exist as an available plugin repo."+"\nTip: use `add-plugin-repo` command to add repos."))
 		}
 	}
 
@@ -83,8 +82,8 @@ func (cmd *RepoPlugins) Execute(c flags.FlagContext) {
 
 func (cmd RepoPlugins) printTable(repoPlugins map[string][]clipr.Plugin) {
 	for k, plugins := range repoPlugins {
-		cmd.ui.Say(terminal.ColorizeBold(T("Repository: ")+k, 33))
-		table := cmd.ui.Table([]string{T("name"), T("version"), T("description")})
+		cmd.ui.Say(terminal.ColorizeBold(i18n.T("Repository: ")+k, 33))
+		table := cmd.ui.Table([]string{i18n.T("name"), i18n.T("version"), i18n.T("description")})
 		for _, p := range plugins {
 			table.Add(p.Name, p.Version, p.Description)
 		}
@@ -95,7 +94,7 @@ func (cmd RepoPlugins) printTable(repoPlugins map[string][]clipr.Plugin) {
 
 func (cmd RepoPlugins) printErrors(repoError []string) {
 	if len(repoError) > 0 {
-		cmd.ui.Say(terminal.ColorizeBold(T("Logged errors:"), 31))
+		cmd.ui.Say(terminal.ColorizeBold(i18n.T("Logged errors:"), 31))
 		for _, e := range repoError {
 			cmd.ui.Say(terminal.Colorize(e, 31))
 		}

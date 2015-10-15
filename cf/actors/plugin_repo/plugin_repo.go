@@ -8,9 +8,8 @@ import (
 	"strings"
 
 	clipr "github.com/cloudfoundry-incubator/cli-plugin-repo/models"
+	"github.com/cloudfoundry/cli/cf/i18n"
 	"github.com/cloudfoundry/cli/cf/models"
-
-	. "github.com/cloudfoundry/cli/cf/i18n"
 )
 
 type PluginRepo interface {
@@ -31,24 +30,24 @@ func (r pluginRepo) GetPlugins(repos []models.PluginRepo) (map[string][]clipr.Pl
 	for _, repo := range repos {
 		resp, err := http.Get(getListEndpoint(repo.Url))
 		if err != nil {
-			repoError = append(repoError, fmt.Sprintf(T("Error requesting from")+" '%s' - %s", repo.Name, err.Error()))
+			repoError = append(repoError, fmt.Sprintf(i18n.T("Error requesting from")+" '%s' - %s", repo.Name, err.Error()))
 			continue
 		} else {
 			defer resp.Body.Close()
 
 			body, err := ioutil.ReadAll(resp.Body)
 			if err != nil {
-				repoError = append(repoError, fmt.Sprintf(T("Error reading response from")+" '%s' - %s ", repo.Name, err.Error()))
+				repoError = append(repoError, fmt.Sprintf(i18n.T("Error reading response from")+" '%s' - %s ", repo.Name, err.Error()))
 				continue
 			}
 
 			pluginList = clipr.PluginsJson{Plugins: nil}
 			err = json.Unmarshal(body, &pluginList)
 			if err != nil {
-				repoError = append(repoError, fmt.Sprintf(T("Invalid json data from")+" '%s' - %s", repo.Name, err.Error()))
+				repoError = append(repoError, fmt.Sprintf(i18n.T("Invalid json data from")+" '%s' - %s", repo.Name, err.Error()))
 				continue
 			} else if pluginList.Plugins == nil {
-				repoError = append(repoError, T("Invalid data from '{{.repoName}}' - plugin data does not exist", map[string]interface{}{"repoName": repo.Name}))
+				repoError = append(repoError, i18n.T("Invalid data from '{{.repoName}}' - plugin data does not exist", map[string]interface{}{"repoName": repo.Name}))
 				continue
 			}
 

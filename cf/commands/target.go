@@ -6,7 +6,7 @@ import (
 	"github.com/cloudfoundry/cli/cf/command_registry"
 	"github.com/cloudfoundry/cli/cf/configuration/core_config"
 	"github.com/cloudfoundry/cli/cf/errors"
-	. "github.com/cloudfoundry/cli/cf/i18n"
+	"github.com/cloudfoundry/cli/cf/i18n"
 	"github.com/cloudfoundry/cli/cf/models"
 	"github.com/cloudfoundry/cli/cf/requirements"
 	"github.com/cloudfoundry/cli/cf/terminal"
@@ -27,21 +27,21 @@ func init() {
 
 func (cmd *Target) MetaData() command_registry.CommandMetadata {
 	fs := make(map[string]flags.FlagSet)
-	fs["o"] = &cliFlags.StringFlag{Name: "o", Usage: T("organization")}
-	fs["s"] = &cliFlags.StringFlag{Name: "s", Usage: T("space")}
+	fs["o"] = &cliFlags.StringFlag{Name: "o", Usage: i18n.T("organization")}
+	fs["s"] = &cliFlags.StringFlag{Name: "s", Usage: i18n.T("space")}
 
 	return command_registry.CommandMetadata{
 		Name:        "target",
 		ShortName:   "t",
-		Description: T("Set or view the targeted org or space"),
-		Usage:       T("CF_NAME target [-o ORG] [-s SPACE]"),
+		Description: i18n.T("Set or view the targeted org or space"),
+		Usage:       i18n.T("CF_NAME target [-o ORG] [-s SPACE]"),
 		Flags:       fs,
 	}
 }
 
 func (cmd *Target) Requirements(requirementsFactory requirements.Factory, fc flags.FlagContext) (reqs []requirements.Requirement, err error) {
 	if len(fc.Args()) != 0 {
-		cmd.ui.Failed(T("Incorrect Usage. No argument required\n\n") + command_registry.Commands.CommandUsage("target"))
+		cmd.ui.Failed(i18n.T("Incorrect Usage. No argument required\n\n") + command_registry.Commands.CommandUsage("target"))
 	}
 
 	reqs = []requirements.Requirement{
@@ -101,7 +101,7 @@ func (cmd Target) setOrganization(orgName string) error {
 
 	org, apiErr := cmd.orgRepo.FindByName(orgName)
 	if apiErr != nil {
-		return errors.NewWithFmt(T("Could not target org.\n{{.ApiErr}}",
+		return errors.NewWithFmt(i18n.T("Could not target org.\n{{.ApiErr}}",
 			map[string]interface{}{"ApiErr": apiErr.Error()}))
 	}
 
@@ -113,12 +113,12 @@ func (cmd Target) setSpace(spaceName string) error {
 	cmd.config.SetSpaceFields(models.SpaceFields{})
 
 	if !cmd.config.HasOrganization() {
-		return errors.New(T("An org must be targeted before targeting a space"))
+		return errors.New(i18n.T("An org must be targeted before targeting a space"))
 	}
 
 	space, apiErr := cmd.spaceRepo.FindByName(spaceName)
 	if apiErr != nil {
-		return errors.NewWithFmt(T("Unable to access space {{.SpaceName}}.\n{{.ApiErr}}",
+		return errors.NewWithFmt(i18n.T("Unable to access space {{.SpaceName}}.\n{{.ApiErr}}",
 			map[string]interface{}{"SpaceName": spaceName, "ApiErr": apiErr.Error()}))
 	}
 
